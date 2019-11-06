@@ -65,7 +65,7 @@ class PatchSubsetServerImplTest : public ::testing::Test {
         .WillRepeatedly(Invoke(returnFontId));
   }
 
-  void ExpectChecksum(std::string_view value, uint64_t checksum) {
+  void ExpectChecksum(string_view value, uint64_t checksum) {
     EXPECT_CALL(*hasher_, Checksum(value)).WillRepeatedly(Return(checksum));
   }
 
