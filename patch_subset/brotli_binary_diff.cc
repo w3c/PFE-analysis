@@ -98,7 +98,8 @@ StatusCode BrotliBinaryDiff::Diff(const FontData& font_base,
     return StatusCode::kInternal;
   }
 
-  std::vector<uint8_t> sink(2 * (font_derived.size() - font_base.size()));
+  std::vector<uint8_t> sink;
+  sink.reserve(2 * (font_derived.size() - font_base.size()));
 
   StatusCode result = CompressToSink(font_derived, state.get(), &sink);
   if (result != StatusCode::kOk) {
