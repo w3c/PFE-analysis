@@ -47,6 +47,13 @@ class FontData {
     return ::absl::string_view(data(), size());
   }
 
+  ::absl::string_view str(unsigned int start) const {
+    if (start >= size()) {
+      return ::absl::string_view();
+    }
+    return ::absl::string_view(data() + start, size() - start);
+  }
+
   void set(hb_blob_t* blob) {
     reset();
     buffer_ = hb_blob_reference(blob);
