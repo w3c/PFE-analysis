@@ -16,12 +16,14 @@ cc_proto_library(
 cc_library(
     name = "server",
     srcs = [
+        "brotli_binary_diff.cc",
         "file_font_provider.cc",
         "harfbuzz_subsetter.cc",
         "patch_subset_server_impl.cc",
     ],
     hdrs = [
         "binary_diff.h",
+        "brotli_binary_diff.h",
         "file_font_provider.h",
         "font_provider.h",
         "harfbuzz_subsetter.h",
