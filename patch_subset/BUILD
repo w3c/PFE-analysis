@@ -103,6 +103,7 @@ cc_test(
     size = "small",
     srcs = [
         "brotli_patching_test.cc",
+        "client_server_integration_test.cc",
         "compressed_set_test.cc",
         "fake_subsetter.h",
         "file_font_provider_test.cc",
@@ -114,6 +115,7 @@ cc_test(
         "mock_patch_subset_server.h",
         "patch_subset_client_test.cc",
         "patch_subset_server_impl_test.cc",
+        "server_integration_test.cc",
         "sparse_bit_set_test.cc",
     ],
     copts = [
