@@ -1,0 +1,13 @@
+on: push
+name: Continous Integration
+jobs:
+  checks:
+    name: run
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+
+    - name: run
+      uses: ngalaiko/bazel-action/1.1.0@master
+      with:
+        args: test //...
