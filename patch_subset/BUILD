@@ -26,9 +26,6 @@ cc_library(
         "patch_subset_server_impl.h",
         "subsetter.h",
     ],
-    copts = [
-        "-std=c++17",
-    ],
     deps = [
         ":common",
         ":patch_subset_cc_proto",
@@ -51,9 +48,6 @@ cc_library(
         "null_request_logger.h",
         "patch_subset_client.h",
         "request_logger.h",
-    ],
-    copts = [
-        "-std=c++17",
     ],
     deps = [
         ":common",
@@ -84,9 +78,6 @@ cc_library(
         "hb_set_unique_ptr.h",
         "patch_subset_server.h",
         "sparse_bit_set.h",
-    ],
-    copts = [
-        "-std=c++17",
     ],
     visibility = [
         "//util:__pkg__",
@@ -119,9 +110,6 @@ cc_test(
         "patch_subset_server_impl_test.cc",
         "server_integration_test.cc",
         "sparse_bit_set_test.cc",
-    ],
-    copts = [
-        "-std=c++17",
     ],
     data = [
         ":testdata",
