@@ -1,4 +1,3 @@
-load("@rules_cc//cc:defs.bzl", "cc_binary")
 load("@rules_cc//cc:defs.bzl", "cc_library")
 load("@rules_cc//cc:defs.bzl", "cc_proto_library")
 load("@rules_proto//proto:defs.bzl", "proto_library")
@@ -17,15 +16,12 @@ cc_library(
     name = "server",
     srcs = [
         "brotli_binary_diff.cc",
-        "file_font_provider.cc",
         "harfbuzz_subsetter.cc",
         "patch_subset_server_impl.cc",
     ],
     hdrs = [
         "binary_diff.h",
         "brotli_binary_diff.h",
-        "file_font_provider.h",
-        "font_provider.h",
         "harfbuzz_subsetter.h",
         "patch_subset_server_impl.h",
         "subsetter.h",
@@ -74,13 +70,16 @@ cc_library(
     srcs = [
         "compressed_set.cc",
         "farm_hasher.cc",
+        "file_font_provider.cc",
         "hb_set_unique_ptr.cc",
         "sparse_bit_set.cc",
     ],
     hdrs = [
         "compressed_set.h",
         "farm_hasher.h",
+        "file_font_provider.h",
         "font_data.h",
+        "font_provider.h",
         "hasher.h",
         "hb_set_unique_ptr.h",
         "patch_subset_server.h",
@@ -88,6 +87,9 @@ cc_library(
     ],
     copts = [
         "-std=c++17",
+    ],
+    visibility = [
+        "//util:__pkg__",
     ],
     deps = [
         ":patch_subset_cc_proto",
