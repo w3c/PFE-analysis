@@ -5,9 +5,6 @@ cc_binary(
     srcs = [
         "fingerprint.cc",
     ],
-    copts = [
-        "-std=c++17",
-    ],
     deps = [
         "//patch_subset:common",
     ],
