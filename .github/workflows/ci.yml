@@ -1,13 +1,28 @@
 on: push
 name: Continous Integration
 jobs:
-  checks:
-    name: run
+  check_tests:
+    name: Check Tests
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
+      - uses: actions/checkout@master
 
-    - name: run
-      uses: ngalaiko/bazel-action/1.1.0@master
-      with:
-        args: test //...
+      - name: run
+        uses: ngalaiko/bazel-action/1.1.0@master
+        with:
+          args: test //...
+  check_formatting:
+    name: Check Formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Install clang
+        run: |
+          wget "http://releases.llvm.org/9.0.0/clang+llvm-9.0.0-x86_64-linux-gnu-ubuntu-18.04.tar.xz" -O clang.tar.xz
+          tar xf clang.tar.xz
+          cd clang+llvm-9.0.0-x86_64-linux-gnu-ubuntu-18.04
+          sudo cp -R * /usr/local
+
+      - name: Run Check Script
+        run: ./check-format.sh
