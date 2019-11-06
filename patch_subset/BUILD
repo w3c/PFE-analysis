@@ -46,10 +46,12 @@ cc_library(
 cc_library(
     name = "client",
     srcs = [
+        "brotli_binary_patch.cc",
         "patch_subset_client.cc",
     ],
     hdrs = [
         "binary_patch.h",
+        "brotli_binary_patch.h",
         "null_request_logger.h",
         "patch_subset_client.h",
         "request_logger.h",
@@ -61,6 +63,7 @@ cc_library(
         ":common",
         ":patch_subset_cc_proto",
         "//common",
+        "@brotli//:brotlidec",
         "@com_google_absl//absl/strings",
         "@harfbuzz",
     ],
@@ -99,6 +102,7 @@ cc_test(
     name = "tests",
     size = "small",
     srcs = [
+        "brotli_patching_test.cc",
         "compressed_set_test.cc",
         "fake_subsetter.h",
         "file_font_provider_test.cc",
