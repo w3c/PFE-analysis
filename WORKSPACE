@@ -8,6 +8,13 @@ http_archive(
     strip_prefix = "googletest-master",
 )
 
+# Brotli Encoder/Decoder
+http_archive(
+    name = "brotli",
+    url = "https://github.com/google/brotli/archive/shared-brotli.zip",
+    strip_prefix = "brotli-shared-brotli",
+)
+
 # harfbuzz
 http_archive(
     name = "harfbuzz",

@@ -35,6 +35,7 @@ cc_library(
         ":common",
         ":patch_subset_cc_proto",
         "//common",
+        "@brotli//:brotlienc",
         "@com_google_absl//absl/strings",
         "@harfbuzz",
     ],
