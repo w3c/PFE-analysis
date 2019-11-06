@@ -1,7 +1,7 @@
 #include "patch_subset/compressed_set.h"
 
 #include <cmath>
-#include <optional>
+#include <experimental/optional>
 
 #include "common/logging.h"
 #include "common/status.h"
@@ -89,9 +89,10 @@ int RangeEncodedSize(const range& last_range, const range& range) {
          VariableIntegerEncodedSize(range.second - range.first);
 }
 
-int BitSetEncodedSize(const range& range,
-                      const std::optional<::range>& previous_range,
-                      const std::optional<::range>& next_range) {
+int BitSetEncodedSize(
+    const range& range,
+    const std::experimental::optional<::range>& previous_range,
+    const std::experimental::optional<::range>& next_range) {
   // For bit set encoding we can estimate byte usage by assuming we need 1 bit
   // per value in the range. (This ignores the interior nodes that result from
   // the leaf nodes)
@@ -114,8 +115,8 @@ int BitSetEncodedSize(const range& range,
 }
 
 void StrategyFor(const range& range,
-                 const std::optional<::range>& previous_range,
-                 const std::optional<::range>& next_range,
+                 const std::experimental::optional<::range>& previous_range,
+                 const std::experimental::optional<::range>& next_range,
                  hb_set_t* sparse_set, /* OUT */
                  range_vector* output_ranges /* OUT */) {
   ::range default_range(0, 0);
@@ -137,13 +138,13 @@ void EncodingStrategy(const hb_set_t& set, hb_set_t* sparse_set, /* OUT */
                       range_vector* output_ranges /* OUT */) {
   range_vector input_ranges(ToRanges(set));
   for (unsigned int i = 0; i < input_ranges.size(); i++) {
-    std::optional<::range> previous_range =
-        i > 0 ? std::optional<::range>(input_ranges[i - 1])
-              : std::optional<::range>();
-    std::optional<::range> next_range =
+    std::experimental::optional<::range> previous_range =
+        i > 0 ? std::experimental::optional<::range>(input_ranges[i - 1])
+              : std::experimental::optional<::range>();
+    std::experimental::optional<::range> next_range =
         i + 1 < input_ranges.size()
-            ? std::optional<::range>(input_ranges[i + 1])
-            : std::optional<::range>();
+            ? std::experimental::optional<::range>(input_ranges[i + 1])
+            : std::experimental::optional<::range>();
     StrategyFor(input_ranges[i], previous_range, next_range, sparse_set,
                 output_ranges);
   }
