@@ -1,0 +1,22 @@
+// Proto definition of the input data set for the analyis.
+// Used to represent sequences of page views.
+syntax = "proto3";
+
+package analysis;
+
+message PageContentProto {
+  string font_name = 1;
+  repeated uint32 codepoints = 2;
+}
+
+message PageViewProto {
+  repeated PageContentProto contents = 1;
+}
+
+message PageViewSequenceProto {
+  repeated PageViewProto page_view = 1;
+}
+
+message DataSetProto {
+  repeated PageViewSequenceProto sequences = 1;
+}
