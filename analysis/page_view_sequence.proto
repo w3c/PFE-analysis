@@ -14,7 +14,7 @@ message PageViewProto {
 }
 
 message PageViewSequenceProto {
-  repeated PageViewProto page_view = 1;
+  repeated PageViewProto page_views = 1;
 }
 
 message DataSetProto {

@@ -1,0 +1,30 @@
+sequences: {
+  page_views: {
+    contents: {
+      font_name: "Roboto-Regular.ttf"
+      codepoints: 1
+      codepoints: 2
+      codepoints: 3
+    }
+    contents: {
+      font_name: "Roboto-Bold.ttf"
+      codepoints: 4
+      codepoints: 5
+      codepoints: 6
+    }
+  }
+  page_views: {
+    contents: {
+      font_name: "Roboto-Regular.ttf"
+      codepoints: 7
+      codepoints: 8
+      codepoints: 9
+    }
+    contents: {
+      font_name: "Roboto-Bold.ttf"
+      codepoints: 10
+      codepoints: 11
+      codepoints: 12
+    }
+  }
+}
