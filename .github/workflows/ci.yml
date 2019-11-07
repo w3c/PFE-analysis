@@ -16,6 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
+      - uses: actions/setup-python@v1
 
       - name: Install clang
         run: |
@@ -23,6 +24,11 @@ jobs:
           tar xf clang.tar.xz
           cd clang+llvm-9.0.0-x86_64-linux-gnu-ubuntu-18.04
           sudo cp -R * /usr/local
+          cd ..
+          rm -rf clang+llvm-9.0.0-x86_64-linux-gnu-ubuntu-18.04
+
+      - name: Instal yapf
+        run: pip install yapf
 
       - name: Run Check Script
         run: ./check-format.sh

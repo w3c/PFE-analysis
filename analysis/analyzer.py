@@ -3,10 +3,8 @@ from absl import flags
 from google.protobuf import text_format
 from analysis import page_view_sequence_pb2
 
-
 FLAGS = flags.FLAGS
 flags.DEFINE_string("input_data", None, "Path to input data for the analysis.")
-
 
 # Required flag.
 flags.mark_flag_as_required("input_data")

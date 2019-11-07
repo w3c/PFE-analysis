@@ -3,12 +3,42 @@
 # Use this script to automatically format the c++ files in
 # this repository.
 
+FIX=0
+while test $# -gt 0; do
+  case "$1" in
+    --fix)
+      shift
+      FIX=1
+      ;;
+  esac
+done
+
 FAILED=0
-for f in common/*.h patch_subset/*.cc patch_subset/*.h; do
+FORMAT_MESSAGE="is formatted incorrectly. Use ./check-format.sh --fix to format all source files."
+
+# C++ Formatting
+for f in $(find ./ -name "*.cc") $(find ./ -name "*.h"); do
   clang-format --style=Google --output-replacements-xml $f | grep -q "<replacement "
   if [ $? -eq 0 ]; then
-    echo "$f is formatted incorrectly. Use ./format.sh to format all source files."
-    FAILED=1
+    if [ $FIX -eq 1 ]; then
+      clang-format --style=Google -i $f
+    else
+      echo $f $FORMAT_MESSAGE
+      FAILED=1
+    fi
+  fi
+done
+
+# Python Formatting
+for f in $(find ./ -name "*.py"); do
+  yapf --style="{based_on_style: google, indent_width: 2}" -d $f
+  if [ $? -ne 0 ]; then
+    if [ $FIX -eq 1 ]; then
+      yapf --style="{based_on_style: google, indent_width: 2}" -i $f
+    else
+      echo $f $FORMAT_MESSAGE
+      FAILED=1
+    fi
   fi
 done
 
