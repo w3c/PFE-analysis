@@ -8,10 +8,15 @@ This particular implementation just demonstrates the
 expected interface for a PfeMethod. Also used in testing
 the analysis code.
 """
+from analysis import request_graph
 
 
 class FakePfeMethod:
   """Fake progressive font enrichment method."""
+
+  def name(self):
+    """Name for this method."""
+    return "Fake Pfe"
 
   def start_session(self, font_provider):  # pylint: disable=no-self-use,unused-argument
     """Starts a new PFE session for this method.
@@ -47,4 +52,5 @@ class FakePfeSession:
 
     Returns a list of request graphs, one per page view.
     """
-    return [None] * self.page_view_count
+    request = request_graph.Request(1000, 1000)
+    return [request_graph.RequestGraph({request})] * self.page_view_count

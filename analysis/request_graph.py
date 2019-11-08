@@ -27,6 +27,10 @@ class RequestGraph:
   def __init__(self, requests):
     self.requests = frozenset(requests)
 
+  def all_requests_completed(self, completed_requests):
+    """Return true if all requests in this graph are in the completed_requests set."""
+    return all(r in completed_requests for r in self.requests)
+
   def requests_that_can_run(self, completed_requests):
     """Returns the set of requests that can run."""
     return frozenset(

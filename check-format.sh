@@ -41,7 +41,7 @@ for f in $(find ./ -name "*.py"); do
     fi
   fi
   python3 -m pylint -s no \
-    -d R0903,E0401,E0611 \
+    -d R0903,E0401,E0611,fixme,no-self-use \
     --no-docstring-rgx=".+Test|test_" \
     --indent-string="  " \
     $f
