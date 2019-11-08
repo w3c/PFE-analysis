@@ -37,6 +37,16 @@ py_library(
     srcs_version = "PY3",
 )
 
+py_test(
+    name = "request_graph_test",
+    srcs = [
+        "request_graph_test.py",
+    ],
+    deps = [
+        ":common",
+    ],
+)
+
 py_library(
     name = "fake_pfe",
     srcs = [

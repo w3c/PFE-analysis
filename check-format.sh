@@ -40,7 +40,11 @@ for f in $(find ./ -name "*.py"); do
       FAILED=1
     fi
   fi
-  python3 -m pylint -s no -d R0903,E0401,E0611 --indent-string="  " $f
+  python3 -m pylint -s no \
+    -d R0903,E0401,E0611 \
+    --no-docstring-rgx=".+Test|test_" \
+    --indent-string="  " \
+    $f
   if [ $? -ne 0 ]; then
     echo "pylint failed for $f"
     echo ""
