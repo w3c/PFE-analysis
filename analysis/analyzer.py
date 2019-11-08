@@ -1,3 +1,14 @@
+"""Main binary for the analyis framework.
+
+Takes an input data file and tests various progressive font enrichment methods
+against each one.
+
+Collects an overall score for each method and reports the aggregate results.
+
+Input data is in textproto format using the proto definitions found in
+analysis/page_view_sequence.proto
+"""
+
 from absl import app
 from absl import flags
 from google.protobuf import text_format
@@ -11,6 +22,7 @@ flags.mark_flag_as_required("input_data")
 
 
 def main(argv):
+  """Runs the analysis."""
   del argv  # Unused.
   input_data_path = FLAGS.input_data
 

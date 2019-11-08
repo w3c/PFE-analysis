@@ -28,3 +28,19 @@ py_binary(
         "@io_abseil_py//absl/flags",
     ],
 )
+
+py_library(
+    name = "common",
+    srcs = [
+        "request_graph.py",
+    ],
+    srcs_version = "PY3",
+)
+
+py_library(
+    name = "fake_pfe",
+    srcs = [
+        "fake_pfe_method.py",
+    ],
+    srcs_version = "PY3",
+)
