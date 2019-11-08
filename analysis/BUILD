@@ -20,6 +20,7 @@ py_binary(
     name = "analyzer",
     srcs = [
         "analyzer.py",
+        "simulation.py",
     ],
     srcs_version = "PY3",
     deps = [
@@ -44,6 +45,18 @@ py_test(
     ],
     deps = [
         ":common",
+    ],
+)
+
+py_test(
+    name = "simulation_test",
+    srcs = [
+        "simulation_test.py",
+    ],
+    deps = [
+        ":analyzer",
+        ":common",
+        ":fake_pfe",
     ],
 )
 

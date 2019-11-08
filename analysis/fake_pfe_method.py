@@ -11,26 +11,24 @@ the analysis code.
 from analysis import request_graph
 
 
-class FakePfeMethod:
-  """Fake progressive font enrichment method."""
+def name():
+  """Name for this method."""
+  return "Fake_PFE"
 
-  def name(self):
-    """Name for this method."""
-    return "Fake Pfe"
 
-  def start_session(self, font_provider):  # pylint: disable=no-self-use,unused-argument
-    """Starts a new PFE session for this method.
+def start_session():
+  """Starts a new PFE session for this method.
 
-    A session tracks the enrichment of one or more fonts
-    in response to a sequence of page views. As more codepoints
-    are encountered the fonts are enriched.
+  A session tracks the enrichment of one or more fonts
+  in response to a sequence of page views. As more codepoints
+  are encountered the fonts are enriched.
 
-    font_provider is used to load font data corresponding
-    to named fonts in the page views.
+  font_provider is used to load font data corresponding
+  to named fonts in the page views.
 
-    Returns an object which tracks the new session.
-    """
-    return FakePfeSession()
+  Returns an object which tracks the new session.
+  """
+  return FakePfeSession()
 
 
 class FakePfeSession:
