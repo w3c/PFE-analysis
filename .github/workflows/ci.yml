@@ -27,8 +27,10 @@ jobs:
           cd ..
           rm -rf clang+llvm-9.0.0-x86_64-linux-gnu-ubuntu-18.04
 
-      - name: Instal yapf
-        run: pip install yapf
+      - name: Instal yapf and pyling
+        run: |
+          pip install yapf
+          pip install pylint
 
       - name: Run Check Script
         run: ./check-format.sh

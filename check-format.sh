@@ -31,7 +31,7 @@ done
 
 # Python Formatting
 for f in $(find ./ -name "*.py"); do
-  yapf --style="{based_on_style: google, indent_width: 2}" -d $f
+  yapf --style="{based_on_style: google, indent_width: 2}" -d $f \    
   if [ $? -ne 0 ]; then
     if [ $FIX -eq 1 ]; then
       yapf --style="{based_on_style: google, indent_width: 2}" -i $f
@@ -39,6 +39,12 @@ for f in $(find ./ -name "*.py"); do
       echo $f $FORMAT_MESSAGE
       FAILED=1
     fi
+  fi
+  python3 -m pylint -s no -d R0903,E0401,E0611 --indent-string="  " $f
+  if [ $? -ne 0 ]; then
+    echo "pylint failed for $f"
+    echo ""
+    FAILED=1
   fi
 done
 
