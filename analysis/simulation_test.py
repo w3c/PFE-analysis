@@ -3,6 +3,7 @@
 import unittest
 from analysis import fake_pfe_method
 from analysis import page_view_sequence_pb2
+from analysis import request_graph
 from analysis import simulation
 
 
@@ -25,6 +26,10 @@ def sequence(views):
 class SimulationTest(unittest.TestCase):
 
   def setUp(self):
+    self.net_model = simulation.NetworkModel(name="NetModel",
+                                             rtt=50,
+                                             bandwidth_up=100,
+                                             bandwidth_down=200)
     self.page_view_sequence = sequence([
         {
             "roboto": [1, 2, 3],
@@ -38,13 +43,29 @@ class SimulationTest(unittest.TestCase):
         },
     ])
 
+  # TODO(garretrieger): test a graph with cycles
+  def test_totals_for_request_graph(self):
+    r_1 = request_graph.Request(100, 200)
+    r_2 = request_graph.Request(200, 300)
+    r_3 = request_graph.Request(300, 400, {r_2})
+    r_4 = request_graph.Request(400, 500, {r_1, r_2})
+    r_5 = request_graph.Request(500, 600, {r_3, r_4})
+    graph = request_graph.RequestGraph({r_1, r_2, r_3, r_4, r_5})
+
+    self.assertEqual(
+        simulation.totals_for_request_graph(graph, self.net_model),
+        simulation.GraphTotals(time_ms=175,
+                               request_bytes=1500,
+                               response_bytes=2000))
+
   def test_simulate(self):
     self.assertEqual(
-        simulation.simulate(self.page_view_sequence, fake_pfe_method, None), [
-            simulation.GraphTotals(100, 1000, 1000),
-            simulation.GraphTotals(100, 1000, 1000),
-            simulation.GraphTotals(100, 1000, 1000),
-        ])
+        simulation.simulate(self.page_view_sequence, fake_pfe_method,
+                            self.net_model), [
+                                simulation.GraphTotals(65, 1000, 1000),
+                                simulation.GraphTotals(65, 1000, 1000),
+                                simulation.GraphTotals(65, 1000, 1000),
+                            ])
 
   def test_simulate_all(self):
     self.maxDiff = None  # pylint: disable=invalid-name
@@ -61,15 +82,16 @@ class SimulationTest(unittest.TestCase):
         }]),
     ]
 
-    graph = simulation.GraphTotals(100, 1000, 1000)
+    fast_graph = simulation.GraphTotals(100, 1000, 1000)
+    slow_graph = simulation.GraphTotals(200, 1000, 1000)
     self.assertEqual(
-        simulation.simulate_all(
-            sequences, [fake_pfe_method],
-            [simulation.NetworkModel("slow"),
-             simulation.NetworkModel("fast")]), {
-                 "Fake_PFE (slow)": [[graph] * 2] * 2,
-                 "Fake_PFE (fast)": [[graph] * 2] * 2,
-             })
+        simulation.simulate_all(sequences, [fake_pfe_method], [
+            simulation.NetworkModel("slow", 0, 10, 10),
+            simulation.NetworkModel("fast", 0, 20, 20)
+        ]), {
+            "Fake_PFE (slow)": [[slow_graph] * 2] * 2,
+            "Fake_PFE (fast)": [[fast_graph] * 2] * 2,
+        })
 
 
 if __name__ == '__main__':

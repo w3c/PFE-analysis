@@ -4,9 +4,25 @@ import collections
 import itertools
 
 GraphTotals = collections.namedtuple(
-    'GraphTotals', ['time_ms', 'request_bytes', 'response_bytes'])
+    "GraphTotals", ["time_ms", "request_bytes", "response_bytes"])
 
-NetworkModel = collections.namedtuple('NetworkModel', ['name'])
+# Bandwidth is in bytes per ms, RTT is ms
+NetworkModel = collections.namedtuple(
+    "NetworkModel", ["name", "rtt", "bandwidth_up", "bandwidth_down"])
+
+
+class GraphHasCyclesError(Exception):
+  """Encountered a graph that can't be completed because
+  it contains cycles."""
+
+
+def network_time_for(requests, network_model):
+  """Returns the time needed to execute a graph of requests under a given network model."""
+  request_bytes = sum(request.request_size for request in requests)
+  response_bytes = sum(response.response_size for response in requests)
+  time = (network_model.rtt + request_bytes / network_model.bandwidth_up +
+          response_bytes / network_model.bandwidth_down)
+  return (time, request_bytes, response_bytes)
 
 
 def simulate_all(sequences, pfe_methods, network_models):
@@ -26,7 +42,7 @@ def simulate_all(sequences, pfe_methods, network_models):
   return result
 
 
-def simulate(sequence, pfe_method, _):
+def simulate(sequence, pfe_method, network_model):
   """Simulate page view sequence with pfe_method using network_model.
 
   Returns a GraphTotals object.
@@ -36,14 +52,33 @@ def simulate(sequence, pfe_method, _):
     session.page_view(codepoints_by_font(page_view))
 
   return [
-      totals_for_request_graph(graph) for graph in session.get_request_graphs()
+      totals_for_request_graph(graph, network_model)
+      for graph in session.get_request_graphs()
   ]
 
 
-def totals_for_request_graph(_):
+def totals_for_request_graph(graph, network_model):
   """Calculate the total time and number of bytes need to execute a given request graph."""
-  # TODO(garretrieger): implement me!
-  return GraphTotals(time_ms=100, request_bytes=1000, response_bytes=1000)
+  total_time = 0
+  total_request_bytes = 0
+  total_response_bytes = 0
+  completed_requests = set()
+  while not graph.all_requests_completed(completed_requests):
+    next_requests = graph.requests_that_can_run(completed_requests)
+    if not next_requests:
+      raise GraphHasCyclesError("Cannot execute graph, it contains cycles.")
+
+    (time, request_bytes,
+     response_bytes) = network_time_for(next_requests, network_model)
+    total_request_bytes += request_bytes
+    total_response_bytes += response_bytes
+    total_time += time
+
+    completed_requests = completed_requests.union(next_requests)
+
+  return GraphTotals(time_ms=total_time,
+                     request_bytes=total_request_bytes,
+                     response_bytes=total_response_bytes)
 
 
 def codepoints_by_font(page_view):
