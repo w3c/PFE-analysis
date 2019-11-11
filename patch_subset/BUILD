@@ -26,6 +26,9 @@ cc_library(
         "patch_subset_server_impl.h",
         "subsetter.h",
     ],
+    visibility = [
+        "//patch_subset/py:__pkg__",
+    ],
     deps = [
         ":common",
         ":patch_subset_cc_proto",
@@ -48,6 +51,9 @@ cc_library(
         "null_request_logger.h",
         "patch_subset_client.h",
         "request_logger.h",
+    ],
+    visibility = [
+        "//patch_subset/py:__pkg__",
     ],
     deps = [
         ":common",
@@ -80,6 +86,7 @@ cc_library(
         "sparse_bit_set.h",
     ],
     visibility = [
+        "//patch_subset/py:__pkg__",
         "//util:__pkg__",
     ],
     deps = [

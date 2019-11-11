@@ -51,8 +51,8 @@ EncoderStatePointer CreateEncoder(
   return state;
 }
 
-void Append(const uint8_t* buffer, size_t buffer_size,
-            std::vector<uint8_t>* sink) {
+static void Append(const uint8_t* buffer, size_t buffer_size,
+                   std::vector<uint8_t>* sink) {
   sink->insert(sink->end(), buffer, buffer + buffer_size);
 }
 
