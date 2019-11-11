@@ -62,6 +62,21 @@ py_test(
     ],
 )
 
+py_test(
+    name = "analyzer_test",
+    srcs = [
+        "analyzer_test.py",
+    ],
+    data = [
+        ":sample",
+    ],
+    deps = [
+        ":analyzer",
+        ":common",
+        ":fake_pfe",
+    ],
+)
+
 py_library(
     name = "fake_pfe",
     srcs = [
