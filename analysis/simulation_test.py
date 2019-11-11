@@ -43,7 +43,6 @@ class SimulationTest(unittest.TestCase):
         },
     ])
 
-  # TODO(garretrieger): test a graph with cycles
   def test_totals_for_request_graph(self):
     r_1 = request_graph.Request(100, 200)
     r_2 = request_graph.Request(200, 300)
@@ -57,6 +56,14 @@ class SimulationTest(unittest.TestCase):
         simulation.GraphTotals(time_ms=175,
                                request_bytes=1500,
                                response_bytes=2000))
+
+  def test_detects_cylces(self):
+    r_1 = request_graph.Request(100, 200)
+    r_2 = request_graph.Request(200, 300, {r_1})
+    r_1.happens_after = frozenset({r_2})
+    graph = request_graph.RequestGraph({r_1, r_2})
+    with self.assertRaises(simulation.GraphHasCyclesError):
+      simulation.totals_for_request_graph(graph, self.net_model)
 
   def test_simulate(self):
     self.assertEqual(
