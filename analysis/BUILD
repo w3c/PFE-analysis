@@ -24,6 +24,8 @@ py_binary(
     ],
     srcs_version = "PY3",
     deps = [
+        ":common",
+        ":fake_pfe",
         ":page_view_sequence_proto_py",
         "@io_abseil_py//absl:app",
         "@io_abseil_py//absl/flags",

@@ -26,7 +26,7 @@ def network_time_for(requests, network_model):
 
 
 def simulate_all(sequences, pfe_methods, network_models):
-  """Simulate the matric of {sequences} x {pfe_methods} x {network_models}.
+  """Simulate the matrix of {sequences} x {pfe_methods} x {network_models}.
 
   For each element compute a set of summary metrics, total time, total
   request bytes sent, and total response bytes sent.
@@ -36,7 +36,7 @@ def simulate_all(sequences, pfe_methods, network_models):
     key = "%s (%s)" % (args[1].name(), args[2].name)
     data = simulate(args[0], args[1], args[2])
     results_for_key = result.get(key, list())
-    results_for_key.append(data)
+    results_for_key.extend(data)
     result[key] = results_for_key
 
   return result

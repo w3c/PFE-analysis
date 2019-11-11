@@ -96,8 +96,8 @@ class SimulationTest(unittest.TestCase):
             simulation.NetworkModel("slow", 0, 10, 10),
             simulation.NetworkModel("fast", 0, 20, 20)
         ]), {
-            "Fake_PFE (slow)": [[slow_graph] * 2] * 2,
-            "Fake_PFE (fast)": [[fast_graph] * 2] * 2,
+            "Fake_PFE (slow)": [slow_graph] * 4,
+            "Fake_PFE (fast)": [fast_graph] * 4,
         })
 
 
