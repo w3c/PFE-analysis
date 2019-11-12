@@ -122,7 +122,7 @@ class SimulationTest(unittest.TestCase):
         }),
         mock.call({"open_sans": {10, 11, 12}})
     ])
-    self.mock_pfe_session.get_request_graphs.assert_called_once()
+    self.mock_pfe_session.get_request_graphs.assert_called_once_with()
 
   def test_simulate_all(self):
     self.maxDiff = None  # pylint: disable=invalid-name
