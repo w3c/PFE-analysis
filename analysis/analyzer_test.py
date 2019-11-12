@@ -21,7 +21,7 @@ class AnalyzerTest(unittest.TestCase):
         analyzer.analyze_data_set(self.data_set, [fake_pfe_method], [
             simulation.NetworkModel("fast", 0, 10, 10),
             simulation.NetworkModel("slow", 100, 1, 1),
-        ]), {
+        ], "fonts/are/here"), {
             "Fake_PFE (fast)": 400,
             "Fake_PFE (slow)": 4200,
         })

@@ -7,12 +7,12 @@ from patch_subset.py import patch_subset_method
 class PatchSubsetMethodTest(unittest.TestCase):
 
   def test_font_not_found(self):
-    session = patch_subset_method.start_session()
+    session = patch_subset_method.start_session("./patch_subset/testdata/")
     with self.assertRaises(patch_subset_method.PatchSubsetError):
       session.page_view({"Roboto-Bold.ttf": [0x61, 0x62]})
 
   def test_session(self):
-    session = patch_subset_method.start_session()
+    session = patch_subset_method.start_session("./patch_subset/testdata/")
     session.page_view({"Roboto-Regular.ttf": [0x61, 0x62]})
     session.page_view({"Roboto-Regular.ttf": [0x61, 0x62, 0x63, 0x64]})
 
@@ -27,7 +27,7 @@ class PatchSubsetMethodTest(unittest.TestCase):
                        roboto_subset_bytes)
 
   def test_multi_font_session(self):
-    session = patch_subset_method.start_session()
+    session = patch_subset_method.start_session("./patch_subset/testdata/")
     session.page_view({"Roboto-Regular.ttf": [0x61, 0x62]})
     session.page_view({
         "Roboto-Regular.ttf": [0x61, 0x62, 0x63, 0x64],

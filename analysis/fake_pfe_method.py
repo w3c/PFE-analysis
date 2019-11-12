@@ -16,7 +16,7 @@ def name():
   return "Fake_PFE"
 
 
-def start_session():
+def start_session(font_directory):  # pylint: disable=unused-argument
   """Starts a new PFE session for this method.
 
   A session tracks the enrichment of one or more fonts

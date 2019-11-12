@@ -19,9 +19,12 @@ from patch_subset.py import patch_subset_method
 
 FLAGS = flags.FLAGS
 flags.DEFINE_string("input_data", None, "Path to input data for the analysis.")
-
-# Required flag.
 flags.mark_flag_as_required("input_data")
+
+flags.DEFINE_string(
+    "font_directory", None,
+    "Directory which contains all font's to be used in the analysis.")
+flags.mark_flag_as_required("font_directory")
 
 PFE_METHODS = [
     fake_pfe_method,
@@ -49,7 +52,7 @@ def cost(time_ms):
   return time_ms
 
 
-def analyze_data_set(data_set, pfe_methods, network_models):
+def analyze_data_set(data_set, pfe_methods, network_models, font_directory):
   """Analyze data set against the provided set of pfe_methods and network_models.
 
   Returns the total cost associated with each pair of pfe method and network
@@ -57,7 +60,7 @@ def analyze_data_set(data_set, pfe_methods, network_models):
   """
   sequences = [sequence.page_views for sequence in data_set.sequences]
   simulation_results = simulation.simulate_all(sequences, pfe_methods,
-                                               network_models)
+                                               network_models, font_directory)
 
   results = dict()
   for key, totals in simulation_results.items():
@@ -77,9 +80,10 @@ def main(argv):
   with open(input_data_path, 'r') as input_data_file:
     text_format.Merge(input_data_file.read(), data_set)
 
-  results = analyze_data_set(data_set, PFE_METHODS, NETWORK_MODELS)
+  results = analyze_data_set(data_set, PFE_METHODS, NETWORK_MODELS,
+                             FLAGS.font_directory)
   for key, total_cost in results.items():
-    print("%s, %s" % (key, total_cost))
+    print("{}, {:.1f}".format(key, total_cost))
 
 
 if __name__ == '__main__':

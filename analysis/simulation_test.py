@@ -9,7 +9,7 @@ from analysis import simulation
 
 class MockPfeMethod:  # pylint: disable=missing-class-docstring
 
-  def start_session(self):
+  def start_session(self, font_directory):
     pass
 
 
@@ -108,10 +108,10 @@ class SimulationTest(unittest.TestCase):
   def test_simulate(self):
     self.assertEqual(
         simulation.simulate(self.page_view_sequence, self.mock_pfe_method,
-                            self.net_model), [
+                            self.net_model, "fonts/are/here"), [
                                 simulation.GraphTotals(65, 1000, 1000),
                             ])
-    self.mock_pfe_method.start_session.assert_called_once()
+    self.mock_pfe_method.start_session.assert_called_once_with("fonts/are/here")
     self.mock_pfe_session.page_view.assert_has_calls([
         mock.call({
             "roboto": {1, 2, 3},
@@ -142,13 +142,18 @@ class SimulationTest(unittest.TestCase):
     fast_graph = simulation.GraphTotals(100, 1000, 1000)
     slow_graph = simulation.GraphTotals(200, 1000, 1000)
     self.assertEqual(
-        simulation.simulate_all(sequences, [
-            self.mock_pfe_method,
-            self.mock_pfe_method_2,
-        ], [
-            simulation.NetworkModel("slow", 0, 10, 10),
-            simulation.NetworkModel("fast", 0, 20, 20)
-        ]), {
+        simulation.simulate_all(
+            sequences,
+            [
+                self.mock_pfe_method,
+                self.mock_pfe_method_2,
+            ],
+            [
+                simulation.NetworkModel("slow", 0, 10, 10),
+                simulation.NetworkModel("fast", 0, 20, 20)
+            ],
+            "fonts/are/here",
+        ), {
             "Mock_PFE_1 (slow)": [slow_graph] * 2,
             "Mock_PFE_1 (fast)": [fast_graph] * 2,
             "Mock_PFE_2 (slow)": [slow_graph] * 4,

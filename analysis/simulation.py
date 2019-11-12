@@ -25,7 +25,7 @@ def network_time_for(requests, network_model):
   return (time, request_bytes, response_bytes)
 
 
-def simulate_all(sequences, pfe_methods, network_models):
+def simulate_all(sequences, pfe_methods, network_models, font_directory):
   """Simulate the matrix of {sequences} x {pfe_methods} x {network_models}.
 
   For each element compute a set of summary metrics, total time, total
@@ -34,7 +34,7 @@ def simulate_all(sequences, pfe_methods, network_models):
   result = dict()
   for args in itertools.product(sequences, pfe_methods, network_models):
     key = "%s (%s)" % (args[1].name(), args[2].name)
-    data = simulate(args[0], args[1], args[2])
+    data = simulate(args[0], args[1], args[2], font_directory)
     results_for_key = result.get(key, list())
     results_for_key.extend(data)
     result[key] = results_for_key
@@ -42,12 +42,12 @@ def simulate_all(sequences, pfe_methods, network_models):
   return result
 
 
-def simulate(sequence, pfe_method, network_model):
+def simulate(sequence, pfe_method, network_model, font_directory):
   """Simulate page view sequence with pfe_method using network_model.
 
   Returns a GraphTotals object.
   """
-  session = pfe_method.start_session()
+  session = pfe_method.start_session(font_directory)
   for page_view in sequence:
     session.page_view(codepoints_by_font(page_view))
 
