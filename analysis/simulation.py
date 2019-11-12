@@ -85,4 +85,7 @@ def codepoints_by_font(page_view):
   """For a page view computes a map from font name => codepoints."""
   result = dict()
   for content in page_view.contents:
-    result.get(content.font_name, set()).update(content.codepoints)
+    codepoint_set = result.get(content.font_name, set())
+    codepoint_set.update(content.codepoints)
+    result[content.font_name] = codepoint_set
+  return result

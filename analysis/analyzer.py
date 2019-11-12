@@ -15,6 +15,7 @@ from analysis import page_view_sequence_pb2
 from analysis import simulation
 from analysis import fake_pfe_method
 from google.protobuf import text_format
+from patch_subset.py import patch_subset_method
 
 FLAGS = flags.FLAGS
 flags.DEFINE_string("input_data", None, "Path to input data for the analysis.")
@@ -24,6 +25,7 @@ flags.mark_flag_as_required("input_data")
 
 PFE_METHODS = [
     fake_pfe_method,
+    patch_subset_method,
 ]
 
 NETWORK_MODELS = [

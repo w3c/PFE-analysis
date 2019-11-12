@@ -21,6 +21,9 @@ py_library(
     data = [
         ":patch_subset_session.so",
     ],
+    visibility = [
+        "//analysis:__pkg__",
+    ],
     deps = [
         "//analysis:common",
     ],

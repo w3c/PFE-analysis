@@ -6,6 +6,11 @@ from patch_subset.py import patch_subset_method
 
 class PatchSubsetMethodTest(unittest.TestCase):
 
+  def test_font_not_found(self):
+    session = patch_subset_method.start_session()
+    with self.assertRaises(patch_subset_method.PatchSubsetError):
+      session.page_view({"Roboto-Bold.ttf": [0x61, 0x62]})
+
   def test_session(self):
     session = patch_subset_method.start_session()
     session.page_view({"Roboto-Regular.ttf": [0x61, 0x62]})

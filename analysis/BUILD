@@ -27,6 +27,7 @@ py_binary(
         ":common",
         ":fake_pfe",
         ":page_view_sequence_proto_py",
+        "//patch_subset/py",
         "@io_abseil_py//absl:app",
         "@io_abseil_py//absl/flags",
     ],
