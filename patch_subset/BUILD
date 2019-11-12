@@ -138,4 +138,7 @@ cc_test(
 filegroup(
     name = "testdata",
     srcs = glob(["testdata/*"]),
+    visibility = [
+        "//patch_subset/py:__pkg__",
+    ],
 )

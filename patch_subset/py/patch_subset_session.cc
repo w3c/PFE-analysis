@@ -55,6 +55,10 @@ class PatchSubsetSession {
     return client_.Extend(codepoints, &client_state_);
   }
 
+  const std::string& client_font_data() {
+    return client_state_.font_data();
+  }
+
   FontProvider* font_provider_;
   BinaryDiff* binary_diff_;
   BinaryPatch* binary_patch_;
@@ -83,6 +87,12 @@ bool PatchSubsetSession_extend(PatchSubsetSession* session,
   StatusCode result = session->Extend(*codepoints_set);
   hb_set_destroy(codepoints_set);
   return result == StatusCode::kOk;
+}
+
+const char* PatchSubsetSession_get_font(PatchSubsetSession* session,
+                                        int* size) {
+  *size = session->client_font_data().size();
+  return session->client_font_data().c_str();
 }
 
 }

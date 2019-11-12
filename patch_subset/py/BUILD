@@ -22,3 +22,16 @@ py_library(
         ":patch_subset_session.so",
     ],
 )
+
+py_test(
+    name = "patch_subset_method_test",
+    srcs = [
+        "patch_subset_method_test.py",
+    ],
+    data = [
+        "//patch_subset:testdata",
+    ],
+    deps = [
+        ":py",
+    ],
+)
