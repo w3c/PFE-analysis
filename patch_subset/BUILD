@@ -43,11 +43,13 @@ cc_library(
     name = "client",
     srcs = [
         "brotli_binary_patch.cc",
+        "memory_request_logger.cc",
         "patch_subset_client.cc",
     ],
     hdrs = [
         "binary_patch.h",
         "brotli_binary_patch.h",
+        "memory_request_logger.h",
         "null_request_logger.h",
         "patch_subset_client.h",
         "request_logger.h",

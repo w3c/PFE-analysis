@@ -9,7 +9,7 @@ namespace patch_subset {
 class NullRequestLogger : public RequestLogger {
  public:
   void LogRequest(const std::string& request_data,
-                  const std::string& response_data) const override {
+                  const std::string& response_data) override {
     // Do nothing.
   }
 };
