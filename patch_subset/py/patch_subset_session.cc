@@ -5,6 +5,7 @@
  */
 #include <string>
 
+#include "common/status.h"
 #include "hb.h"
 #include "patch_subset/brotli_binary_diff.h"
 #include "patch_subset/brotli_binary_patch.h"
@@ -12,11 +13,10 @@
 #include "patch_subset/file_font_provider.h"
 #include "patch_subset/font_provider.h"
 #include "patch_subset/harfbuzz_subsetter.h"
-#include "patch_subset/null_request_logger.h"
+#include "patch_subset/memory_request_logger.h"
 #include "patch_subset/patch_subset.pb.h"
 #include "patch_subset/patch_subset_client.h"
 #include "patch_subset/patch_subset_server_impl.h"
-#include "common/status.h"
 
 using ::patch_subset::BinaryDiff;
 using ::patch_subset::BinaryPatch;
@@ -28,7 +28,7 @@ using ::patch_subset::FileFontProvider;
 using ::patch_subset::FontProvider;
 using ::patch_subset::HarfbuzzSubsetter;
 using ::patch_subset::Hasher;
-using ::patch_subset::NullRequestLogger;
+using ::patch_subset::MemoryRequestLogger;
 using ::patch_subset::PatchSubsetClient;
 using ::patch_subset::PatchSubsetServerImpl;
 using ::patch_subset::StatusCode;
@@ -55,14 +55,18 @@ class PatchSubsetSession {
     return client_.Extend(codepoints, &client_state_);
   }
 
-  const std::string& client_font_data() {
+  const std::string& ClientFontData() const {
     return client_state_.font_data();
+  }
+
+  const std::vector<MemoryRequestLogger::Record>& GetRecords() const {
+    return request_logger_.Records();
   }
 
   FontProvider* font_provider_;
   BinaryDiff* binary_diff_;
   BinaryPatch* binary_patch_;
-  NullRequestLogger request_logger_;
+  MemoryRequestLogger request_logger_;
   PatchSubsetServerImpl server_;
   PatchSubsetClient client_;
   ClientState client_state_;
@@ -77,8 +81,7 @@ PatchSubsetSession* PatchSubsetSession_new(const char* font_directory,
   return new PatchSubsetSession(font_directory_string, font_id);
 }
 
-bool PatchSubsetSession_extend(PatchSubsetSession* session,
-                               int* codepoints,
+bool PatchSubsetSession_extend(PatchSubsetSession* session, int* codepoints,
                                int codepoints_count) {
   hb_set_t* codepoints_set = hb_set_create();
   for (int i = 0; i < codepoints_count; i++) {
@@ -91,8 +94,13 @@ bool PatchSubsetSession_extend(PatchSubsetSession* session,
 
 const char* PatchSubsetSession_get_font(PatchSubsetSession* session,
                                         int* size) {
-  *size = session->client_font_data().size();
-  return session->client_font_data().c_str();
+  *size = session->ClientFontData().size();
+  return session->ClientFontData().c_str();
 }
 
+const MemoryRequestLogger::Record* PatchSubsetSession_get_requests(
+    PatchSubsetSession* session, int* size) {
+  *size = session->GetRecords().size();
+  return session->GetRecords().data();
+}
 }

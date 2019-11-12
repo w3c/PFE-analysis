@@ -21,6 +21,9 @@ py_library(
     data = [
         ":patch_subset_session.so",
     ],
+    deps = [
+        "//analysis:common",
+    ],
 )
 
 py_test(

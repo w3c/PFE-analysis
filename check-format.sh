@@ -43,6 +43,7 @@ for f in $(find ./ -name "*.py"); do
   python3 -m pylint -s no \
     -d R0903,E0401,E0611,fixme \
     --no-docstring-rgx=".+Test|test_" \
+    --docstring-min-length=5 \
     --indent-string="  " \
     $f
   if [ $? -ne 0 ]; then

@@ -38,6 +38,9 @@ py_library(
         "request_graph.py",
     ],
     srcs_version = "PY3",
+    visibility = [
+        "//patch_subset/py:__pkg__",
+    ],
 )
 
 py_test(
