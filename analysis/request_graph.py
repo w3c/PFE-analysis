@@ -1,6 +1,29 @@
 """A representation of a graph of requests."""
 
 
+def graph_has_independent_requests(graph, request_response_size_pairs):
+  """Checks if a graph only has independent requests.
+
+  Also checks that the reqest and response sizes of the requests in the graph
+  match the supplied list."""
+  if graph.length() != len(graph.requests_that_can_run(set())):
+    return False
+
+  if graph.length() != len(request_response_size_pairs):
+    return False
+
+  requests = set(graph.requests_that_can_run(set()))
+  for pair in request_response_size_pairs:
+    matched_request = None
+    for request in requests:
+      if (request.request_size == pair[0] and request.response_size == pair[1]):
+        matched_request = request
+        break
+    requests.remove(matched_request)
+
+  return not requests
+
+
 class Request:
   """Represents a single request in a graph of requests.
 
@@ -13,7 +36,7 @@ class Request:
   def __init__(self, request_size, response_size, happens_after=None):
     self.request_size = request_size
     self.response_size = response_size
-    self.happens_after = {} if happens_after is None else frozenset(
+    self.happens_after = set() if happens_after is None else frozenset(
         happens_after)
 
   def can_run(self, completed_requests):

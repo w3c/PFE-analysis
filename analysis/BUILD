@@ -27,6 +27,7 @@ py_binary(
         ":common",
         ":fake_pfe",
         ":page_view_sequence_proto_py",
+        "//analysis/pfe_methods",
         "//patch_subset/py",
         "@io_abseil_py//absl:app",
         "@io_abseil_py//absl/flags",
@@ -40,6 +41,7 @@ py_library(
     ],
     srcs_version = "PY3",
     visibility = [
+        "//analysis/pfe_methods:__pkg__",
         "//patch_subset/py:__pkg__",
     ],
 )

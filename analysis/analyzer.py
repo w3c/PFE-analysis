@@ -13,7 +13,7 @@ from absl import app
 from absl import flags
 from analysis import page_view_sequence_pb2
 from analysis import simulation
-from analysis import fake_pfe_method
+from analysis.pfe_methods import whole_font_pfe_method
 from google.protobuf import text_format
 from patch_subset.py import patch_subset_method
 
@@ -27,7 +27,7 @@ flags.DEFINE_string(
 flags.mark_flag_as_required("font_directory")
 
 PFE_METHODS = [
-    fake_pfe_method,
+    whole_font_pfe_method,
     patch_subset_method,
 ]
 
