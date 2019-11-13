@@ -1,1 +1,22 @@
 build --cxxopt='-std=c++17'
+
+# Address sanitizer
+# To use it:
+# bazel build --config asan
+#
+build:asan --strip=never
+build:asan --copt -fsanitize=address
+build:asan --copt -DADDRESS_SANITIZER
+build:asan --copt -O1
+build:asan --copt -g
+build:asan --copt -fno-omit-frame-pointer
+build:asan --linkopt -fsanitize=address
+
+test:asan --strip=never
+test:asan --copt -fsanitize=address
+test:asan --copt -DADDRESS_SANITIZER
+test:asan --copt -O1
+test:asan --copt -g
+test:asan --copt -fno-omit-frame-pointer
+test:asan --linkopt -fsanitize=address
+

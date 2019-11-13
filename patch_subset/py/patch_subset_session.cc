@@ -81,10 +81,11 @@ PatchSubsetSession* PatchSubsetSession_new(const char* font_directory,
   return new PatchSubsetSession(font_directory_string, font_id);
 }
 
-bool PatchSubsetSession_extend(PatchSubsetSession* session, int* codepoints,
-                               int codepoints_count) {
+bool PatchSubsetSession_extend(PatchSubsetSession* session,
+                               uint32_t* codepoints,
+                               uint32_t codepoints_count) {
   hb_set_t* codepoints_set = hb_set_create();
-  for (int i = 0; i < codepoints_count; i++) {
+  for (uint32_t i = 0; i < codepoints_count; i++) {
     hb_set_add(codepoints_set, codepoints[i]);
   }
   StatusCode result = session->Extend(*codepoints_set);
@@ -93,13 +94,13 @@ bool PatchSubsetSession_extend(PatchSubsetSession* session, int* codepoints,
 }
 
 const char* PatchSubsetSession_get_font(PatchSubsetSession* session,
-                                        int* size) {
+                                        uint32_t* size) {
   *size = session->ClientFontData().size();
   return session->ClientFontData().c_str();
 }
 
 const MemoryRequestLogger::Record* PatchSubsetSession_get_requests(
-    PatchSubsetSession* session, int* size) {
+    PatchSubsetSession* session, uint32_t* size) {
   *size = session->GetRecords().size();
   return session->GetRecords().data();
 }

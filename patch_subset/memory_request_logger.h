@@ -13,8 +13,8 @@ namespace patch_subset {
 class MemoryRequestLogger : public RequestLogger {
  public:
   struct Record {
-    int request_size;
-    int response_size;
+    uint32_t request_size;
+    uint32_t response_size;
   };
 
   void LogRequest(const std::string& request_data,

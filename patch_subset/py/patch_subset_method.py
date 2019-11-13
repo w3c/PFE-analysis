@@ -11,8 +11,9 @@ import collections
 from ctypes import byref
 from ctypes import c_bool
 from ctypes import c_char_p
-from ctypes import c_int
+from ctypes import c_uint32
 from ctypes import c_ubyte
+from ctypes import c_void_p
 from ctypes import cdll
 from ctypes import POINTER
 from ctypes import Structure
@@ -24,10 +25,11 @@ patch_subset = cdll.LoadLibrary('./patch_subset/py/patch_subset_session.so')  # 
 
 
 class RECORD(Structure):
-  _fields_ = [("request_size", c_int), ("response_size", c_int)]
+  _fields_ = [("request_size", c_uint32), ("response_size", c_uint32)]
 
 
 new_session = patch_subset.PatchSubsetSession_new  # pylint: disable=invalid-name
+new_session.restype = c_void_p
 extend = patch_subset.PatchSubsetSession_extend  # pylint: disable=invalid-name
 extend.restype = c_bool
 get_font_bytes = patch_subset.PatchSubsetSession_get_font  # pylint: disable=invalid-name
@@ -63,7 +65,7 @@ class FontSession:
     # TODO(garretrieger): set font directory correctly.
     font_directory_c = c_char_p(font_directory.encode("utf-8"))
     font_id_c = c_char_p(font_id.encode("utf-8"))
-    self.session = new_session(font_directory_c, font_id_c)
+    self.session = c_void_p(new_session(font_directory_c, font_id_c))
     self.records_by_view = [[]] * page_view_count
     self.last_record_index = None
     self.page_view_count = page_view_count
@@ -80,20 +82,20 @@ class FontSession:
 
     Records any resulting requests needed to make the extension.
     """
-    codepoint_array_c = (c_int * len(codepoints))()
+    codepoint_array_c = (c_uint32 * len(codepoints))()
     i = 0
     for codepoint in codepoints:
       codepoint_array_c[i] = codepoint
       i += 1
 
-    if not extend(self.session, codepoint_array_c, c_int(len(codepoints))):
+    if not extend(self.session, codepoint_array_c, c_uint32(len(codepoints))):
       raise PatchSubsetError("Patch subset extend call failed.")
 
     self.records_by_view[self.page_view_count - 1] = self.get_new_records()
     self.last_record_index = len(self.get_records()) - 1
 
   def get_font_bytes(self):
-    size_c = c_int()
+    size_c = c_uint32()
     bytes_c = get_font_bytes(self.session, byref(size_c))
     return bytes(bytes_c[i] for i in range(size_c.value))
 
@@ -104,7 +106,7 @@ class FontSession:
     return self.get_records()[self.last_record_index + 1:]
 
   def get_records(self):
-    size_c = c_int()
+    size_c = c_uint32()
     record_array_c = get_requests(self.session, byref(size_c))
     return [
         Record(record_array_c[i].request_size, record_array_c[i].response_size)
