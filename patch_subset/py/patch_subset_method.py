@@ -66,9 +66,15 @@ class FontSession:
     font_directory_c = c_char_p(font_directory.encode("utf-8"))
     font_id_c = c_char_p(font_id.encode("utf-8"))
     self.session = c_void_p(new_session(font_directory_c, font_id_c))
+    self.delete_session = patch_subset.PatchSubsetSession_delete
     self.records_by_view = [[]] * page_view_count
     self.last_record_index = None
     self.page_view_count = page_view_count
+
+  def __del__(self):
+    if self.session:
+      self.delete_session(self.session)
+      self.session = None
 
   def get_records_by_page_view(self, index):
     return self.records_by_view[index]

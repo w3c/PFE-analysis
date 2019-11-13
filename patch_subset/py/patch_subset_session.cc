@@ -81,6 +81,8 @@ PatchSubsetSession* PatchSubsetSession_new(const char* font_directory,
   return new PatchSubsetSession(font_directory_string, font_id);
 }
 
+void PatchSubsetSession_delete(PatchSubsetSession* session) { delete session; }
+
 bool PatchSubsetSession_extend(PatchSubsetSession* session,
                                uint32_t* codepoints,
                                uint32_t codepoints_count) {
