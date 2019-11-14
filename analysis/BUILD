@@ -14,6 +14,9 @@ proto_library(
 py_proto_library(
     name = "page_view_sequence_proto_py",
     srcs = ["page_view_sequence.proto"],
+    visibility = [
+        "//tools:__pkg__",
+    ],
 )
 
 py_binary(
