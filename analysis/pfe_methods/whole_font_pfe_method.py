@@ -8,6 +8,9 @@ This models traditional font hosting.
 import os
 
 from analysis import request_graph
+from woff2_py import woff2
+
+SIZE_CACHE = dict()
 
 
 def name():
@@ -48,9 +51,14 @@ class WholeFontPfeSession:
 
   def get_font_size(self, font_id):
     """The size of the font compressed as a woff2."""
-    # TODO(garretrieger): implement woff2 encoding.
+    if font_id in SIZE_CACHE:
+      return SIZE_CACHE[font_id]
+
     with open(os.path.join(self.font_directory, font_id), 'rb') as font_file:
-      return len(font_file.read())
+      ttf_bytes = font_file.read()
+      woff2_bytes = woff2.ttf_to_woff2(ttf_bytes)
+      SIZE_CACHE[font_id] = len(woff2_bytes)
+      return SIZE_CACHE[font_id]
 
   def get_request_graphs(self):
     return self.request_graphs

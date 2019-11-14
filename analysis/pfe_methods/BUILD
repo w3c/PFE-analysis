@@ -8,6 +8,7 @@ py_library(
     ],
     deps = [
         "//analysis:common",
+        "//woff2_py",
     ],
 )
 

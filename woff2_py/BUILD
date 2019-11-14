@@ -18,6 +18,9 @@ py_library(
     data = [
         ":woff2_py.so",
     ],
+    visibility = [
+        "//analysis/pfe_methods:__pkg__",
+    ],
 )
 
 py_test(
