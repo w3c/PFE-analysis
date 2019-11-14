@@ -143,5 +143,6 @@ filegroup(
     visibility = [
         "//analysis/pfe_methods:__pkg__",
         "//patch_subset/py:__pkg__",
+        "//woff2_py:__pkg__",
     ],
 )
