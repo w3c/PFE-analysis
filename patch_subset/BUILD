@@ -95,6 +95,7 @@ cc_library(
         ":patch_subset_cc_proto",
         "//common",
         "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/types:optional",
         "@farmhash",
         "@harfbuzz",
     ],
