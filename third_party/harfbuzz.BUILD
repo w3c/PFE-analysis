@@ -1,3 +1,12 @@
+# Define HAVE_XLOCALE_H for OSX
+
+config_setting(
+    name = "macos",
+    constraint_values = [
+        "@platforms//os:osx",
+    ],
+)
+
 cc_library(
     name = "harfbuzz",
     srcs = glob(
@@ -54,7 +63,10 @@ cc_library(
     copts = [
         "-DHAVE_CONFIG_H",
         "-Iexternal/PFE_analysis/third_party/harfbuzz",
-    ],
+    ] + select({
+        ":macos": ["-DHAVE_XLOCALE_H=1"],
+        "//conditions:default": [],
+    }),
     includes = [
         "src",
         "src/hb-ucdn",
