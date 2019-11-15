@@ -1,8 +1,8 @@
 on: [push, pull_request]
 name: Continous Integration
 jobs:
-  check_tests:
-    name: Check Tests
+  check_tests_ubuntu:
+    name: Check Tests (Ubuntu)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -11,6 +11,22 @@ jobs:
         uses: ngalaiko/bazel-action/1.1.0@master
         with:
           args: test //... --test_output=all
+
+  check_tests_osx:
+    name: Check Tests (Mac OS)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Install bazel
+        run: |
+          curl -L -O "https://github.com/bazelbuild/bazel/releases/download/1.1.0/bazel-1.1.0-installer-darwin-x86_64.sh"
+          chmod a+x ./bazel-1.1.0-installer-darwin-x86_64.sh
+          ./bazel-1.1.0-installer-darwin-x86_64.sh
+
+      - name: run
+        run: bazel test //... --test_output=all
+    
   check_formatting:
     name: Check Formatting
     runs-on: ubuntu-latest
