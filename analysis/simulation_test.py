@@ -40,13 +40,15 @@ def sequence(views):
 
 class SimulationTest(unittest.TestCase):
 
+  # pylint: disable=too-many-instance-attributes
+
   def setUp(self):
     self.net_model = simulation.NetworkModel(name="NetModel",
                                              rtt=50,
                                              bandwidth_up=100,
                                              bandwidth_down=200)
 
-    graph_1 = request_graph.RequestGraph({
+    self.graph_1 = request_graph.RequestGraph({
         request_graph.Request(1000, 1000),
     })
     self.mock_pfe_method = MockPfeMethod()
@@ -56,7 +58,7 @@ class SimulationTest(unittest.TestCase):
         return_value=self.mock_pfe_session)
     self.mock_pfe_session.page_view = mock.MagicMock()
     self.mock_pfe_session.get_request_graphs = mock.MagicMock(
-        return_value=[graph_1])
+        return_value=[self.graph_1])
 
     graph_2 = request_graph.RequestGraph({
         request_graph.Request(1000, 1000),
@@ -83,7 +85,7 @@ class SimulationTest(unittest.TestCase):
         },
     ])
 
-  def test_totals_for_request_graph(self):
+  def test_total_time_for_request_graph(self):
     r_1 = request_graph.Request(100, 200)
     r_2 = request_graph.Request(200, 300)
     r_3 = request_graph.Request(300, 400, {r_2})
@@ -92,10 +94,7 @@ class SimulationTest(unittest.TestCase):
     graph = request_graph.RequestGraph({r_1, r_2, r_3, r_4, r_5})
 
     self.assertEqual(
-        simulation.totals_for_request_graph(graph, self.net_model),
-        simulation.GraphTotals(time_ms=175,
-                               request_bytes=1500,
-                               response_bytes=2000))
+        simulation.total_time_for_request_graph(graph, self.net_model), 175)
 
   def test_detects_cylces(self):
     r_1 = request_graph.Request(100, 200)
@@ -103,14 +102,13 @@ class SimulationTest(unittest.TestCase):
     r_1.happens_after = frozenset({r_2})
     graph = request_graph.RequestGraph({r_1, r_2})
     with self.assertRaises(simulation.GraphHasCyclesError):
-      simulation.totals_for_request_graph(graph, self.net_model)
+      simulation.total_time_for_request_graph(graph, self.net_model)
 
   def test_simulate(self):
     self.assertEqual(
-        simulation.simulate(self.page_view_sequence, self.mock_pfe_method,
-                            self.net_model, "fonts/are/here"), [
-                                simulation.GraphTotals(65, 1000, 1000),
-                            ])
+        simulation.simulate_sequence(self.page_view_sequence,
+                                     self.mock_pfe_method, "fonts/are/here"),
+        [self.graph_1])
     self.mock_pfe_method.start_session.assert_called_once_with("fonts/are/here")
     self.mock_pfe_session.page_view.assert_has_calls([
         mock.call({
@@ -139,8 +137,7 @@ class SimulationTest(unittest.TestCase):
         }]),
     ]
 
-    fast_graph = simulation.GraphTotals(100, 1000, 1000)
-    slow_graph = simulation.GraphTotals(200, 1000, 1000)
+    graph = simulation.GraphTotals({"fast": 100, "slow": 200}, 1000, 1000)
     self.assertEqual(
         simulation.simulate_all(
             sequences,
@@ -154,10 +151,8 @@ class SimulationTest(unittest.TestCase):
             ],
             "fonts/are/here",
         ), {
-            "Mock_PFE_1 (slow)": [slow_graph] * 2,
-            "Mock_PFE_1 (fast)": [fast_graph] * 2,
-            "Mock_PFE_2 (slow)": [slow_graph] * 4,
-            "Mock_PFE_2 (fast)": [fast_graph] * 4,
+            "Mock_PFE_1": [graph] * 2,
+            "Mock_PFE_2": [graph] * 4,
         })
 
 

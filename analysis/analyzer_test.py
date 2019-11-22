@@ -22,8 +22,10 @@ class AnalyzerTest(unittest.TestCase):
             simulation.NetworkModel("fast", 0, 10, 10),
             simulation.NetworkModel("slow", 100, 1, 1),
         ], "fonts/are/here"), {
-            "Fake_PFE (fast)": 400,
-            "Fake_PFE (slow)": 4200,
+            "Fake_PFE": {
+                "fast": 400,
+                "slow": 4200
+            },
         })
 
 

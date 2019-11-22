@@ -4,7 +4,7 @@ import collections
 import itertools
 
 GraphTotals = collections.namedtuple(
-    "GraphTotals", ["time_ms", "request_bytes", "response_bytes"])
+    "GraphTotals", ["time_per_network", "request_bytes", "response_bytes"])
 
 # Bandwidth is in bytes per ms, RTT is ms
 NetworkModel = collections.namedtuple(
@@ -17,12 +17,12 @@ class GraphHasCyclesError(Exception):
 
 
 def network_time_for(requests, network_model):
-  """Returns the time needed to execute a graph of requests under a given network model."""
+  """Returns the time needed to execute a set of requests in parallel."""
   request_bytes = sum(request.request_size for request in requests)
   response_bytes = sum(response.response_size for response in requests)
   time = (network_model.rtt + request_bytes / network_model.bandwidth_up +
           response_bytes / network_model.bandwidth_down)
-  return (time, request_bytes, response_bytes)
+  return time
 
 
 def simulate_all(sequences, pfe_methods, network_models, font_directory):
@@ -32,53 +32,58 @@ def simulate_all(sequences, pfe_methods, network_models, font_directory):
   request bytes sent, and total response bytes sent.
   """
   result = dict()
-  for args in itertools.product(sequences, pfe_methods, network_models):
-    key = "%s (%s)" % (args[1].name(), args[2].name)
-    data = simulate(args[0], args[1], args[2], font_directory)
+  for args in itertools.product(sequences, pfe_methods):
+
+    graphs = simulate_sequence(args[0], args[1], font_directory)
+    key = args[1].name()
     results_for_key = result.get(key, list())
-    results_for_key.extend(data)
+    results_for_key.extend(totals_for_networks(graphs, network_models))
     result[key] = results_for_key
 
   return result
 
 
-def simulate(sequence, pfe_method, network_model, font_directory):
+def totals_for_networks(graphs, network_models):
+  """For a set of graphs computes the network time required for each network model."""
+  result = []
+  for graph in graphs:
+    total_times = {
+        network_model.name: total_time_for_request_graph(graph, network_model)
+        for network_model in network_models
+    }
+    result.append(
+        GraphTotals(total_times, graph.total_request_bytes(),
+                    graph.total_response_bytes()))
+
+  return result
+
+
+def simulate_sequence(sequence, pfe_method, font_directory):
   """Simulate page view sequence with pfe_method using network_model.
 
-  Returns a GraphTotals object.
+  Returns a request graph for each page view in the sequence.
   """
   session = pfe_method.start_session(font_directory)
   for page_view in sequence:
     session.page_view(codepoints_by_font(page_view))
 
-  return [
-      totals_for_request_graph(graph, network_model)
-      for graph in session.get_request_graphs()
-  ]
+  return session.get_request_graphs()
 
 
-def totals_for_request_graph(graph, network_model):
+def total_time_for_request_graph(graph, network_model):
   """Calculate the total time and number of bytes need to execute a given request graph."""
   total_time = 0
-  total_request_bytes = 0
-  total_response_bytes = 0
   completed_requests = set()
   while not graph.all_requests_completed(completed_requests):
     next_requests = graph.requests_that_can_run(completed_requests)
     if not next_requests:
       raise GraphHasCyclesError("Cannot execute graph, it contains cycles.")
 
-    (time, request_bytes,
-     response_bytes) = network_time_for(next_requests, network_model)
-    total_request_bytes += request_bytes
-    total_response_bytes += response_bytes
-    total_time += time
+    total_time += network_time_for(next_requests, network_model)
 
     completed_requests = completed_requests.union(next_requests)
 
-  return GraphTotals(time_ms=total_time,
-                     request_bytes=total_request_bytes,
-                     response_bytes=total_response_bytes)
+  return total_time
 
 
 def codepoints_by_font(page_view):

@@ -69,7 +69,13 @@ def analyze_data_set(data_set, pfe_methods, network_models, font_directory):
   for key, totals in simulation_results.items():
     # TODO(garretrieger): collect more info:
     #  - Cost/latency/request size/response size distributions (percentiles).
-    results[key] = sum(cost(total.time_ms) for total in totals)
+    summary_by_network = dict()
+    for total in totals:
+      for network, total_time in total.time_per_network.items():
+        summary_by_network[network] = summary_by_network.get(
+            network, 0) + cost(total_time)
+
+    results[key] = summary_by_network
 
   return results
 
@@ -85,8 +91,9 @@ def main(argv):
 
   results = analyze_data_set(data_set, PFE_METHODS, NETWORK_MODELS,
                              FLAGS.font_directory)
-  for key, total_cost in results.items():
-    print("{}, {:.1f}".format(key, total_cost))
+  for key, network_totals in results.items():
+    for network, total_cost in network_totals.items():
+      print("{}, {}, {:.1f}".format(key, network, total_cost))
 
 
 if __name__ == '__main__':

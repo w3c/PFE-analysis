@@ -6,6 +6,16 @@ from analysis import request_graph
 
 class RequestGraphTest(unittest.TestCase):
 
+  def test_total_request_bytes(self):
+    r_1 = request_graph.Request(1, 2)
+    r_2 = request_graph.Request(3, 4, {r_1})
+    r_3 = request_graph.Request(5, 6, {r_1})
+    r_4 = request_graph.Request(7, 8, {r_1, r_2})
+    graph = request_graph.RequestGraph({r_1, r_2, r_3, r_4})
+
+    self.assertEqual(graph.total_request_bytes(), 1 + 3 + 5 + 7)
+    self.assertEqual(graph.total_response_bytes(), 2 + 4 + 6 + 8)
+
   def test_can_run(self):
     r_1 = request_graph.Request(1, 2)
     r_2 = request_graph.Request(2, 3, {r_1})
