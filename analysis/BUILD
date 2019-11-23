@@ -11,9 +11,22 @@ proto_library(
     srcs = ["page_view_sequence.proto"],
 )
 
+proto_library(
+    name = "result_proto",
+    srcs = ["result.proto"],
+)
+
 py_proto_library(
     name = "page_view_sequence_proto_py",
     srcs = ["page_view_sequence.proto"],
+    visibility = [
+        "//tools:__pkg__",
+    ],
+)
+
+py_proto_library(
+    name = "result_proto_py",
+    srcs = ["result.proto"],
     visibility = [
         "//tools:__pkg__",
     ],
@@ -30,6 +43,7 @@ py_binary(
         ":common",
         ":fake_pfe",
         ":page_view_sequence_proto_py",
+        ":result_proto_py",
         "//analysis/pfe_methods",
         "//patch_subset/py",
         "@io_abseil_py//absl:app",

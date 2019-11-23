@@ -1,0 +1,28 @@
+// Proto definition of used to store the results of
+// the analysis.
+syntax = "proto3";
+
+package analysis;
+
+message AnalysisResultProto {
+  repeated MethodResultProto results = 2;
+}
+
+message MethodResultProto {
+  string method_name = 1;
+
+  repeated NetworkResultProto results_by_network = 2;
+  DistributionProto request_size_distribution = 3;
+  DistributionProto response_size_distribution = 4;
+}
+
+message NetworkResultProto {
+  string network_model_name = 1;
+  double total_cost = 2;
+  DistributionProto request_latency_distribution = 3;
+  DistributionProto cost_distribution = 4;
+}
+
+message DistributionProto {
+  // TODO(garretrieger): define this. Should be a set of buckets + counts.
+}

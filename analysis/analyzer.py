@@ -15,6 +15,7 @@ analysis/page_view_sequence.proto
 from absl import app
 from absl import flags
 from analysis import page_view_sequence_pb2
+from analysis import result_pb2
 from analysis import simulation
 from analysis.pfe_methods import whole_font_pfe_method
 from google.protobuf import text_format
@@ -91,9 +92,21 @@ def main(argv):
 
   results = analyze_data_set(data_set, PFE_METHODS, NETWORK_MODELS,
                              FLAGS.font_directory)
+
+  results_proto = result_pb2.AnalysisResultProto()
   for key, network_totals in results.items():
+    method_result = result_pb2.MethodResultProto()
+    method_result.method_name = key
+
     for network, total_cost in network_totals.items():
-      print("{}, {}, {:.1f}".format(key, network, total_cost))
+      network_result = result_pb2.NetworkResultProto()
+      network_result.network_model_name = network
+      network_result.total_cost = total_cost
+      method_result.results_by_network.append(network_result)
+
+    results_proto.results.append(method_result)
+
+  print(text_format.MessageToString(results_proto))
 
 
 if __name__ == '__main__':
