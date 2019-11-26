@@ -55,11 +55,25 @@ py_library(
     name = "common",
     srcs = [
         "request_graph.py",
+	"distribution.py",
+    ],
+    deps = [
+        ":result_proto_py",
     ],
     srcs_version = "PY3",
     visibility = [
         "//analysis/pfe_methods:__pkg__",
         "//patch_subset/py:__pkg__",
+    ],
+)
+
+py_test(
+    name = "distribution_test",
+    srcs = [
+        "distribution_test.py",
+    ],
+    deps = [
+        ":common",
     ],
 )
 
