@@ -54,16 +54,16 @@ py_binary(
 py_library(
     name = "common",
     srcs = [
+        "distribution.py",
         "request_graph.py",
-	"distribution.py",
-    ],
-    deps = [
-        ":result_proto_py",
     ],
     srcs_version = "PY3",
     visibility = [
         "//analysis/pfe_methods:__pkg__",
         "//patch_subset/py:__pkg__",
+    ],
+    deps = [
+        ":result_proto_py",
     ],
 )
 
@@ -111,6 +111,7 @@ py_test(
         ":analyzer",
         ":common",
         ":fake_pfe",
+        ":result_proto_py",
     ],
 )
 

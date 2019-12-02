@@ -56,6 +56,33 @@ def cost(time_ms):
   return time_ms
 
 
+def to_method_result_proto(method_name, totals):
+  """Converts a set of totals for a method into the corresponding proto."""
+  method_result_proto = result_pb2.MethodResultProto()
+  method_result_proto.method_name = method_name
+
+  # TODO(garretrieger): collect more info:
+  #  - Cost/latency/request size/response size distributions (percentiles).
+
+  result_by_network = dict()
+  for total in totals:
+    for network, total_time in total.time_per_network.items():
+
+      if network in result_by_network:
+        network_proto = result_by_network[network]
+      else:
+        network_proto = result_pb2.NetworkResultProto()
+        result_by_network[network] = network_proto
+
+      network_proto.network_model_name = network
+      network_proto.total_cost = network_proto.total_cost + cost(total_time)
+
+  for result in result_by_network.values():
+    method_result_proto.results_by_network.append(result)
+
+  return method_result_proto
+
+
 def analyze_data_set(data_set, pfe_methods, network_models, font_directory):
   """Analyze data set against the provided set of pfe_methods and network_models.
 
@@ -66,17 +93,9 @@ def analyze_data_set(data_set, pfe_methods, network_models, font_directory):
   simulation_results = simulation.simulate_all(sequences, pfe_methods,
                                                network_models, font_directory)
 
-  results = dict()
+  results = []
   for key, totals in simulation_results.items():
-    # TODO(garretrieger): collect more info:
-    #  - Cost/latency/request size/response size distributions (percentiles).
-    summary_by_network = dict()
-    for total in totals:
-      for network, total_time in total.time_per_network.items():
-        summary_by_network[network] = summary_by_network.get(
-            network, 0) + cost(total_time)
-
-    results[key] = summary_by_network
+    results.append(to_method_result_proto(key, totals))
 
   return results
 
@@ -94,16 +113,7 @@ def main(argv):
                              FLAGS.font_directory)
 
   results_proto = result_pb2.AnalysisResultProto()
-  for key, network_totals in results.items():
-    method_result = result_pb2.MethodResultProto()
-    method_result.method_name = key
-
-    for network, total_cost in network_totals.items():
-      network_result = result_pb2.NetworkResultProto()
-      network_result.network_model_name = network
-      network_result.total_cost = total_cost
-      method_result.results_by_network.append(network_result)
-
+  for method_result in results:
     results_proto.results.append(method_result)
 
   print(text_format.MessageToString(results_proto))
