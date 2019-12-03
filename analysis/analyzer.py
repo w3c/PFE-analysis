@@ -84,7 +84,8 @@ def to_method_result_proto(method_name, totals):
       network_proto.total_cost = network_proto.total_cost + cost(total_time)
       latency_distribution.add_value(total_time)
 
-  for result in result_by_network.values():
+  for result in sorted(result_by_network.values(),
+                       key=lambda net_proto: net_proto.network_model_name):
     result.request_latency_distribution.CopyFrom(
         latency_dist_by_network[result.network_model_name].to_proto())
     method_result_proto.results_by_network.append(result)
@@ -103,7 +104,7 @@ def analyze_data_set(data_set, pfe_methods, network_models, font_directory):
                                                network_models, font_directory)
 
   results = []
-  for key, totals in simulation_results.items():
+  for key, totals in sorted(simulation_results.items()):
     results.append(to_method_result_proto(key, totals))
 
   return results
