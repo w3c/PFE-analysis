@@ -4,6 +4,9 @@ Takes an input data file and tests various progressive font enrichment methods
 against each one.
 
 Collects an overall score for each method and reports the aggregate results.
+The score is the sum of a cost function which assigns a cost to the total
+time spent loading fonts on each page view. See the design doc for more
+details: https://docs.google.com/document/d/1kx62tpy5hGIbHh6tHMAryon9Sgye--W_IsHTeCMlmEo/edit
 
 Input data is in textproto format using the proto definitions found in
 analysis/page_view_sequence.proto

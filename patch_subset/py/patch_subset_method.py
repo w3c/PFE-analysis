@@ -86,7 +86,8 @@ class FontSession:
   def extend(self, codepoints):
     """Extends the tracked font to cover new codepoints.
 
-    Records any resulting requests needed to make the extension.
+    codepoints is a list of integer unicode codepoints. Records any
+    resulting requests needed to make the extension.
     """
     codepoint_array_c = (c_uint32 * len(codepoints))()
     i = 0
