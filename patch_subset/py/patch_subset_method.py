@@ -90,10 +90,8 @@ class FontSession:
     resulting requests needed to make the extension.
     """
     codepoint_array_c = (c_uint32 * len(codepoints))()
-    i = 0
-    for codepoint in codepoints:
-      codepoint_array_c[i] = codepoint
-      i += 1
+    for idx, codepoint in enumerate(codepoints):
+      codepoint_array_c[idx] = codepoint
 
     if not extend(self.session, codepoint_array_c, c_uint32(len(codepoints))):
       raise PatchSubsetError("Patch subset extend call failed.")
