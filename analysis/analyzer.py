@@ -51,6 +51,29 @@ NETWORK_MODELS = [
 ]
 
 
+class NetworkResult:
+  """Aggregates the analysis results for a specific network model."""
+
+  def __init__(self, name):
+    self.name = name
+    self.latency_distribution = distribution.Distribution(
+        distribution.LinearBucketer(5))
+    self.total_cost = 0
+
+  def add_time(self, total_time_ms):
+    self.total_cost += cost(total_time_ms)
+    self.latency_distribution.add_value(total_time_ms)
+
+  def to_proto(self):
+    """Convert this to a NetworkResultProto."""
+    network_proto = result_pb2.NetworkResultProto()
+    network_proto.network_model_name = self.name
+    network_proto.total_cost = self.total_cost
+    network_proto.request_latency_distribution.CopyFrom(
+        self.latency_distribution.to_proto())
+    return network_proto
+
+
 def cost(time_ms):
   """Assigns a cost to a measure of request latency."""
   # TODO(garretrieger): implement me.
@@ -66,29 +89,20 @@ def to_method_result_proto(method_name, totals):
   #  - Cost/latency/request size/response size distributions (percentiles).
 
   result_by_network = dict()
-  latency_dist_by_network = dict()
   for total in totals:
     for network, total_time in total.time_per_network.items():
 
-      latency_distribution = latency_dist_by_network.get(
-          network, distribution.Distribution(distribution.LinearBucketer(5)))
-      latency_dist_by_network[network] = latency_distribution
-
       if network in result_by_network:
-        network_proto = result_by_network[network]
+        network_result = result_by_network[network]
       else:
-        network_proto = result_pb2.NetworkResultProto()
-        result_by_network[network] = network_proto
+        network_result = NetworkResult(network)
+        result_by_network[network] = network_result
 
-      network_proto.network_model_name = network
-      network_proto.total_cost = network_proto.total_cost + cost(total_time)
-      latency_distribution.add_value(total_time)
+      network_result.add_time(total_time)
 
   for result in sorted(result_by_network.values(),
-                       key=lambda net_proto: net_proto.network_model_name):
-    result.request_latency_distribution.CopyFrom(
-        latency_dist_by_network[result.network_model_name].to_proto())
-    method_result_proto.results_by_network.append(result)
+                       key=lambda result: result.name):
+    method_result_proto.results_by_network.append(result.to_proto())
 
   return method_result_proto
 
