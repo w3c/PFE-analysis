@@ -19,7 +19,7 @@ message MethodResultProto {
 message NetworkResultProto {
   string network_model_name = 1;
   double total_cost = 2;
-  DistributionProto request_latency_distribubtion = 3;
+  DistributionProto request_latency_distribution = 3;
   DistributionProto cost_distribution = 4;
 }
 

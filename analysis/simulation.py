@@ -32,10 +32,10 @@ def simulate_all(sequences, pfe_methods, network_models, font_directory):
   request bytes sent, and total response bytes sent.
   """
   result = dict()
-  for args in itertools.product(sequences, pfe_methods):
+  for sequence, method in itertools.product(sequences, pfe_methods):
 
-    graphs = simulate_sequence(args[0], args[1], font_directory)
-    key = args[1].name()
+    graphs = simulate_sequence(sequence, method, font_directory)
+    key = method.name()
     results_for_key = result.get(key, list())
     results_for_key.extend(totals_for_networks(graphs, network_models))
     result[key] = results_for_key

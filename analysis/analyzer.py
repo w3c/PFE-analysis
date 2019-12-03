@@ -14,6 +14,7 @@ analysis/page_view_sequence.proto
 
 from absl import app
 from absl import flags
+from analysis import distribution
 from analysis import page_view_sequence_pb2
 from analysis import result_pb2
 from analysis import simulation
@@ -65,8 +66,13 @@ def to_method_result_proto(method_name, totals):
   #  - Cost/latency/request size/response size distributions (percentiles).
 
   result_by_network = dict()
+  latency_dist_by_network = dict()
   for total in totals:
     for network, total_time in total.time_per_network.items():
+
+      latency_distribution = latency_dist_by_network.get(
+          network, distribution.Distribution(distribution.LinearBucketer(5)))
+      latency_dist_by_network[network] = latency_distribution
 
       if network in result_by_network:
         network_proto = result_by_network[network]
@@ -76,8 +82,11 @@ def to_method_result_proto(method_name, totals):
 
       network_proto.network_model_name = network
       network_proto.total_cost = network_proto.total_cost + cost(total_time)
+      latency_distribution.add_value(total_time)
 
   for result in result_by_network.values():
+    result.request_latency_distribution.CopyFrom(
+        latency_dist_by_network[result.network_model_name].to_proto())
     method_result_proto.results_by_network.append(result)
 
   return method_result_proto
