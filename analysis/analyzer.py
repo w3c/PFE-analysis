@@ -58,11 +58,15 @@ class NetworkResult:
     self.name = name
     self.latency_distribution = distribution.Distribution(
         distribution.LinearBucketer(5))
+    self.cost_distribution = distribution.Distribution(
+        distribution.LinearBucketer(5))
     self.total_cost = 0
 
   def add_time(self, total_time_ms):
-    self.total_cost += cost(total_time_ms)
+    the_cost = cost(total_time_ms)
+    self.total_cost += the_cost
     self.latency_distribution.add_value(total_time_ms)
+    self.cost_distribution.add_value(the_cost)
 
   def to_proto(self):
     """Convert this to a NetworkResultProto."""
@@ -71,6 +75,7 @@ class NetworkResult:
     network_proto.total_cost = self.total_cost
     network_proto.request_latency_distribution.CopyFrom(
         self.latency_distribution.to_proto())
+    network_proto.cost_distribution.CopyFrom(self.cost_distribution.to_proto())
     return network_proto
 
 

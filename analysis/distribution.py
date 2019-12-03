@@ -22,7 +22,7 @@ class Distribution:
     """Convert this distribution to a DistributionProto."""
     previous_end = 0
     distribution = result_pb2.DistributionProto()
-    for end, count in self.buckets.items():
+    for end, count in sorted(self.buckets.items()):
       if end != self.bucketer.bucket_for(previous_end):
         # When there's a gap the previous bucket should be included
         # so the start of the bucket can be determined.

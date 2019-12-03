@@ -26,6 +26,8 @@ class AnalyzerTest(unittest.TestCase):
     network_proto.total_cost = 400
     network_proto.request_latency_distribution.buckets.add(end=200)
     network_proto.request_latency_distribution.buckets.add(end=205, count=2)
+    network_proto.cost_distribution.buckets.add(end=200)
+    network_proto.cost_distribution.buckets.add(end=205, count=2)
     method_proto.results_by_network.append(network_proto)
 
     network_proto = result_pb2.NetworkResultProto()
@@ -33,6 +35,8 @@ class AnalyzerTest(unittest.TestCase):
     network_proto.total_cost = 4200
     network_proto.request_latency_distribution.buckets.add(end=2100)
     network_proto.request_latency_distribution.buckets.add(end=2105, count=2)
+    network_proto.cost_distribution.buckets.add(end=2100)
+    network_proto.cost_distribution.buckets.add(end=2105, count=2)
     method_proto.results_by_network.append(network_proto)
 
     self.assertEqual(
