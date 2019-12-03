@@ -89,14 +89,17 @@ def to_method_result_proto(method_name, totals):
   """Converts a set of totals for a method into the corresponding proto."""
   method_result_proto = result_pb2.MethodResultProto()
   method_result_proto.method_name = method_name
-
-  # TODO(garretrieger): collect more info:
-  #  - Cost/latency/request size/response size distributions (percentiles).
+  request_size_distribution = distribution.Distribution(
+      distribution.LinearBucketer(5))
+  response_size_distribution = distribution.Distribution(
+      distribution.LinearBucketer(5))
 
   result_by_network = dict()
   for total in totals:
-    for network, total_time in total.time_per_network.items():
+    request_size_distribution.add_value(total.request_bytes)
+    response_size_distribution.add_value(total.response_bytes)
 
+    for network, total_time in total.time_per_network.items():
       if network in result_by_network:
         network_result = result_by_network[network]
       else:
@@ -105,6 +108,10 @@ def to_method_result_proto(method_name, totals):
 
       network_result.add_time(total_time)
 
+  method_result_proto.request_size_distribution.CopyFrom(
+      request_size_distribution.to_proto())
+  method_result_proto.response_size_distribution.CopyFrom(
+      response_size_distribution.to_proto())
   for result in sorted(result_by_network.values(),
                        key=lambda result: result.name):
     method_result_proto.results_by_network.append(result.to_proto())

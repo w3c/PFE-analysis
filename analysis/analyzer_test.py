@@ -20,6 +20,10 @@ class AnalyzerTest(unittest.TestCase):
   def test_analyze_data_set(self):
     method_proto = result_pb2.MethodResultProto()
     method_proto.method_name = "Fake_PFE"
+    method_proto.request_size_distribution.buckets.add(end=1000)
+    method_proto.request_size_distribution.buckets.add(end=1005, count=2)
+    method_proto.response_size_distribution.buckets.add(end=1000)
+    method_proto.response_size_distribution.buckets.add(end=1005, count=2)
 
     network_proto = result_pb2.NetworkResultProto()
     network_proto.network_model_name = "fast"
