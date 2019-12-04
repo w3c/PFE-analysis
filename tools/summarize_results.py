@@ -1,17 +1,7 @@
 """Provides summaries of the results of an analysis
 
 Takes an AnalysisResultProto in either text or binary form and can
-Summarize the data in a few different ways.
-
-Usage:
-
-summarize_results <mode>
-
-Available modes:
-  cost_summary - print out the total cost for each method and network model.
-  latency_distriubtion <method> <network> - print out the latency distribution
-                                            for a particular method and network
-                                            model.
+Summarize the data in a few different ways. See USAGE string below.
 """
 
 import sys
@@ -20,6 +10,18 @@ from absl import app
 from absl import flags
 from analysis import result_pb2
 from google.protobuf import text_format
+
+USAGE = """Usage:
+
+summarize_results [--input_file=<path to input>] <mode>
+
+Available modes:
+  cost_summary - print out the total cost for each method and network model.
+  request_size_distribution <method> - print out the request size distribution for a particular method.
+  response_size_distribution <method> - print out the request size distribution for a particular method.
+  latency_distriubtion <method> <network> - print out the latency distribution for a particular method and network model.
+  cost_distriubtion <method> <network> - print out the cost distribution for a particular method and network model.
+"""
 
 FLAGS = flags.FLAGS
 flags.DEFINE_string(
@@ -30,6 +32,10 @@ flags.DEFINE_string(
 
 class NetworkResultNotFound(Exception):
   """Could not find the specified network result."""
+
+
+class MethodResultNotFound(Exception):
+  """Could not find the specified method result."""
 
 
 def main(argv):  # pylint: disable=missing-function-docstring
@@ -44,27 +50,45 @@ def main(argv):  # pylint: disable=missing-function-docstring
     print_cost_summary(result_proto)
     return 0
 
-  if mode == "latency_distribution" and len(argv) > 3:
+  if mode in ("request_size_distribution",
+              "response_size_distribution") and len(argv) > 2:
+    method = argv[2]
+
+    method_proto = find_method_result(method, result_proto)
+    dist_proto = (method_proto.request_size_distribution
+                  if mode == "request_size_distribution" else
+                  method_proto.response_size_distribution)
+    print_distribution(dist_proto)
+    return 0
+
+  if mode in ("latency_distribution", "cost_distribution") and len(argv) > 3:
     method = argv[2]
     network = argv[3]
 
     network_proto = find_network_result(method, network, result_proto)
-    print_distribution(network_proto.request_latency_distribution)
+    dist_proto = (network_proto.request_latency_distribution
+                  if mode == "latency_distribution" else
+                  network_proto.cost_distribution)
+    print_distribution(dist_proto)
     return 0
 
   return print_usage()
 
 
+def find_method_result(method, result_proto):
+  """Locates the method result proto for method inside of result_proto."""
+  for method_proto in result_proto.results:
+    if method_proto.method_name == method:
+      return method_proto
+
+  raise MethodResultNotFound("Cannot find method result %s." % method)
+
+
 def find_network_result(method, network, result_proto):
   """Locates the network result proto for method and network inside of result_proto."""
-  for method_proto in result_proto.results:
-    if method_proto.method_name != method:
-      continue
-
-    for network_proto in method_proto.results_by_network:
-      if network_proto.network_model_name != network:
-        continue
-
+  method_proto = find_method_result(method, result_proto)
+  for network_proto in method_proto.results_by_network:
+    if network_proto.network_model_name == network:
       return network_proto
 
   raise NetworkResultNotFound("Cannot find network result for %s and %s." %
@@ -77,14 +101,7 @@ def print_distribution(distribution_proto):
 
 
 def print_usage():  # pylint: disable=missing-function-docstring
-  print("""Usage:
-
-summarize_results <mode>
-
-Available modes:
-  cost_summary - print out the total cost for each method and network model.
-  latency_distriubtion <method> <network> - print out the latency distribution for a particular method and network model.
-""")
+  print(USAGE)
   return -1
 
 
