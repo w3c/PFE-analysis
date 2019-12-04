@@ -16,6 +16,7 @@ import sys
 
 from absl import app
 from absl import flags
+from analysis import cost
 from analysis import distribution
 from analysis import page_view_sequence_pb2
 from analysis import result_pb2
@@ -67,8 +68,7 @@ class NetworkResult:
         distribution.LinearBucketer(5))
     self.total_cost = 0
 
-  def add_time(self, total_time_ms):
-    the_cost = cost(total_time_ms)
+  def add_time(self, total_time_ms, the_cost):
     self.total_cost += the_cost
     self.latency_distribution.add_value(total_time_ms)
     self.cost_distribution.add_value(the_cost)
@@ -84,61 +84,61 @@ class NetworkResult:
     return network_proto
 
 
-def cost(time_ms):
-  """Assigns a cost to a measure of request latency."""
-  # TODO(garretrieger): implement me.
-  return time_ms
+class Analyzer:
+  """Holds context for the analysis of a data set against a set of pfe_methods."""
 
+  def __init__(self, cost_function):
+    self.cost_function = cost_function
 
-def to_method_result_proto(method_name, totals):
-  """Converts a set of totals for a method into the corresponding proto."""
-  method_result_proto = result_pb2.MethodResultProto()
-  method_result_proto.method_name = method_name
-  request_size_distribution = distribution.Distribution(
-      distribution.LinearBucketer(5))
-  response_size_distribution = distribution.Distribution(
-      distribution.LinearBucketer(5))
+  def to_method_result_proto(self, method_name, totals):
+    """Converts a set of totals for a method into the corresponding proto."""
+    method_result_proto = result_pb2.MethodResultProto()
+    method_result_proto.method_name = method_name
+    request_size_distribution = distribution.Distribution(
+        distribution.LinearBucketer(5))
+    response_size_distribution = distribution.Distribution(
+        distribution.LinearBucketer(5))
 
-  result_by_network = dict()
-  for total in totals:
-    request_size_distribution.add_value(total.request_bytes)
-    response_size_distribution.add_value(total.response_bytes)
+    result_by_network = dict()
+    for total in totals:
+      request_size_distribution.add_value(total.request_bytes)
+      response_size_distribution.add_value(total.response_bytes)
 
-    for network, total_time in total.time_per_network.items():
-      if network in result_by_network:
-        network_result = result_by_network[network]
-      else:
-        network_result = NetworkResult(network)
-        result_by_network[network] = network_result
+      for network, total_time in total.time_per_network.items():
+        if network in result_by_network:
+          network_result = result_by_network[network]
+        else:
+          network_result = NetworkResult(network)
+          result_by_network[network] = network_result
 
-      network_result.add_time(total_time)
+        network_result.add_time(total_time, self.cost_function(total_time))
 
-  method_result_proto.request_size_distribution.CopyFrom(
-      request_size_distribution.to_proto())
-  method_result_proto.response_size_distribution.CopyFrom(
-      response_size_distribution.to_proto())
-  for result in sorted(result_by_network.values(),
-                       key=lambda result: result.name):
-    method_result_proto.results_by_network.append(result.to_proto())
+    method_result_proto.request_size_distribution.CopyFrom(
+        request_size_distribution.to_proto())
+    method_result_proto.response_size_distribution.CopyFrom(
+        response_size_distribution.to_proto())
+    for result in sorted(result_by_network.values(),
+                         key=lambda result: result.name):
+      method_result_proto.results_by_network.append(result.to_proto())
 
-  return method_result_proto
+    return method_result_proto
 
+  def analyze_data_set(self, data_set, pfe_methods, network_models,
+                       font_directory):
+    """Analyze data set against the provided set of pfe_methods and network_models.
 
-def analyze_data_set(data_set, pfe_methods, network_models, font_directory):
-  """Analyze data set against the provided set of pfe_methods and network_models.
+    Returns the total cost associated with each pair of pfe method and network
+    model.
+    """
+    sequences = [sequence.page_views for sequence in data_set.sequences]
+    simulation_results = simulation.simulate_all(sequences, pfe_methods,
+                                                 network_models, font_directory)
 
-  Returns the total cost associated with each pair of pfe method and network
-  model.
-  """
-  sequences = [sequence.page_views for sequence in data_set.sequences]
-  simulation_results = simulation.simulate_all(sequences, pfe_methods,
-                                               network_models, font_directory)
+    results = []
+    for key, totals in sorted(simulation_results.items()):
+      results.append(self.to_method_result_proto(key, totals))
 
-  results = []
-  for key, totals in sorted(simulation_results.items()):
-    results.append(to_method_result_proto(key, totals))
-
-  return results
+    return results
 
 
 def main(argv):
@@ -150,8 +150,9 @@ def main(argv):
   with open(input_data_path, 'r') as input_data_file:
     text_format.Merge(input_data_file.read(), data_set)
 
-  results = analyze_data_set(data_set, PFE_METHODS, NETWORK_MODELS,
-                             FLAGS.font_directory)
+  analyzer = Analyzer(cost.cost)
+  results = analyzer.analyze_data_set(data_set, PFE_METHODS, NETWORK_MODELS,
+                                      FLAGS.font_directory)
 
   results_proto = result_pb2.AnalysisResultProto()
   for method_result in results:
