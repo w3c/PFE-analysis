@@ -12,6 +12,8 @@ Input data is in textproto format using the proto definitions found in
 analysis/page_view_sequence.proto
 """
 
+import sys
+
 from absl import app
 from absl import flags
 from analysis import distribution
@@ -30,6 +32,9 @@ flags.DEFINE_string(
     "font_directory", None,
     "Directory which contains all font's to be used in the analysis.")
 flags.mark_flag_as_required("font_directory")
+
+flags.DEFINE_bool("output_binary", False,
+                  "If true outputs the results in binary format.")
 
 PFE_METHODS = [
     whole_font_pfe_method,
@@ -152,7 +157,10 @@ def main(argv):
   for method_result in results:
     results_proto.results.append(method_result)
 
-  print(text_format.MessageToString(results_proto))
+  if FLAGS.output_binary:
+    sys.stdout.buffer.write(results_proto.SerializeToString())
+  else:
+    print(text_format.MessageToString(results_proto))
 
 
 if __name__ == '__main__':

@@ -29,6 +29,9 @@ flags.DEFINE_string(
     "Path to a file containing an analysis result proto or '-' to read from stdin."
 )
 
+flags.DEFINE_bool("binary", False,
+                  "If true, will parse the input file as a binary proto.")
+
 
 class NetworkResultNotFound(Exception):
   """Could not find the specified network result."""
@@ -40,7 +43,12 @@ class MethodResultNotFound(Exception):
 
 def main(argv):  # pylint: disable=missing-function-docstring
   result_proto = result_pb2.AnalysisResultProto()
-  text_format.Merge(read_input(FLAGS.input_file), result_proto)
+  if not FLAGS.binary:
+    input_file_contents = read_input(FLAGS.input_file)
+    text_format.Merge(input_file_contents, result_proto)
+  else:
+    input_file_contents = read_binary_input(FLAGS.input_file)
+    result_proto.ParseFromString(input_file_contents)
 
   if len(argv) < 2:
     return print_usage()
@@ -125,6 +133,15 @@ def read_input(input_file_path):
     return sys.stdin.read()
 
   with open(input_file_path, 'r') as input_data_file:
+    return input_data_file.read()
+
+
+def read_binary_input(input_file_path):
+  """Read the contents of input_file_path and return them."""
+  if input_file_path == "-":
+    return sys.stdin.buffer.read()
+
+  with open(input_file_path, 'rb') as input_data_file:
     return input_data_file.read()
 
 
