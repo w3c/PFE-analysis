@@ -8,3 +8,15 @@ py_binary(
         "@io_abseil_py//absl:app",
     ],
 )
+
+py_binary(
+    name = "summarize_results",
+    srcs = [
+        "summarize_results.py",
+    ],
+    deps = [
+        "//analysis:result_proto_py",
+        "@io_abseil_py//absl:app",
+        "@io_abseil_py//absl/flags",
+    ],
+)
