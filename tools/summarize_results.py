@@ -1,7 +1,17 @@
-"""Provides summaries and visualizations of the results of an analysis
+"""Provides summaries of the results of an analysis
 
 Takes an AnalysisResultProto in either text or binary form and can
 Summarize the data in a few different ways.
+
+Usage:
+
+summarize_results <mode>
+
+Available modes:
+  cost_summary - print out the total cost for each method and network model.
+  latency_distriubtion <method> <network> - print out the latency distribution
+                                            for a particular method and network
+                                            model.
 """
 
 import sys
@@ -18,6 +28,10 @@ flags.DEFINE_string(
 )
 
 
+class NetworkResultNotFound(Exception):
+  """Could not find the specified network result."""
+
+
 def main(argv):  # pylint: disable=missing-function-docstring
   result_proto = result_pb2.AnalysisResultProto()
   text_format.Merge(read_input(FLAGS.input_file), result_proto)
@@ -30,7 +44,36 @@ def main(argv):  # pylint: disable=missing-function-docstring
     print_cost_summary(result_proto)
     return 0
 
+  if mode == "latency_distribution" and len(argv) > 3:
+    method = argv[2]
+    network = argv[3]
+
+    network_proto = find_network_result(method, network, result_proto)
+    print_distribution(network_proto.request_latency_distribution)
+    return 0
+
   return print_usage()
+
+
+def find_network_result(method, network, result_proto):
+  """Locates the network result proto for method and network inside of result_proto."""
+  for method_proto in result_proto.results:
+    if method_proto.method_name != method:
+      continue
+
+    for network_proto in method_proto.results_by_network:
+      if network_proto.network_model_name != network:
+        continue
+
+      return network_proto
+
+  raise NetworkResultNotFound("Cannot find network result for %s and %s." %
+                              (method, network))
+
+
+def print_distribution(distribution_proto):
+  for bucket in distribution_proto.buckets:
+    print("{}, {}".format(bucket.end, bucket.count))
 
 
 def print_usage():  # pylint: disable=missing-function-docstring
@@ -40,6 +83,7 @@ summarize_results <mode>
 
 Available modes:
   cost_summary - print out the total cost for each method and network model.
+  latency_distriubtion <method> <network> - print out the latency distribution for a particular method and network model.
 """)
   return -1
 
