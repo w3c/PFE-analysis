@@ -54,6 +54,7 @@ py_binary(
 py_library(
     name = "common",
     srcs = [
+        "cost.py",
         "distribution.py",
         "request_graph.py",
     ],
@@ -96,6 +97,16 @@ py_test(
         ":analyzer",
         ":common",
         ":fake_pfe",
+    ],
+)
+
+py_test(
+    name = "cost_test",
+    srcs = [
+        "cost_test.py",
+    ],
+    deps = [
+        ":common",
     ],
 )
 
