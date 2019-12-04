@@ -1,0 +1,12 @@
+syntax = "proto2";
+
+package analysis.pfe_methods.unicode_range_data;
+
+message SlicingStrategy {
+  repeated Subset subsets = 1;
+}
+
+message Subset {
+  // Set of unique codepoints.
+  repeated int32 codepoints = 1;
+}
