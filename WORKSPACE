@@ -9,6 +9,14 @@ http_archive(
     url = "https://github.com/google/googletest/archive/master.zip",
 )
 
+# FontTools
+http_archive(
+    name = "fonttools",
+    build_file = "//third_party:fonttools.BUILD",
+    strip_prefix = "fonttools-master",
+    url = "https://github.com/fonttools/fonttools/archive/master.zip",
+)
+
 # Brotli Encoder/Decoder
 http_archive(
     name = "brotli",
