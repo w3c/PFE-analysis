@@ -1,20 +1,44 @@
 """Helper that can load slicing strategy protos by name."""
 
-def slicing_strategy_for_font(font_bytes):
+import os
+
+from analysis.pfe_methods.unicode_range_data import slicing_strategy_pb2
+from google.protobuf import text_format
+
+SLICING_STRATEGY_DIR = "analysis/pfe_methods/unicode_range_data"
+
+
+def slicing_strategy_for_font(font_bytes):  # pylint: disable=unused-argument
   """Determines which slicing strategy should be used for the given font."""
-  pass
+  # TODO(garretrieger): Implement me!
 
 
 def get_available_strategies():
   """Returns the names of all available strategies."""
-  pass
+  return set(
+      f.replace(".textproto", "")
+      for f in os.listdir(SLICING_STRATEGY_DIR)
+      if os.path.isfile(os.path.join(SLICING_STRATEGY_DIR, f)) and
+      f.endswith(".textproto"))
 
 
 def load_slicing_strategy(strategy_name):
   """Load the slicing strategy identified by strategy_name and return it."""
-  pass
+  file_name = "%s.textproto" % strategy_name
+  with open(os.path.join(SLICING_STRATEGY_DIR, file_name),
+            'r') as strategy_file:
+    strategy_file_contents = strategy_file.read()
+
+  strategy_proto = slicing_strategy_pb2.SlicingStrategy()
+  text_format.Merge(strategy_file_contents, strategy_proto)
+
+  return [subset_to_set(subset) for subset in strategy_proto.subsets]
 
 
-def codepoints_in_font(font_bytes):
+def subset_to_set(subset_proto):
+  return set(cp for cp in subset_proto.codepoints)
+
+
+def codepoints_in_font(font_bytes):  # pylint: disable=unused-argument
   """Returns the set of codepoints that the font can render."""
-  pass
+  # TODO(garretrieger): Implement me!

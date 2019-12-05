@@ -19,13 +19,17 @@ FONT_SLICING_STRATEGY_CACHE = dict()
 # <font name>:<slicing_strategy>:<subset index>
 SUBSET_CACHE = dict()
 
+
 def name():
   return "UnicodeRange"
+
 
 def start_session(font_directory):
   return UnicodeRangePfeSession(font_directory)
 
+
 class UnicodeRangePfeSession:
+  """Unicode range PFE session."""
 
   def __init__(self, font_directory):
     self.font_directory = font_directory
@@ -34,7 +38,6 @@ class UnicodeRangePfeSession:
   def page_view(self, codepoints_by_font):
     """Processes a page view."""
     # TODO(garretrieger): Implement me!
-    pass
 
   def get_request_graphs(self):
     return self.request_graphs

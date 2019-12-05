@@ -31,3 +31,13 @@ py_library(
         "@fonttools",
     ],
 )
+
+py_test(
+    name = "slicing_strategy_loader_test",
+    srcs = [
+        "slicing_strategy_loader_test.py",
+    ],
+    deps = [
+        ":slicing_strategy_loader",
+    ],
+)
