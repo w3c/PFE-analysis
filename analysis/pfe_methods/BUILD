@@ -1,6 +1,7 @@
 py_library(
     name = "pfe_methods",
     srcs = [
+        "unicode_range_pfe_method.py",
         "whole_font_pfe_method.py",
     ],
     visibility = [
@@ -8,6 +9,7 @@ py_library(
     ],
     deps = [
         "//analysis:common",
+        "//analysis/pfe_methods/unicode_range_data:slicing_strategy_loader",
         "//woff2_py",
     ],
 )
