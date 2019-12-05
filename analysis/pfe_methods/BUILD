@@ -26,3 +26,16 @@ py_test(
         ":pfe_methods",
     ],
 )
+
+py_test(
+    name = "unicode_range_pfe_method_test",
+    srcs = [
+        "unicode_range_pfe_method_test.py",
+    ],
+    data = [
+        "//patch_subset:testdata",
+    ],
+    deps = [
+        ":pfe_methods",
+    ],
+)

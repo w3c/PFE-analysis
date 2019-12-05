@@ -29,8 +29,8 @@ def name():
   return "UnicodeRange"
 
 
-def start_session(font_directory):
-  return UnicodeRangePfeSession(font_directory)
+def start_session(font_directory, subset_sizer=None):
+  return UnicodeRangePfeSession(font_directory, subset_sizer)
 
 
 def slicing_strategy_for_font(font_id, font_bytes):
@@ -45,23 +45,26 @@ def slicing_strategy_for_font(font_id, font_bytes):
           slicing_strategy_loader.load_slicing_strategy(strategy_name))
 
 
-def subset_size(cache_key, subset, font_bytes):  # pylint: disable=unused-argument
-  # TODO(garretrieger): Implement me!
-  return 1000
+class SubsetSizer:
+
+  def subset_size(self, cache_key, subset, font_bytes):  # pylint: disable=unused-argument,no-self-use
+    # TODO(garretrieger): Implement me!
+    return 1024
 
 
 class UnicodeRangePfeSession:
   """Unicode range PFE session."""
 
-  def __init__(self, font_directory):
+  def __init__(self, font_directory, subset_sizer=None):
     self.font_directory = font_directory
+    self.subset_sizer = subset_sizer if subset_sizer else SubsetSizer()
     self.request_graphs = []
     self.already_loaded_subsets = set()
 
   def page_view(self, codepoints_by_font):
     """Processes a page view."""
     requests = set()
-    for font_id, codepoints in codepoints_by_font:
+    for font_id, codepoints in codepoints_by_font.items():
       requests.update(self.page_view_for_font(font_id, codepoints))
 
     self.request_graphs.append(request_graph.RequestGraph(requests))
@@ -79,8 +82,8 @@ class UnicodeRangePfeSession:
 
     subset_sizes = {
         "%s:%s:%s" % (font_id, strategy_name, index):
-        subset_size("%s:%s:%s" % (font_id, strategy_name, index), subset,
-                    font_bytes)
+        self.subset_sizer.subset_size(
+            "%s:%s:%s" % (font_id, strategy_name, index), subset, font_bytes)
         for index, subset in enumerate(strategy)
         if subset.intersection(codepoints)
     }
@@ -90,7 +93,7 @@ class UnicodeRangePfeSession:
     requests = {
         # TODO(garretrieger): account for HTTP request size and response overhead.
         request_graph.Request(0, size)
-        for key, size in subset_sizes
+        for key, size in subset_sizes.items()
         if key not in self.already_loaded_subsets
     }
 
