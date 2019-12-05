@@ -37,6 +37,9 @@ py_test(
     srcs = [
         "slicing_strategy_loader_test.py",
     ],
+    data = [
+        "//patch_subset:testdata",
+    ],
     deps = [
         ":slicing_strategy_loader",
     ],
