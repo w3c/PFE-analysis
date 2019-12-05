@@ -48,8 +48,9 @@ def load_slicing_strategy(strategy_name):
     return CACHE[strategy_name]
 
   file_name = "%s.textproto" % strategy_name
-  with open(os.path.join(SLICING_STRATEGY_DIR, file_name),
-            'r') as strategy_file:
+  with io.open(os.path.join(SLICING_STRATEGY_DIR, file_name),
+               'r',
+               encoding='utf8') as strategy_file:
     strategy_file_contents = strategy_file.read()
 
   strategy_proto = slicing_strategy_pb2.SlicingStrategy()
