@@ -17,6 +17,28 @@ class UnicodeRangePfeMethodTest(unittest.TestCase):
     self.session = unicode_range_pfe_method.start_session(
         "./patch_subset/testdata/", MockSubsetSizer())
 
+  def test_subset_size(self):
+    with open("./patch_subset/testdata/Roboto-Regular.ttf", "rb") as font_file:
+      font_bytes = font_file.read()
+
+    subset_sizer = unicode_range_pfe_method.SubsetSizer()
+    self.assertEqual(
+        subset_sizer.subset_size("cache-key1", {0x61, 0x62, 0x63, 0x64},
+                                 font_bytes), 1640)
+
+  def test_subset_size_caches(self):
+    with open("./patch_subset/testdata/Roboto-Regular.ttf", "rb") as font_file:
+      font_bytes = font_file.read()
+
+    subset_sizer = unicode_range_pfe_method.SubsetSizer()
+    self.assertEqual(
+        subset_sizer.subset_size("cache-key2", {0x61, 0x62, 0x63, 0x64},
+                                 font_bytes), 1640)
+    font_bytes = b'not a valid font'
+    self.assertEqual(
+        subset_sizer.subset_size("cache-key1", {0x61, 0x62, 0x63, 0x64},
+                                 font_bytes), 1640)
+
   def test_font_not_found(self):
     with self.assertRaises(IOError):
       self.session.page_view({"Roboto-Bold.ttf": [0x61, 0x62]})
