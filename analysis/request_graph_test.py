@@ -6,6 +6,36 @@ from analysis import request_graph
 
 class RequestGraphTest(unittest.TestCase):
 
+  def test_graph_has_independent_requests_empty(self):
+    graph = request_graph.RequestGraph(set())
+
+    self.assertTrue(request_graph.graph_has_independent_requests(graph, []))
+    self.assertFalse(
+        request_graph.graph_has_independent_requests(graph, [(1, 2)]))
+
+  def test_graph_has_independent_requests(self):
+    r_1 = request_graph.Request(1, 2)
+    r_2 = request_graph.Request(3, 4)
+    r_3 = request_graph.Request(5, 6)
+    graph = request_graph.RequestGraph({r_1, r_2, r_3})
+
+    self.assertTrue(
+        request_graph.graph_has_independent_requests(graph, [(3, 4), (1, 2),
+                                                             (5, 6)]))
+    self.assertFalse(
+        request_graph.graph_has_independent_requests(graph, [(3, 5), (1, 2),
+                                                             (5, 6)]))
+
+  def test_graph_has_independent_requests_not_independent(self):
+    r_1 = request_graph.Request(1, 2)
+    r_2 = request_graph.Request(3, 4, {r_1})
+    r_3 = request_graph.Request(5, 6)
+    graph = request_graph.RequestGraph({r_1, r_2, r_3})
+
+    self.assertFalse(
+        request_graph.graph_has_independent_requests(graph, [(3, 4), (1, 2),
+                                                             (5, 6)]))
+
   def test_total_request_bytes(self):
     r_1 = request_graph.Request(1, 2)
     r_2 = request_graph.Request(3, 4, {r_1})

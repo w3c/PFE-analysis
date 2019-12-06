@@ -19,7 +19,8 @@ def graph_has_independent_requests(graph, request_response_size_pairs):
       if (request.request_size == pair[0] and request.response_size == pair[1]):
         matched_request = request
         break
-    requests.remove(matched_request)
+    if matched_request:
+      requests.remove(matched_request)
 
   return not requests
 
