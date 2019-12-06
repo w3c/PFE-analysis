@@ -17,7 +17,4 @@ def cost(time_ms):
   (https://docs.google.com/document/d/1kx62tpy5hGIbHh6tHMAryon9Sgye--W_IsHTeCMlmEo/edit)
   for a more detailed discussion.
   """
-  if time_ms <= NO_COST_THRESHOLD_MS:
-    return 0
-
-  return math.exp(EXP_COEFFICIENT * (time_ms - NO_COST_THRESHOLD_MS)) - 1
+  return math.exp(EXP_COEFFICIENT * max(time_ms - NO_COST_THRESHOLD_MS, 0)) - 1
