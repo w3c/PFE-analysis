@@ -29,7 +29,7 @@ SUBSET_SIZE_CACHE = dict()
 
 
 def name():
-  return "UnicodeRange"
+  return "GoogleFonts_UnicodeRange"
 
 
 def start_session(font_directory, subset_sizer=None):
