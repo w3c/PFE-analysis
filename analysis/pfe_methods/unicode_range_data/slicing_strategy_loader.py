@@ -1,5 +1,6 @@
 """Helper that can load slicing strategy protos by name."""
 
+import functools
 import io
 import os
 
@@ -8,8 +9,6 @@ from fontTools import ttLib
 from google.protobuf import text_format
 
 SLICING_STRATEGY_DIR = "analysis/pfe_methods/unicode_range_data"
-
-CACHE = dict()
 
 
 def slicing_strategy_for_font(font_bytes):  # pylint: disable=unused-argument
@@ -42,11 +41,9 @@ def get_available_strategies():
       f.endswith(".textproto"))
 
 
+@functools.lru_cache(maxsize=None)
 def load_slicing_strategy(strategy_name):
   """Load the slicing strategy identified by strategy_name and return it."""
-  if strategy_name in CACHE:
-    return CACHE[strategy_name]
-
   file_name = "%s.textproto" % strategy_name
   with io.open(os.path.join(SLICING_STRATEGY_DIR, file_name),
                'r',
@@ -56,10 +53,7 @@ def load_slicing_strategy(strategy_name):
   strategy_proto = slicing_strategy_pb2.SlicingStrategy()
   text_format.Merge(strategy_file_contents, strategy_proto)
 
-  result = [subset_to_set(subset) for subset in strategy_proto.subsets]
-
-  CACHE[strategy_name] = result
-  return result
+  return [subset_to_set(subset) for subset in strategy_proto.subsets]
 
 
 def subset_to_set(subset_proto):
