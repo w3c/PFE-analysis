@@ -34,7 +34,7 @@ flags.DEFINE_string(
 flags.mark_flag_as_required("font_directory")
 
 flags.DEFINE_bool("output_binary", False,
-                  "If true outputs the results in binary format.")
+                  "If true outputs the results in binary proto format.")
 
 PFE_METHODS = [
     whole_font_pfe_method,

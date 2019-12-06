@@ -41,6 +41,23 @@ class MethodResultNotFound(Exception):
   """Could not find the specified method result."""
 
 
+MODE_FUNCTIONS = {
+    "cost_summary":
+        lambda argv, result_proto: print_cost_summary(result_proto),
+    "latency_distribution":
+        (lambda argv, result_proto: print_network_distribution(
+            argv, result_proto, "request_latency_distribution")),
+    "cost_distribution": (lambda argv, result_proto: print_network_distribution(
+        argv, result_proto, "cost_distribution")),
+    "request_size_distribution":
+        (lambda argv, result_proto: print_method_distribution(
+            argv, result_proto, "request_size_distribution")),
+    "response_size_distribution":
+        (lambda argv, result_proto: print_method_distribution(
+            argv, result_proto, "response_size_distribution")),
+}
+
+
 def main(argv):  # pylint: disable=missing-function-docstring
   result_proto = result_pb2.AnalysisResultProto()
   if not FLAGS.binary:
@@ -54,53 +71,65 @@ def main(argv):  # pylint: disable=missing-function-docstring
     return print_usage()
 
   mode = argv[1]
-  if mode == "cost_summary":
-    print_cost_summary(result_proto)
-    return 0
+  argv = argv[2:]
+  if mode not in MODE_FUNCTIONS:
+    return print_usage()
 
-  if mode in ("request_size_distribution",
-              "response_size_distribution") and len(argv) > 2:
-    method = argv[2]
+  return MODE_FUNCTIONS[mode](argv, result_proto)
 
-    method_proto = find_method_result(method, result_proto)
-    dist_proto = (method_proto.request_size_distribution
-                  if mode == "request_size_distribution" else
-                  method_proto.response_size_distribution)
-    print_distribution(dist_proto)
-    return 0
 
-  if mode in ("latency_distribution", "cost_distribution") and len(argv) > 3:
-    method = argv[2]
-    network = argv[3]
+def print_method_distribution(argv, result_proto, property_name):
+  """Find and print a distribution found on a MethodResultProto."""
+  if len(argv) < 1:
+    print_usage()
+    return
 
-    network_proto = find_network_result(method, network, result_proto)
-    dist_proto = (network_proto.request_latency_distribution
-                  if mode == "latency_distribution" else
-                  network_proto.cost_distribution)
-    print_distribution(dist_proto)
-    return 0
+  method = argv[0]
+  method_proto = find_method_result(method, result_proto)
+  dist_proto = getattr(method_proto, property_name)
+  print_distribution(dist_proto)
 
-  return print_usage()
+
+def print_network_distribution(argv, result_proto, property_name):
+  """Find and print a distribution found on a NetworkResultProto."""
+  if len(argv) < 2:
+    print_usage()
+    return
+
+  method = argv[0]
+  network = argv[1]
+
+  network_proto = find_network_result(method, network, result_proto)
+  dist_proto = getattr(network_proto, property_name)
+  print_distribution(dist_proto)
 
 
 def find_method_result(method, result_proto):
   """Locates the method result proto for method inside of result_proto."""
-  for method_proto in result_proto.results:
-    if method_proto.method_name == method:
-      return method_proto
+  matches = [
+      method_proto for method_proto in result_proto.results
+      if method_proto.method_name == method
+  ]
 
-  raise MethodResultNotFound("Cannot find method result %s." % method)
+  if len(matches) != 1:
+    raise MethodResultNotFound("Cannot find method result %s." % method)
+
+  return matches[0]
 
 
 def find_network_result(method, network, result_proto):
   """Locates the network result proto for method and network inside of result_proto."""
   method_proto = find_method_result(method, result_proto)
-  for network_proto in method_proto.results_by_network:
-    if network_proto.network_model_name == network:
-      return network_proto
+  matches = [
+      network_proto for network_proto in method_proto.results_by_network
+      if network_proto.network_model_name == network
+  ]
 
-  raise NetworkResultNotFound("Cannot find network result for %s and %s." %
-                              (method, network))
+  if len(matches) != 1:
+    raise NetworkResultNotFound("Cannot find network result for %s and %s." %
+                                (method, network))
+
+  return matches[0]
 
 
 def print_distribution(distribution_proto):
