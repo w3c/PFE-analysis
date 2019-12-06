@@ -21,6 +21,7 @@ from analysis import distribution
 from analysis import page_view_sequence_pb2
 from analysis import result_pb2
 from analysis import simulation
+from analysis.pfe_methods import unicode_range_pfe_method
 from analysis.pfe_methods import whole_font_pfe_method
 from google.protobuf import text_format
 from patch_subset.py import patch_subset_method
@@ -38,6 +39,7 @@ flags.DEFINE_bool("output_binary", False,
                   "If true outputs the results in binary proto format.")
 
 PFE_METHODS = [
+    unicode_range_pfe_method,
     whole_font_pfe_method,
     patch_subset_method,
 ]
