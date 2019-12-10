@@ -9,6 +9,7 @@
 #include "hb.h"
 #include "patch_subset/brotli_binary_diff.h"
 #include "patch_subset/brotli_binary_patch.h"
+#include "patch_subset/brotli_request_logger.h"
 #include "patch_subset/farm_hasher.h"
 #include "patch_subset/file_font_provider.h"
 #include "patch_subset/font_provider.h"
@@ -22,6 +23,7 @@ using ::patch_subset::BinaryDiff;
 using ::patch_subset::BinaryPatch;
 using ::patch_subset::BrotliBinaryDiff;
 using ::patch_subset::BrotliBinaryPatch;
+using ::patch_subset::BrotliRequestLogger;
 using ::patch_subset::ClientState;
 using ::patch_subset::FarmHasher;
 using ::patch_subset::FileFontProvider;
@@ -41,11 +43,12 @@ class PatchSubsetSession {
       : font_provider_(new FileFontProvider(font_directory)),
         binary_diff_(new BrotliBinaryDiff()),
         binary_patch_(new BrotliBinaryPatch()),
+        brotli_request_logger_(&request_logger_),
         server_(std::unique_ptr<FontProvider>(font_provider_),
                 std::unique_ptr<Subsetter>(new HarfbuzzSubsetter()),
                 std::unique_ptr<BinaryDiff>(binary_diff_),
                 std::unique_ptr<Hasher>(new FarmHasher())),
-        client_(&server_, &request_logger_,
+        client_(&server_, &brotli_request_logger_,
                 std::unique_ptr<BinaryPatch>(binary_patch_),
                 std::unique_ptr<Hasher>(new FarmHasher())) {
     client_state_.set_font_id(font_id);
@@ -67,6 +70,7 @@ class PatchSubsetSession {
   BinaryDiff* binary_diff_;
   BinaryPatch* binary_patch_;
   MemoryRequestLogger request_logger_;
+  BrotliRequestLogger brotli_request_logger_;
   PatchSubsetServerImpl server_;
   PatchSubsetClient client_;
   ClientState client_state_;
