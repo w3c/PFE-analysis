@@ -35,7 +35,9 @@ TEST_F(BrotliRequestLoggerTest, Compresses) {
   const MemoryRequestLogger::Record& record =
       memory_request_logger_->Records()[0];
   EXPECT_LT(record.request_size, request_data.size());
+  EXPECT_GT(record.request_size, 0);
   EXPECT_LT(record.response_size, response_data.size());
+  EXPECT_GT(record.response_size, 0);
 }
 
 TEST_F(BrotliRequestLoggerTest, DoesntCompress) {
