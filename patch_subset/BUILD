@@ -15,13 +15,10 @@ cc_proto_library(
 cc_library(
     name = "server",
     srcs = [
-        "brotli_binary_diff.cc",
         "harfbuzz_subsetter.cc",
         "patch_subset_server_impl.cc",
     ],
     hdrs = [
-        "binary_diff.h",
-        "brotli_binary_diff.h",
         "harfbuzz_subsetter.h",
         "patch_subset_server_impl.h",
         "subsetter.h",
@@ -43,12 +40,14 @@ cc_library(
     name = "client",
     srcs = [
         "brotli_binary_patch.cc",
+        "brotli_request_logger.cc",
         "memory_request_logger.cc",
         "patch_subset_client.cc",
     ],
     hdrs = [
         "binary_patch.h",
         "brotli_binary_patch.h",
+        "brotli_request_logger.h",
         "memory_request_logger.h",
         "null_request_logger.h",
         "patch_subset_client.h",
@@ -70,6 +69,7 @@ cc_library(
 cc_library(
     name = "common",
     srcs = [
+        "brotli_binary_diff.cc",
         "compressed_set.cc",
         "farm_hasher.cc",
         "file_font_provider.cc",
@@ -77,6 +77,8 @@ cc_library(
         "sparse_bit_set.cc",
     ],
     hdrs = [
+        "binary_diff.h",
+        "brotli_binary_diff.h",
         "compressed_set.h",
         "farm_hasher.h",
         "file_font_provider.h",
@@ -94,6 +96,7 @@ cc_library(
     deps = [
         ":patch_subset_cc_proto",
         "//common",
+        "@brotli//:brotlienc",
         "@com_google_absl//absl/strings",
         "@com_google_absl//absl/types:optional",
         "@farmhash",
@@ -106,6 +109,7 @@ cc_test(
     size = "small",
     srcs = [
         "brotli_patching_test.cc",
+        "brotli_request_logger_test.cc",
         "client_server_integration_test.cc",
         "compressed_set_test.cc",
         "fake_subsetter.h",
