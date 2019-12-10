@@ -27,7 +27,7 @@ void BrotliRequestLogger::OptionallyCompress(const std::string& data,
 
   StatusCode result = brotli_diff_->Diff(empty, font_data, &compressed);
   if (result == StatusCode::kOk && compressed.size() < data.size()) {
-    *output_data = compressed.str();
+    output_data->assign(compressed.data(), compressed.size());
   } else {
     *output_data = data;
   }
