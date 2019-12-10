@@ -18,6 +18,7 @@ from absl import app
 from absl import flags
 from analysis import cost
 from analysis import distribution
+from analysis import network_models
 from analysis import page_view_sequence_pb2
 from analysis import result_pb2
 from analysis import simulation
@@ -47,17 +48,8 @@ PFE_METHODS = [
 ]
 
 NETWORK_MODELS = [
-    # TODO(garretrieger): populate with some real network models.
-    simulation.NetworkModel(
-        "broadband",
-        rtt=20,  # 40 ms
-        bandwidth_up=1250,  # 10 mbps
-        bandwidth_down=6250),  # 50 mbps
-    simulation.NetworkModel(
-        "dialup",
-        rtt=200,  # 200 ms
-        bandwidth_up=7,  # 56 kbps
-        bandwidth_down=7),  # 56 kbps
+    network_models.BROADBAND,
+    network_models.DIALUP,
 ]
 
 
@@ -127,7 +119,7 @@ class Analyzer:
 
     return method_result_proto
 
-  def analyze_data_set(self, data_set, pfe_methods, network_models,
+  def analyze_data_set(self, data_set, pfe_methods, the_network_models,
                        font_directory):
     """Analyze data set against the provided set of pfe_methods and network_models.
 
@@ -136,7 +128,8 @@ class Analyzer:
     """
     sequences = [sequence.page_views for sequence in data_set.sequences]
     simulation_results = simulation.simulate_all(sequences, pfe_methods,
-                                                 network_models, font_directory)
+                                                 the_network_models,
+                                                 font_directory)
 
     results = []
     for key, totals in sorted(simulation_results.items()):

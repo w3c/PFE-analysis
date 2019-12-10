@@ -36,6 +36,7 @@ py_binary(
     name = "analyzer",
     srcs = [
         "analyzer.py",
+        "network_models.py",
         "simulation.py",
     ],
     srcs_version = "PY3",
