@@ -26,6 +26,7 @@ py_library(
     ],
     deps = [
         "//analysis:common",
+        "//analysis:simulation",
     ],
 )
 

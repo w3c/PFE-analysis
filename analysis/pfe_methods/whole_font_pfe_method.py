@@ -5,6 +5,9 @@ page view. Subsequent views re-use the cached whole font.
 
 This models traditional font hosting.
 """
+import os
+
+from analysis import network_models
 from analysis import request_graph
 from woff2_py import woff2
 
@@ -38,9 +41,12 @@ class WholeFontPfeSession:
       if font_id in self.loaded_fonts or not codepoints:
         continue
 
-      # TODO(garretrieger): account for HTTP overhead in request and response.
       self.loaded_fonts.add(font_id)
-      requests.add(request_graph.Request(0, self.get_font_size(font_id)))
+      requests.add(
+          request_graph.Request(
+              network_models.ESTIMATED_HTTP_REQUEST_HEADER_SIZE,
+              network_models.ESTIMATED_HTTP_RESPONSE_HEADER_SIZE +
+              self.get_font_size(font_id)))
 
     graph = request_graph.RequestGraph(set())
     if requests:

@@ -26,7 +26,7 @@ class WholeFontPfeMethodTest(unittest.TestCase):
     self.assertEqual(len(graphs), 1)
     self.assertTrue(
         request_graph.graph_has_independent_requests(graphs[0], [
-            (0, ROBOTO_REGULAR_WOFF2_SIZE),
+            (35, 35 + ROBOTO_REGULAR_WOFF2_SIZE),
         ]))
 
   def test_cached_file_load(self):
@@ -41,7 +41,7 @@ class WholeFontPfeMethodTest(unittest.TestCase):
     self.assertEqual(len(graphs), 1)
     self.assertTrue(
         request_graph.graph_has_independent_requests(graphs[0], [
-            (0, ROBOTO_REGULAR_WOFF2_SIZE),
+            (35, 35 + ROBOTO_REGULAR_WOFF2_SIZE),
         ]))
 
   def test_multiple_file_load(self):
@@ -52,11 +52,11 @@ class WholeFontPfeMethodTest(unittest.TestCase):
     self.assertEqual(len(graphs), 2)
     self.assertTrue(
         request_graph.graph_has_independent_requests(graphs[0], [
-            (0, ROBOTO_REGULAR_WOFF2_SIZE),
+            (35, 35 + ROBOTO_REGULAR_WOFF2_SIZE),
         ]))
     self.assertTrue(
         request_graph.graph_has_independent_requests(graphs[1], [
-            (0, ROBOTO_THIN_WOFF2_SIZE),
+            (35, 35 + ROBOTO_THIN_WOFF2_SIZE),
         ]))
 
   def test_parallel_file_loads(self):
@@ -69,8 +69,8 @@ class WholeFontPfeMethodTest(unittest.TestCase):
     self.assertEqual(len(graphs), 1)
     self.assertTrue(
         request_graph.graph_has_independent_requests(graphs[0], [
-            (0, ROBOTO_REGULAR_WOFF2_SIZE),
-            (0, ROBOTO_THIN_WOFF2_SIZE),
+            (35, 35 + ROBOTO_REGULAR_WOFF2_SIZE),
+            (35, 35 + ROBOTO_THIN_WOFF2_SIZE),
         ]))
 
   def test_single_file_loads_only_once(self):
@@ -81,7 +81,7 @@ class WholeFontPfeMethodTest(unittest.TestCase):
     self.assertEqual(len(graphs), 2)
     self.assertTrue(
         request_graph.graph_has_independent_requests(graphs[0], [
-            (0, ROBOTO_REGULAR_WOFF2_SIZE),
+            (35, 35 + ROBOTO_REGULAR_WOFF2_SIZE),
         ]))
     self.assertTrue(request_graph.graph_has_independent_requests(graphs[1], []))
 

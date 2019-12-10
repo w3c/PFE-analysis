@@ -12,6 +12,9 @@ These definitions are based on what Google Fonts uses for their production
 font serving.
 """
 
+import os
+
+from analysis import network_models
 from analysis import request_graph
 from analysis.pfe_methods import subset_sizer
 from analysis.pfe_methods.unicode_range_data import slicing_strategy_loader
@@ -79,8 +82,9 @@ class UnicodeRangePfeSession:
     # Unicode range requests can happen in parallel, so there's
     # no deps between individual requests.
     requests = {
-        # TODO(garretrieger): account for HTTP request size and response overhead.
-        request_graph.Request(0, size)
+        request_graph.Request(
+            network_models.ESTIMATED_HTTP_REQUEST_HEADER_SIZE,
+            network_models.ESTIMATED_HTTP_RESPONSE_HEADER_SIZE + size)
         for key, size in subset_sizes.items()
         if key not in self.already_loaded_subsets
     }

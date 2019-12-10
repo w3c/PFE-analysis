@@ -36,7 +36,7 @@ class UnicodeRangePfeMethodTest(unittest.TestCase):
     self.assertEqual(len(graphs), 1)
     self.assertTrue(
         request_graph.graph_has_independent_requests(graphs[0], [
-            (0, 1000),
+            (35, 1035),
         ]))
 
   def test_single_font_multiple_subsets(self):
@@ -46,9 +46,9 @@ class UnicodeRangePfeMethodTest(unittest.TestCase):
     self.assertEqual(len(graphs), 1)
     self.assertTrue(
         request_graph.graph_has_independent_requests(graphs[0], [
-            (0, 1000),
-            (0, 1000),
-            (0, 1000),
+            (35, 1035),
+            (35, 1035),
+            (35, 1035),
         ]))
 
   def test_single_font_caches_subsets(self):
@@ -60,13 +60,13 @@ class UnicodeRangePfeMethodTest(unittest.TestCase):
     self.assertEqual(len(graphs), 3)
     self.assertTrue(
         request_graph.graph_has_independent_requests(graphs[0], [
-            (0, 1000),
-            (0, 1000),
+            (35, 1035),
+            (35, 1035),
         ]))
     self.assertTrue(request_graph.graph_has_independent_requests(graphs[1], []))
     self.assertTrue(
         request_graph.graph_has_independent_requests(graphs[2], [
-            (0, 1000),
+            (35, 1035),
         ]))
 
   def test_multiple_fonts(self):
@@ -79,9 +79,9 @@ class UnicodeRangePfeMethodTest(unittest.TestCase):
     self.assertEqual(len(graphs), 1)
     self.assertTrue(
         request_graph.graph_has_independent_requests(graphs[0], [
-            (0, 1000),
-            (0, 1000),
-            (0, 1000),
+            (35, 1035),
+            (35, 1035),
+            (35, 1035),
         ]))
 
   def test_multiple_fonts_caches_subsets(self):
@@ -100,11 +100,11 @@ class UnicodeRangePfeMethodTest(unittest.TestCase):
     self.assertEqual(len(graphs), 3)
     self.assertTrue(
         request_graph.graph_has_independent_requests(graphs[0], [
-            (0, 1000),
+            (35, 1035),
         ]))
     self.assertTrue(
         request_graph.graph_has_independent_requests(graphs[1], [
-            (0, 1000),
+            (35, 1035),
         ]))
     self.assertTrue(request_graph.graph_has_independent_requests(graphs[2], []))
 

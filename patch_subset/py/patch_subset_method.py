@@ -18,6 +18,7 @@ from ctypes import cdll
 from ctypes import POINTER
 from ctypes import Structure
 
+from analysis import network_models
 from analysis import request_graph
 
 # Define the C interface
@@ -119,16 +120,18 @@ class FontSession:
 
 
 def to_request_graph(records):
-  """Convert a listof records into a request graph.
+  """Convert a list of records into a request graph.
 
   In this graph each request depends on the previous request.
   """
   result = set()
   last_request = None
   for record in records:
-    request = request_graph.Request(record.request_size,
-                                    record.response_size,
-                                    happens_after=last_request)
+    request = request_graph.Request(
+        network_models.ESTIMATED_HTTP_REQUEST_HEADER_SIZE + record.request_size,
+        network_models.ESTIMATED_HTTP_RESPONSE_HEADER_SIZE +
+        record.response_size,
+        happens_after=last_request)
     last_request = request
     result.add(request)
   return result

@@ -11,6 +11,7 @@ py_library(
     ],
     deps = [
         "//analysis:common",
+        "//analysis:simulation",
         "//analysis/pfe_methods/unicode_range_data:slicing_strategy_loader",
         "//woff2_py",
     ],

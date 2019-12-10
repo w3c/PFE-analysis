@@ -36,8 +36,6 @@ py_binary(
     name = "analyzer",
     srcs = [
         "analyzer.py",
-        "network_models.py",
-        "simulation.py",
     ],
     srcs_version = "PY3",
     deps = [
@@ -45,10 +43,28 @@ py_binary(
         ":fake_pfe",
         ":page_view_sequence_proto_py",
         ":result_proto_py",
+        ":simulation",
         "//analysis/pfe_methods",
         "//patch_subset/py",
         "@io_abseil_py//absl:app",
         "@io_abseil_py//absl/flags",
+    ],
+)
+
+py_library(
+    name = "simulation",
+    srcs = [
+        "network_models.py",
+        "simulation.py",
+    ],
+    srcs_version = "PY3",
+    visibility = [
+        "//analysis/pfe_methods:__pkg__",
+        "//patch_subset/py:__pkg__",
+    ],
+    deps = [
+        ":common",
+        ":page_view_sequence_proto_py",
     ],
 )
 
