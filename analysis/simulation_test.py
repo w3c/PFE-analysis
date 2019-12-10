@@ -2,6 +2,7 @@
 
 import unittest
 from unittest import mock
+from analysis import font_loader
 from analysis import page_view_sequence_pb2
 from analysis import request_graph
 from analysis import simulation
@@ -9,7 +10,7 @@ from analysis import simulation
 
 class MockPfeMethod:  # pylint: disable=missing-class-docstring
 
-  def start_session(self, font_directory):
+  def start_session(self, a_font_loader):
     pass
 
 
@@ -105,11 +106,12 @@ class SimulationTest(unittest.TestCase):
       simulation.total_time_for_request_graph(graph, self.net_model)
 
   def test_simulate(self):
+    a_font_loader = font_loader.FontLoader("fonts/are/here")
     self.assertEqual(
         simulation.simulate_sequence(self.page_view_sequence,
-                                     self.mock_pfe_method, "fonts/are/here"),
+                                     self.mock_pfe_method, a_font_loader),
         [self.graph_1])
-    self.mock_pfe_method.start_session.assert_called_once_with("fonts/are/here")
+    self.mock_pfe_method.start_session.assert_called_once_with(a_font_loader)
     self.mock_pfe_session.page_view.assert_has_calls([
         mock.call({
             "roboto": {1, 2, 3},

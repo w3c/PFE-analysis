@@ -2,6 +2,7 @@
 
 import unittest
 from analysis.pfe_methods import unicode_range_pfe_method
+from analysis import font_loader
 from analysis import request_graph
 
 
@@ -15,7 +16,7 @@ class UnicodeRangePfeMethodTest(unittest.TestCase):
 
   def setUp(self):
     self.session = unicode_range_pfe_method.start_session(
-        "./patch_subset/testdata/", MockSubsetSizer())
+        font_loader.FontLoader("./patch_subset/testdata/"), MockSubsetSizer())
 
   def test_font_not_found(self):
     with self.assertRaises(IOError):

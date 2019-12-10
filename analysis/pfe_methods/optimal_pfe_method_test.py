@@ -2,6 +2,7 @@
 
 import unittest
 from analysis.pfe_methods import optimal_pfe_method
+from analysis import font_loader
 from analysis import request_graph
 
 
@@ -14,8 +15,8 @@ class MockSubsetSizer:
 class OptimalPfeMethodTest(unittest.TestCase):
 
   def setUp(self):
-    self.session = optimal_pfe_method.start_session("./patch_subset/testdata/",
-                                                    MockSubsetSizer())
+    self.session = optimal_pfe_method.start_session(
+        font_loader.FontLoader("./patch_subset/testdata/"), MockSubsetSizer())
 
   def test_font_not_found(self):
     with self.assertRaises(IOError):

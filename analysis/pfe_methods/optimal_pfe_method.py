@@ -11,8 +11,6 @@ for this page view is then said to be the difference in size between
 the subset for this page view and the subset for the previous page view.
 """
 
-import os
-
 from analysis import request_graph
 from analysis.pfe_methods import subset_sizer
 
@@ -21,15 +19,15 @@ def name():
   return "Optimal"
 
 
-def start_session(font_directory, a_subset_sizer=None):
-  return OptimalPfeSession(font_directory, a_subset_sizer)
+def start_session(font_loader, a_subset_sizer=None):
+  return OptimalPfeSession(font_loader, a_subset_sizer)
 
 
 class OptimalPfeSession:
   """Optimal PFE Session."""
 
-  def __init__(self, font_directory, a_subset_sizer=None):
-    self.font_directory = font_directory
+  def __init__(self, font_loader, a_subset_sizer=None):
+    self.font_loader = font_loader
     self.subset_sizer = a_subset_sizer if a_subset_sizer else subset_sizer.SubsetSizer(
     )
     self.request_graphs = []
@@ -47,8 +45,7 @@ class OptimalPfeSession:
 
   def page_view_for_font(self, font_id, codepoints):
     """Processes a page for for a single font."""
-    with open(os.path.join(self.font_directory, font_id), 'rb') as font_file:
-      font_bytes = font_file.read()
+    font_bytes = self.font_loader.load_font(font_id)
 
     existing_codepoints = self.codepoints_by_font.get(font_id, set())
     existing_codepoints.update(codepoints)

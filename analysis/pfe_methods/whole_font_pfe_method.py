@@ -5,8 +5,6 @@ page view. Subsequent views re-use the cached whole font.
 
 This models traditional font hosting.
 """
-import os
-
 from analysis import request_graph
 from woff2_py import woff2
 
@@ -17,15 +15,15 @@ def name():
   return "WholeFont"
 
 
-def start_session(font_directory):  # pylint: disable=unused-argument
-  return WholeFontPfeSession(font_directory)
+def start_session(font_loader):  # pylint: disable=unused-argument
+  return WholeFontPfeSession(font_loader)
 
 
 class WholeFontPfeSession:
   """Fake progressive font enrichment session."""
 
-  def __init__(self, font_directory):
-    self.font_directory = font_directory
+  def __init__(self, font_loader):
+    self.font_loader = font_loader
     self.request_graphs = []
     self.loaded_fonts = set()
 
@@ -54,11 +52,10 @@ class WholeFontPfeSession:
     if font_id in SIZE_CACHE:
       return SIZE_CACHE[font_id]
 
-    with open(os.path.join(self.font_directory, font_id), 'rb') as font_file:
-      ttf_bytes = font_file.read()
-      woff2_bytes = woff2.ttf_to_woff2(ttf_bytes)
-      SIZE_CACHE[font_id] = len(woff2_bytes)
-      return SIZE_CACHE[font_id]
+    ttf_bytes = self.font_loader.load_font(font_id)
+    woff2_bytes = woff2.ttf_to_woff2(ttf_bytes)
+    SIZE_CACHE[font_id] = len(woff2_bytes)
+    return SIZE_CACHE[font_id]
 
   def get_request_graphs(self):
     return self.request_graphs

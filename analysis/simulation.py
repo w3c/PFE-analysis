@@ -3,6 +3,8 @@
 import collections
 import itertools
 
+from analysis import font_loader
+
 GraphTotals = collections.namedtuple(
     "GraphTotals", ["time_per_network", "request_bytes", "response_bytes"])
 
@@ -31,10 +33,11 @@ def simulate_all(sequences, pfe_methods, network_models, font_directory):
   For each element compute a set of summary metrics, total time, total
   request bytes sent, and total response bytes sent.
   """
+  a_font_loader = font_loader.FontLoader(font_directory)
   result = dict()
   for sequence, method in itertools.product(sequences, pfe_methods):
 
-    graphs = simulate_sequence(sequence, method, font_directory)
+    graphs = simulate_sequence(sequence, method, a_font_loader)
     key = method.name()
     results_for_key = result.get(key, list())
     results_for_key.extend(totals_for_networks(graphs, network_models))
@@ -58,12 +61,12 @@ def totals_for_networks(graphs, network_models):
   return result
 
 
-def simulate_sequence(sequence, pfe_method, font_directory):
+def simulate_sequence(sequence, pfe_method, a_font_loader):
   """Simulate page view sequence with pfe_method using network_model.
 
   Returns a request graph for each page view in the sequence.
   """
-  session = pfe_method.start_session(font_directory)
+  session = pfe_method.start_session(a_font_loader)
   for page_view in sequence:
     session.page_view(codepoints_by_font(page_view))
 

@@ -12,8 +12,6 @@ These definitions are based on what Google Fonts uses for their production
 font serving.
 """
 
-import os
-
 from analysis import request_graph
 from analysis.pfe_methods import subset_sizer
 from analysis.pfe_methods.unicode_range_data import slicing_strategy_loader
@@ -26,8 +24,8 @@ def name():
   return "GoogleFonts_UnicodeRange"
 
 
-def start_session(font_directory, a_subset_sizer=None):
-  return UnicodeRangePfeSession(font_directory, a_subset_sizer)
+def start_session(font_loader, a_subset_sizer=None):
+  return UnicodeRangePfeSession(font_loader, a_subset_sizer)
 
 
 def slicing_strategy_for_font(font_id, font_bytes):
@@ -45,8 +43,8 @@ def slicing_strategy_for_font(font_id, font_bytes):
 class UnicodeRangePfeSession:
   """Unicode range PFE session."""
 
-  def __init__(self, font_directory, a_subset_sizer=None):
-    self.font_directory = font_directory
+  def __init__(self, font_loader, a_subset_sizer=None):
+    self.font_loader = font_loader
     self.subset_sizer = a_subset_sizer if a_subset_sizer else subset_sizer.SubsetSizer(
     )
     self.request_graphs = []
@@ -66,8 +64,7 @@ class UnicodeRangePfeSession:
     Returns the set of requests needed to load all unicode range subsets for
     the given codepoints.
     """
-    with open(os.path.join(self.font_directory, font_id), 'rb') as font_file:
-      font_bytes = font_file.read()
+    font_bytes = self.font_loader.load_font(font_id)
 
     strategy_name, strategy = slicing_strategy_for_font(font_id, font_bytes)
 

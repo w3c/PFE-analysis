@@ -56,6 +56,7 @@ py_library(
     srcs = [
         "cost.py",
         "distribution.py",
+        "font_loader.py",
         "request_graph.py",
     ],
     srcs_version = "PY3",

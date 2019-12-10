@@ -45,9 +45,9 @@ def name():
   return "PatchSubset_PFE"
 
 
-def start_session(font_directory):
+def start_session(font_loader):
   """Starts a new PFE session for this method."""
-  return PatchSubsetPfeSession(font_directory)
+  return PatchSubsetPfeSession(font_loader)
 
 
 class PatchSubsetError(Exception):
@@ -61,9 +61,8 @@ class FontSession:
   for each page view for a particular font.
   """
 
-  def __init__(self, font_directory, font_id, page_view_count):
-    # TODO(garretrieger): set font directory correctly.
-    font_directory_c = c_char_p(font_directory.encode("utf-8"))
+  def __init__(self, font_loader, font_id, page_view_count):
+    font_directory_c = c_char_p(font_loader.directory().encode("utf-8"))
     font_id_c = c_char_p(font_id.encode("utf-8"))
     self.session = c_void_p(new_session(font_directory_c, font_id_c))
     self.delete_session = patch_subset.PatchSubsetSession_delete
@@ -138,10 +137,10 @@ def to_request_graph(records):
 class PatchSubsetPfeSession:
   """Fake progressive font enrichment session."""
 
-  def __init__(self, font_directory):
+  def __init__(self, font_loader):
     self.sessions_by_font = dict()
     self.page_view_count = 0
-    self.font_directory = font_directory
+    self.font_loader = font_loader
 
   def page_view(self, codepoints_by_font):  # pylint: disable=no-self-use,unused-argument
     """Processes a page view.
@@ -155,8 +154,7 @@ class PatchSubsetPfeSession:
 
     for font_id, codepoints in codepoints_by_font.items():
       if font_id not in self.sessions_by_font:
-        self.sessions_by_font[font_id] = FontSession(self.font_directory,
-                                                     font_id,
+        self.sessions_by_font[font_id] = FontSession(self.font_loader, font_id,
                                                      self.page_view_count)
 
       self.sessions_by_font[font_id].extend(codepoints)
