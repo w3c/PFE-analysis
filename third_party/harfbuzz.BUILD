@@ -28,8 +28,9 @@ cc_library(
             "src/hb-uniscribe.cc",
             "src/hb-directwrite.cc",  # exclude windows platform related files.
         ],
-    ) + [
-        "@PFE_analysis//third_party/harfbuzz:config.h",
+    ),
+    deps = [
+        "@PFE_analysis//third_party/harfbuzz:config",
     ],
     hdrs = [
         "src/hb.h",
