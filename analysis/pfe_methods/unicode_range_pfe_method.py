@@ -12,8 +12,6 @@ These definitions are based on what Google Fonts uses for their production
 font serving.
 """
 
-import os
-
 from analysis import network_models
 from analysis import request_graph
 from analysis.pfe_methods import subset_sizer

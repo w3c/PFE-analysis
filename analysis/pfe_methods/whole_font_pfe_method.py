@@ -5,7 +5,6 @@ page view. Subsequent views re-use the cached whole font.
 
 This models traditional font hosting.
 """
-import os
 
 from analysis import network_models
 from analysis import request_graph
