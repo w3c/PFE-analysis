@@ -13,8 +13,8 @@ http_archive(
 http_archive(
     name = "fonttools",
     build_file = "//third_party:fonttools.BUILD",
-    strip_prefix = "fonttools-master",
-    url = "https://github.com/fonttools/fonttools/archive/master.zip",
+    strip_prefix = "fonttools-4.2.0",
+    url = "https://github.com/fonttools/fonttools/archive/4.2.0.zip",
 )
 
 # Brotli Encoder/Decoder
@@ -36,8 +36,8 @@ http_archive(
 http_archive(
     name = "harfbuzz",
     build_file = "//third_party:harfbuzz.BUILD",
-    strip_prefix = "harfbuzz-master",
-    urls = ["https://github.com/harfbuzz/harfbuzz/archive/master.zip"],
+    strip_prefix = "harfbuzz-2.6.4",
+    urls = ["https://github.com/harfbuzz/harfbuzz/archive/2.6.4.zip"],
 )
 
 # farmhash
