@@ -25,7 +25,7 @@ class BrotliRequestLogger : public RequestLogger {
                   const std::string& response_data) override;
 
  private:
-  void OptionallyCompress(const std::string& data, std::string* output_data);
+  void CompressIfSmaller(const std::string& data, std::string* output_data);
 
   MemoryRequestLogger* memory_request_logger_;
   std::unique_ptr<BrotliBinaryDiff> brotli_diff_;
