@@ -12,6 +12,12 @@ class MockSubsetSizer:
     return len(subset) * 1000
 
 
+class InverseMockSubsetSizer:
+
+  def subset_size(self, cache_key, subset, font_bytes):  # pylint: disable=unused-argument,no-self-use
+    return int((1.0 / len(subset)) * 3000)
+
+
 class OptimalPfeMethodTest(unittest.TestCase):
 
   def setUp(self):
@@ -60,6 +66,21 @@ class OptimalPfeMethodTest(unittest.TestCase):
         request_graph.graph_has_independent_requests(graphs[3], [
             (0, 1000),
         ]))
+
+  def test_subsequent_subset_smaller(self):
+    session = optimal_pfe_method.start_session(
+        font_loader.FontLoader("./patch_subset/testdata/"),
+        InverseMockSubsetSizer())
+    session.page_view({"Roboto-Regular.ttf": [1, 2, 3]})
+    session.page_view({"Roboto-Regular.ttf": [4, 5]})
+
+    graphs = session.get_request_graphs()
+    self.assertEqual(len(graphs), 2)
+    self.assertTrue(
+        request_graph.graph_has_independent_requests(graphs[0], [
+            (0, 1000),
+        ]))
+    self.assertTrue(request_graph.graph_has_independent_requests(graphs[1], []))
 
   def test_multiple_fonts(self):
     self.session.page_view({

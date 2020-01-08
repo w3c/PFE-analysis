@@ -58,7 +58,7 @@ class OptimalPfeSession:
     delta = size - self.subset_size_by_font.get(font_id, 0)
     self.subset_size_by_font[font_id] = size
 
-    if delta:
+    if delta > 0:
       return {request_graph.Request(0, delta)}
 
     return set()
