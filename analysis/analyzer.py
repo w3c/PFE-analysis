@@ -37,6 +37,8 @@ flags.DEFINE_string(
     "Directory which contains all font's to be used in the analysis.")
 flags.mark_flag_as_required("font_directory")
 
+flags.DEFINE_bool("input_binary", False,
+                  "If true, will parse the input file as a binary proto.")
 flags.DEFINE_bool("output_binary", False,
                   "If true outputs the results in binary proto format.")
 
@@ -138,14 +140,28 @@ class Analyzer:
     return results
 
 
+def read_binary_input(input_data_path):
+  with open(input_data_path, 'rb') as input_data_file:
+    return page_view_sequence_pb2.DataSetProto.FromString(
+        input_data_file.read())
+
+
+def read_text_input(input_data_path):
+  data_set = page_view_sequence_pb2.DataSetProto()
+  with open(input_data_path, 'r') as input_data_file:
+    text_format.Merge(input_data_file.read(), data_set)
+  return data_set
+
+
 def main(argv):
   """Runs the analysis."""
   del argv  # Unused.
   input_data_path = FLAGS.input_data
 
-  data_set = page_view_sequence_pb2.DataSetProto()
-  with open(input_data_path, 'r') as input_data_file:
-    text_format.Merge(input_data_file.read(), data_set)
+  if FLAGS.input_binary:
+    data_set = read_binary_input(input_data_path)
+  else:
+    data_set = read_text_input(input_data_path)
 
   analyzer = Analyzer(cost.cost)
   results = analyzer.analyze_data_set(data_set, PFE_METHODS, NETWORK_MODELS,
