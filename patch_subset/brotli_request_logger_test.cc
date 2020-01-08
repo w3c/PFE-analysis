@@ -29,7 +29,8 @@ TEST_F(BrotliRequestLoggerTest, Compresses) {
       "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
       "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
 
-  request_logger_->LogRequest(request_data, response_data);
+  EXPECT_EQ(request_logger_->LogRequest(request_data, response_data),
+            StatusCode::kOk);
 
   EXPECT_EQ(memory_request_logger_->Records().size(), 1);
   const MemoryRequestLogger::Record& record =
@@ -44,7 +45,8 @@ TEST_F(BrotliRequestLoggerTest, DoesntCompress) {
   std::string request_data = "abcdefghijk";
   std::string response_data = "abcdefghijk";
 
-  request_logger_->LogRequest(request_data, response_data);
+  EXPECT_EQ(request_logger_->LogRequest(request_data, response_data),
+            StatusCode::kOk);
 
   EXPECT_EQ(memory_request_logger_->Records().size(), 1);
   const MemoryRequestLogger::Record& record =

@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include "common/status.h"
 #include "patch_subset/brotli_binary_diff.h"
 #include "patch_subset/memory_request_logger.h"
 #include "patch_subset/request_logger.h"
@@ -21,11 +22,12 @@ class BrotliRequestLogger : public RequestLogger {
       : memory_request_logger_(memory_request_logger),
         brotli_diff_(new BrotliBinaryDiff()) {}
 
-  void LogRequest(const std::string& request_data,
-                  const std::string& response_data) override;
+  StatusCode LogRequest(const std::string& request_data,
+                        const std::string& response_data) override;
 
  private:
-  void CompressIfSmaller(const std::string& data, std::string* output_data);
+  StatusCode CompressIfSmaller(const std::string& data,
+                               std::string* output_data);
 
   MemoryRequestLogger* memory_request_logger_;
   std::unique_ptr<BrotliBinaryDiff> brotli_diff_;

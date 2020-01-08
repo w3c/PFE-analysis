@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+#include "common/status.h"
 #include "patch_subset/request_logger.h"
 
 namespace patch_subset {
@@ -17,8 +18,8 @@ class MemoryRequestLogger : public RequestLogger {
     uint32_t response_size;
   };
 
-  void LogRequest(const std::string& request_data,
-                  const std::string& response_data) override;
+  StatusCode LogRequest(const std::string& request_data,
+                        const std::string& response_data) override;
 
   const std::vector<Record>& Records() const;
 

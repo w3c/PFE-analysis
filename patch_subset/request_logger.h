@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include "common/status.h"
+
 namespace patch_subset {
 
 // Client for interacting with a PatchSubsetServer. Allows
@@ -12,8 +14,8 @@ class RequestLogger {
  public:
   virtual ~RequestLogger() = default;
 
-  virtual void LogRequest(const std::string& request_data,
-                          const std::string& response_data) = 0;
+  virtual StatusCode LogRequest(const std::string& request_data,
+                                const std::string& response_data) = 0;
 };
 
 }  // namespace patch_subset
