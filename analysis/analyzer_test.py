@@ -2,11 +2,8 @@
 
 import unittest
 from analysis import analyzer
-from analysis import fake_pfe_method
 from analysis import result_pb2
 from analysis import simulation
-from analysis import page_view_sequence_pb2
-from google.protobuf import text_format
 
 
 def mock_cost(total_time_ms):
@@ -15,13 +12,7 @@ def mock_cost(total_time_ms):
 
 class AnalyzerTest(unittest.TestCase):
 
-  def setUp(self):
-    self.data_set = page_view_sequence_pb2.DataSetProto()
-    with open("analysis/sample/sample_data_set.textproto",
-              "r") as sample_data_file:
-      text_format.Merge(sample_data_file.read(), self.data_set)
-
-  def test_analyze_data_set(self):
+  def test_result_to_protos(self):
     method_proto = result_pb2.MethodResultProto()
     method_proto.method_name = "Fake_PFE"
     method_proto.request_size_distribution.buckets.add(end=1000)
@@ -47,12 +38,84 @@ class AnalyzerTest(unittest.TestCase):
     network_proto.cost_distribution.buckets.add(end=215, count=2)
     method_proto.results_by_network.append(network_proto)
 
-    the_analyzer = analyzer.Analyzer(mock_cost)
     self.assertEqual(
-        the_analyzer.analyze_data_set(self.data_set, [fake_pfe_method], [
-            simulation.NetworkModel("fast", 0, 10, 10),
-            simulation.NetworkModel("slow", 100, 1, 1),
-        ], "fonts/are/here"), [method_proto])
+        analyzer.to_protos(
+            {
+                "Fake_PFE": [
+                    simulation.GraphTotals({
+                        "slow": 2100,
+                        "fast": 200
+                    }, 1000, 1000),
+                    simulation.GraphTotals({
+                        "slow": 2100,
+                        "fast": 200
+                    }, 1000, 1000),
+                ],
+            }, mock_cost), [method_proto])
+
+  def test_segment_sequences(self):
+    self.assertEqual([], analyzer.segment_sequences([], 3))
+    self.assertEqual([[1, 2, 3, 4, 5, 6, 7, 8, 9]],
+                     analyzer.segment_sequences([1, 2, 3, 4, 5, 6, 7, 8, 9], 1))
+    self.assertEqual([[1, 2, 3, 4], [5, 6, 7, 8], [9]],
+                     analyzer.segment_sequences([1, 2, 3, 4, 5, 6, 7, 8, 9], 2))
+    self.assertEqual([[1, 2, 3], [4, 5, 6], [7, 8, 9]],
+                     analyzer.segment_sequences([1, 2, 3, 4, 5, 6, 7, 8, 9], 3))
+    self.assertEqual([[1], [2], [3], [4], [5], [6], [7], [8], [9]],
+                     analyzer.segment_sequences([1, 2, 3, 4, 5, 6, 7, 8, 9], 9))
+    self.assertEqual([[1], [2], [3], [4], [5], [6], [7], [8], [9]],
+                     analyzer.segment_sequences([1, 2, 3, 4, 5, 6, 7, 8, 9],
+                                                10))
+
+  def test_merge_results(self):
+    self.assertEqual(analyzer.merge_results([]), dict())
+    self.assertEqual(analyzer.merge_results([{"abc": [1]}]), {"abc": [1]})
+
+    self.assertEqual(analyzer.merge_results([
+        {
+            "abc": [1]
+        },
+        {},
+    ]), {"abc": [1]})
+
+    self.assertEqual(analyzer.merge_results([
+        {
+            "abc": [1]
+        },
+        {
+            "def": [2]
+        },
+    ]), {
+        "abc": [1],
+        "def": [2]
+    })
+
+    self.assertEqual(analyzer.merge_results([
+        {
+            "abc": [1]
+        },
+        {
+            "abc": [2]
+        },
+    ]), {
+        "abc": [1, 2],
+    })
+
+    self.assertEqual(
+        analyzer.merge_results([
+            {
+                "abc": [1]
+            },
+            {
+                "abc": [2]
+            },
+            {
+                "def": [3]
+            },
+        ]), {
+            "abc": [1, 2],
+            "def": [3],
+        })
 
 
 if __name__ == '__main__':

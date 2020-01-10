@@ -12,6 +12,7 @@ Input data is in textproto format using the proto definitions found in
 analysis/page_view_sequence.proto
 """
 
+from multiprocessing import Pool
 import sys
 
 from absl import app
@@ -41,6 +42,9 @@ flags.DEFINE_bool("input_binary", False,
                   "If true, will parse the input file as a binary proto.")
 flags.DEFINE_bool("output_binary", False,
                   "If true outputs the results in binary proto format.")
+
+flags.DEFINE_integer("parallelism", 12,
+                     "Number of processes to use for the simulation.")
 
 PFE_METHODS = [
     optimal_pfe_method,
@@ -82,62 +86,49 @@ class NetworkResult:
     return network_proto
 
 
-class Analyzer:
-  """Holds context for the analysis of a data set against a set of pfe_methods."""
+def to_protos(simulation_results, cost_function):
+  """Converts results from the simulation (a dict from key to totals array) into proto.
 
-  def __init__(self, cost_function):
-    self.cost_function = cost_function
+  Converts to a list of method result protos."""
+  results = []
+  for key, totals in sorted(simulation_results.items()):
+    results.append(to_method_result_proto(key, totals, cost_function))
 
-  def to_method_result_proto(self, method_name, totals):
-    """Converts a set of totals for a method into the corresponding proto."""
-    method_result_proto = result_pb2.MethodResultProto()
-    method_result_proto.method_name = method_name
-    request_size_distribution = distribution.Distribution(
-        distribution.LinearBucketer(5))
-    response_size_distribution = distribution.Distribution(
-        distribution.LinearBucketer(5))
+  return results
 
-    result_by_network = dict()
-    for total in totals:
-      request_size_distribution.add_value(total.request_bytes)
-      response_size_distribution.add_value(total.response_bytes)
 
-      for network, total_time in total.time_per_network.items():
-        if network in result_by_network:
-          network_result = result_by_network[network]
-        else:
-          network_result = NetworkResult(network)
-          result_by_network[network] = network_result
+def to_method_result_proto(method_name, totals, cost_function):
+  """Converts a set of totals for a method into the corresponding proto."""
+  method_result_proto = result_pb2.MethodResultProto()
+  method_result_proto.method_name = method_name
+  request_size_distribution = distribution.Distribution(
+      distribution.LinearBucketer(5))
+  response_size_distribution = distribution.Distribution(
+      distribution.LinearBucketer(5))
 
-        network_result.add_time(total_time, self.cost_function(total_time))
+  result_by_network = dict()
+  for total in totals:
+    request_size_distribution.add_value(total.request_bytes)
+    response_size_distribution.add_value(total.response_bytes)
 
-    method_result_proto.request_size_distribution.CopyFrom(
-        request_size_distribution.to_proto())
-    method_result_proto.response_size_distribution.CopyFrom(
-        response_size_distribution.to_proto())
-    for result in sorted(result_by_network.values(),
-                         key=lambda result: result.name):
-      method_result_proto.results_by_network.append(result.to_proto())
+    for network, total_time in total.time_per_network.items():
+      if network in result_by_network:
+        network_result = result_by_network[network]
+      else:
+        network_result = NetworkResult(network)
+        result_by_network[network] = network_result
 
-    return method_result_proto
+      network_result.add_time(total_time, cost_function(total_time))
 
-  def analyze_data_set(self, data_set, pfe_methods, the_network_models,
-                       font_directory):
-    """Analyze data set against the provided set of pfe_methods and network_models.
+  method_result_proto.request_size_distribution.CopyFrom(
+      request_size_distribution.to_proto())
+  method_result_proto.response_size_distribution.CopyFrom(
+      response_size_distribution.to_proto())
+  for result in sorted(result_by_network.values(),
+                       key=lambda result: result.name):
+    method_result_proto.results_by_network.append(result.to_proto())
 
-    Returns the total cost associated with each pair of pfe method and network
-    model.
-    """
-    sequences = [sequence.page_views for sequence in data_set.sequences]
-    simulation_results = simulation.simulate_all(sequences, pfe_methods,
-                                                 the_network_models,
-                                                 font_directory)
-
-    results = []
-    for key, totals in sorted(simulation_results.items()):
-      results.append(self.to_method_result_proto(key, totals))
-
-    return results
+  return method_result_proto
 
 
 def read_binary_input(input_data_path):
@@ -153,6 +144,37 @@ def read_text_input(input_data_path):
   return data_set
 
 
+def segment_sequences(sequences, segments):
+  segment_size = max(int(len(sequences) / segments), 1)
+  return [
+      sequences[s:s + segment_size]
+      for s in range(0, len(sequences), segment_size)
+  ]
+
+
+def do_analysis(serialized_sequences):
+  """Given a list of sequences (serialized to binary) run the simulation on them.
+
+  Takes the sequences serialized, so that they may be passed down to another process."""
+  sequences = [
+      page_view_sequence_pb2.PageViewSequenceProto.FromString(s).page_views
+      for s in serialized_sequences
+  ]
+  return simulation.simulate_all(sequences, PFE_METHODS, NETWORK_MODELS,
+                                 FLAGS.font_directory)
+
+
+def merge_results(segmented_results):
+  """Merge a set of results, one per segment of sequences, into a single result dict."""
+  merged = dict()
+  for segment in segmented_results:
+    for name, results in segment.items():
+      method_result = merged.get(name, list())
+      method_result.extend(results)
+      merged[name] = method_result
+  return merged
+
+
 def main(argv):
   """Runs the analysis."""
   del argv  # Unused.
@@ -163,9 +185,15 @@ def main(argv):
   else:
     data_set = read_text_input(input_data_path)
 
-  analyzer = Analyzer(cost.cost)
-  results = analyzer.analyze_data_set(data_set, PFE_METHODS, NETWORK_MODELS,
-                                      FLAGS.font_directory)
+  # the sequence proto's need to be serialized since they are being
+  # sent to another process.
+  sequences = [sequence.SerializeToString() for sequence in data_set.sequences]
+  segmented_sequences = segment_sequences(sequences, FLAGS.parallelism * 2)
+
+  with Pool(FLAGS.parallelism) as pool:
+    results = merge_results(pool.map(do_analysis, segmented_sequences))
+
+  results = to_protos(results, cost.cost)
 
   results_proto = result_pb2.AnalysisResultProto()
   for method_result in results:
