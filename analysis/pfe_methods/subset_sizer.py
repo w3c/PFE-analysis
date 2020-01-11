@@ -12,16 +12,20 @@ SUBSET_SIZE_CACHE = dict()
 class SubsetSizer:
   """Helper class that computes the woff2 encoded size of a font subset."""
 
+  def __init__(self, cache=None):
+    self.size_cache = (SUBSET_SIZE_CACHE if cache is None else cache)
+
   def subset_size(self, cache_key, codepoints, font_bytes):
     """Returns the size of subset (a set of codepoints) of font_bytes after woff2 encoding."""
-    if cache_key in SUBSET_SIZE_CACHE:
-      return SUBSET_SIZE_CACHE[cache_key]
+
+    if cache_key in self.size_cache:
+      return self.size_cache[cache_key]
 
     subset_bytes = self.subset(font_bytes, codepoints)
     woff2_bytes = woff2.ttf_to_woff2(subset_bytes)
 
     final_size = len(woff2_bytes)
-    SUBSET_SIZE_CACHE[cache_key] = final_size
+    self.size_cache[cache_key] = final_size
     return final_size
 
   def subset(self, font_bytes, codepoints):  # pylint: disable=no-self-use

@@ -29,7 +29,7 @@ class OptimalPfeSession:
   def __init__(self, font_loader, a_subset_sizer=None):
     self.font_loader = font_loader
     self.subset_sizer = a_subset_sizer if a_subset_sizer else subset_sizer.SubsetSizer(
-    )
+        cache=dict())
     self.request_graphs = []
 
     self.codepoints_by_font = dict()
