@@ -30,6 +30,6 @@ message DistributionProto {
 }
 
 message BucketProto {
-  uint32 end = 1;
+  uint64 end = 1;
   uint64 count = 2;
 }

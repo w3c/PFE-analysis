@@ -54,8 +54,31 @@ PFE_METHODS = [
 ]
 
 NETWORK_MODELS = [
-    network_models.BROADBAND,
-    network_models.DIALUP,
+    network_models.MOBILE_2G_SLOWEST,
+    network_models.MOBILE_2G_SLOW,
+    network_models.MOBILE_2G_MEDIAN,
+    network_models.MOBILE_2G_FAST,
+    network_models.MOBILE_2G_FASTEST,
+    network_models.MOBILE_3G_SLOWEST,
+    network_models.MOBILE_3G_SLOW,
+    network_models.MOBILE_3G_MEDIAN,
+    network_models.MOBILE_3G_FAST,
+    network_models.MOBILE_3G_FASTEST,
+    network_models.MOBILE_4G_SLOWEST,
+    network_models.MOBILE_4G_SLOW,
+    network_models.MOBILE_4G_MEDIAN,
+    network_models.MOBILE_4G_FAST,
+    network_models.MOBILE_4G_FASTEST,
+    network_models.MOBILE_WIFI_SLOWEST,
+    network_models.MOBILE_WIFI_SLOW,
+    network_models.MOBILE_WIFI_MEDIAN,
+    network_models.MOBILE_WIFI_FAST,
+    network_models.MOBILE_WIFI_FASTEST,
+    network_models.DESKTOP_SLOWEST,
+    network_models.DESKTOP_SLOW,
+    network_models.DESKTOP_MEDIAN,
+    network_models.DESKTOP_FAST,
+    network_models.DESKTOP_FASTEST,
 ]
 
 
