@@ -1,12 +1,15 @@
 """Helper functions for computing the size of a font subset."""
 
 import io
+import logging
 
 from fontTools import subset
 from woff2_py import woff2
 
 # Cache of cut and woff2 encoded subset sizes.
 SUBSET_SIZE_CACHE = dict()
+
+logging.getLogger("fontTools.subset").setLevel(logging.WARNING)
 
 
 class SubsetSizer:
