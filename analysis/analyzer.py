@@ -12,6 +12,7 @@ Input data is in textproto format using the proto definitions found in
 analysis/page_view_sequence.proto
 """
 
+import logging
 from multiprocessing import Pool
 import sys
 
@@ -28,6 +29,8 @@ from analysis.pfe_methods import unicode_range_pfe_method
 from analysis.pfe_methods import whole_font_pfe_method
 from google.protobuf import text_format
 from patch_subset.py import patch_subset_method
+
+LOG = logging.getLogger("analyzer")
 
 FLAGS = flags.FLAGS
 flags.DEFINE_string("input_data", None, "Path to input data for the analysis.")
@@ -203,19 +206,23 @@ def main(argv):
   del argv  # Unused.
   input_data_path = FLAGS.input_data
 
+  LOG.info("Reading input data.")
   if FLAGS.input_binary:
     data_set = read_binary_input(input_data_path)
   else:
     data_set = read_text_input(input_data_path)
 
+  LOG.info("Preparing input data.")
   # the sequence proto's need to be serialized since they are being
   # sent to another process.
   sequences = [sequence.SerializeToString() for sequence in data_set.sequences]
   segmented_sequences = segment_sequences(sequences, FLAGS.parallelism * 2)
 
+  LOG.info("Running the simulations.")
   with Pool(FLAGS.parallelism) as pool:
     results = merge_results(pool.map(do_analysis, segmented_sequences))
 
+  LOG.info("Formatting output.")
   results = to_protos(results, cost.cost)
 
   results_proto = result_pb2.AnalysisResultProto()

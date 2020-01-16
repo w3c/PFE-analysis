@@ -19,6 +19,10 @@ ESTIMATED_HTTP_REQUEST_HEADER_SIZE = 35
 # Estimated size of a http response header in bytes for a HTTP2 response using HPACK.
 ESTIMATED_HTTP_RESPONSE_HEADER_SIZE = 35
 
+# The following network models were derived from browser reported connection speeds (from Chrome)
+# across a variety of connection types. For each connection type 5 different speeds are provided
+# ranging from the slowest observed speeds to the fastest for that connection type.
+
 # Mobile 2G
 
 MOBILE_2G_SLOWEST = simulation.NetworkModel("mobile_2g_slowest",
