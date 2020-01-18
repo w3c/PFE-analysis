@@ -36,6 +36,13 @@ class FakeSubsetter : public Subsetter {
     subset->copy(result.c_str(), result.size());
     return StatusCode::kOk;
   }
+
+  void CodepointsInFont(const FontData& font,
+                        hb_set_t* codepoints) const override {
+    hb_set_add(codepoints, 1);
+    hb_set_add(codepoints, 2);
+    hb_set_add(codepoints, 3);
+  }
 };
 
 }  // namespace patch_subset

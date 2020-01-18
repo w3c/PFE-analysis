@@ -17,6 +17,11 @@ class Subsetter {
   // 'subset'.
   virtual StatusCode Subset(const FontData& font, const hb_set_t& codepoints,
                             FontData* subset /* OUT */) const = 0;
+
+  // Writes the set of all unicode codepoints that are in font to
+  // the codepoints set.
+  virtual void CodepointsInFont(const FontData& font,
+                                hb_set_t* codepoints) const = 0;
 };
 
 }  // namespace patch_subset

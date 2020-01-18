@@ -21,6 +21,8 @@ class PatchSubsetServerImpl : public PatchSubsetServer {
                         std::unique_ptr<Subsetter> subsetter,
                         std::unique_ptr<BinaryDiff> binary_diff,
                         std::unique_ptr<Hasher> hasher)
+      // TODO(garretrieger): take a boolean that specifies if codepoint
+      //                     remapping should be used.
       : font_provider_(std::move(font_provider)),
         subsetter_(std::move(subsetter)),
         binary_diff_(std::move(binary_diff)),

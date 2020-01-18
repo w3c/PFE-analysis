@@ -55,4 +55,14 @@ StatusCode HarfbuzzSubsetter::Subset(const FontData& font,
   return StatusCode::kOk;
 }
 
+void HarfbuzzSubsetter::CodepointsInFont(const FontData& font,
+                                         hb_set_t* codepoints) const {
+  hb_blob_t* blob = font.reference_blob();
+  hb_face_t* face = hb_face_create(blob, 0);
+  hb_blob_destroy(blob);
+
+  hb_face_collect_unicodes(face, codepoints);
+  hb_face_destroy(face);
+}
+
 }  // namespace patch_subset
