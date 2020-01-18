@@ -61,4 +61,33 @@ TEST_F(HarfbuzzSubsetterTest, SubsetEmpty) {
   hb_blob_destroy(subset_blob);
 }
 
+TEST_F(HarfbuzzSubsetterTest, CodepointsInFont) {
+  FontData font_data_1, font_data_2;
+  EXPECT_EQ(font_provider_->GetFont("Roboto-Regular.Meows.ttf", &font_data_1),
+            StatusCode::kOk);
+  EXPECT_EQ(font_provider_->GetFont("Roboto-Regular.Awesome.ttf", &font_data_2),
+            StatusCode::kOk);
+
+  hb_set_unique_ptr expected = make_hb_set(5, 0x4D, 0x65, 0x6F, 0x77, 0x73);
+
+  hb_set_unique_ptr result = make_hb_set();
+  subsetter_->CodepointsInFont(font_data_1, result.get());
+  EXPECT_TRUE(hb_set_is_equal(result.get(), expected.get()));
+
+  expected = make_hb_set(7, 0x41, 0x4D, 0x65, 0x6D, 0x6F, 0x77, 0x73);
+  result = make_hb_set();
+  subsetter_->CodepointsInFont(font_data_2, result.get());
+  EXPECT_TRUE(hb_set_is_equal(result.get(), expected.get()));
+}
+
+TEST_F(HarfbuzzSubsetterTest, CodepointsInFont_BadFont) {
+  FontData font_data("not a font");
+
+  hb_set_unique_ptr expected = make_hb_set();
+  hb_set_unique_ptr result = make_hb_set();
+  subsetter_->CodepointsInFont(font_data, result.get());
+
+  EXPECT_TRUE(hb_set_is_equal(expected.get(), result.get()));
+}
+
 }  // namespace patch_subset

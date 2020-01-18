@@ -17,6 +17,12 @@ namespace patch_subset {
 StatusCode PatchSubsetServerImpl::Handle(const std::string& font_id,
                                          const PatchRequestProto& request,
                                          PatchResponseProto* response) {
+  // TODO(garretrieger): check fingerprint on codepoint remapping
+  //                     (if this is a patch request).
+  // TODO(garretrieger): apply codepoint remapping when decoding code point
+  // sets.
+  //                     (if this is a patch request).
+
   hb_set_unique_ptr codepoints_have = make_hb_set();
   CompressedSet::Decode(request.codepoints_have(), codepoints_have.get());
 
@@ -65,7 +71,6 @@ StatusCode PatchSubsetServerImpl::Handle(const std::string& font_id,
     return result;
   }
   // TODO(garretrieger): rename the proto package.
-  // TODO(garretrieger): codepoint index computation
   // TODO(garretrieger): check which diffs the client supports.
   // TODO(garretrieger): handle exceptional cases (see design doc).
 
@@ -79,6 +84,9 @@ StatusCode PatchSubsetServerImpl::Handle(const std::string& font_id,
   patch_proto->set_patch(patch.data(), patch.size());
 
   AddFingerprints(font_data, client_target_subset, response);
+
+  // TODO(garretrieger): if this is a REBASE request then compute and send a
+  //                     codepoint remapping.
 
   return StatusCode::kOk;
 }

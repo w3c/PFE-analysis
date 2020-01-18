@@ -16,6 +16,9 @@ class HarfbuzzSubsetter : public Subsetter {
   StatusCode Subset(const FontData& font, const hb_set_t& codepoints,
                     FontData* subset /* OUT */) const override;
 
+  void CodepointsInFont(const FontData& font,
+                        hb_set_t* codepoints) const override;
+
  private:
 };
 
