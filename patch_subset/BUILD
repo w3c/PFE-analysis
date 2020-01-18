@@ -17,10 +17,13 @@ cc_library(
     srcs = [
         "harfbuzz_subsetter.cc",
         "patch_subset_server_impl.cc",
+        "simple_codepoint_mapper.cc",
     ],
     hdrs = [
+        "codepoint_mapper.h",
         "harfbuzz_subsetter.h",
         "patch_subset_server_impl.h",
+        "simple_codepoint_mapper.h",
         "subsetter.h",
     ],
     visibility = [
@@ -123,6 +126,7 @@ cc_test(
         "patch_subset_client_test.cc",
         "patch_subset_server_impl_test.cc",
         "server_integration_test.cc",
+        "simple_codepoint_mapper_test.cc",
         "sparse_bit_set_test.cc",
     ],
     data = [
