@@ -1,4 +1,4 @@
-#include "patch_subset/codepoint_mapping_checksum.h"
+#include "patch_subset/codepoint_mapping_checksum_impl.h"
 
 #include <vector>
 
@@ -20,8 +20,8 @@ struct LittleEndianInt {
   uint8_t data[4];
 };
 
-uint64_t CodepointMappingChecksum::Checksum(
-    const CodepointRemappingProto& response) {
+uint64_t CodepointMappingChecksumImpl::Checksum(
+    const CodepointRemappingProto& response) const {
   int num_deltas = response.codepoint_ordering().deltas_size();
 
   std::vector<LittleEndianInt> data(num_deltas + 1);

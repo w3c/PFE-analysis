@@ -1,20 +1,20 @@
-#include "patch_subset/codepoint_mapping_checksum.h"
+#include "patch_subset/codepoint_mapping_checksum_impl.h"
 
 #include "gtest/gtest.h"
 #include "patch_subset/farm_hasher.h"
 
 namespace patch_subset {
 
-class CodepointMappingChecksumTest : public ::testing::Test {
+class CodepointMappingChecksumImplTest : public ::testing::Test {
  protected:
-  CodepointMappingChecksumTest()
+  CodepointMappingChecksumImplTest()
       : hasher_(new FarmHasher()), codepoint_checksum_(hasher_.get()) {}
 
   std::unique_ptr<Hasher> hasher_;
-  CodepointMappingChecksum codepoint_checksum_;
+  CodepointMappingChecksumImpl codepoint_checksum_;
 };
 
-TEST_F(CodepointMappingChecksumTest, ChecksumOnlyDeltas) {
+TEST_F(CodepointMappingChecksumImplTest, ChecksumOnlyDeltas) {
   // The checksum should be stable across architectures and time, so test
   // against the exact checksum values, which should not change in the future.
   CodepointRemappingProto proto;

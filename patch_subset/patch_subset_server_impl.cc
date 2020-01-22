@@ -105,8 +105,9 @@ void PatchSubsetServerImpl::AddCodepointRemapping(
     previous_cp = cp;
   }
 
-  // TODO(garretrieger): compute and set the fingerprint.
   // TODO(garretrieger): add a grouping strategy if it's needed.
+
+  response->set_fingerprint(codepoint_mapping_checksum_->Checksum(*response));
 }
 
 StatusCode PatchSubsetServerImpl::ComputeSubsets(
