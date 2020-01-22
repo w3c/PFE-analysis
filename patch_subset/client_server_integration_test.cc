@@ -2,6 +2,7 @@
 #include "patch_subset/brotli_binary_diff.h"
 #include "patch_subset/brotli_binary_patch.h"
 #include "patch_subset/codepoint_mapper.h"
+#include "patch_subset/codepoint_mapping_checksum.h"
 #include "patch_subset/compressed_set.h"
 #include "patch_subset/farm_hasher.h"
 #include "patch_subset/file_font_provider.h"
@@ -26,7 +27,8 @@ class PatchSubsetClientServerIntegrationTest : public ::testing::Test {
                 std::unique_ptr<Subsetter>(new HarfbuzzSubsetter()),
                 std::unique_ptr<BinaryDiff>(binary_diff_),
                 std::unique_ptr<Hasher>(new FarmHasher()),
-                std::unique_ptr<CodepointMapper>(nullptr)),
+                std::unique_ptr<CodepointMapper>(nullptr),
+                std::unique_ptr<CodepointMappingChecksum>(nullptr)),
         client_(&server_, &request_logger_,
                 std::unique_ptr<BinaryPatch>(binary_patch_),
                 std::unique_ptr<Hasher>(new FarmHasher())) {

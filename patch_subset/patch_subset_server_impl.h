@@ -7,6 +7,7 @@
 #include "hb.h"
 #include "patch_subset/binary_diff.h"
 #include "patch_subset/codepoint_mapper.h"
+#include "patch_subset/codepoint_mapping_checksum.h"
 #include "patch_subset/font_provider.h"
 #include "patch_subset/hasher.h"
 #include "patch_subset/patch_subset.pb.h"
@@ -18,18 +19,18 @@ namespace patch_subset {
 class PatchSubsetServerImpl : public PatchSubsetServer {
  public:
   // Takes ownership of font_provider, subsetter, and binary_diff.
-  PatchSubsetServerImpl(std::unique_ptr<FontProvider> font_provider,
-                        std::unique_ptr<Subsetter> subsetter,
-                        std::unique_ptr<BinaryDiff> binary_diff,
-                        std::unique_ptr<Hasher> hasher,
-                        std::unique_ptr<CodepointMapper> codepoint_mapper)
-      // TODO(garretrieger): take a boolean that specifies if codepoint
-      //                     remapping should be used.
+  PatchSubsetServerImpl(
+      std::unique_ptr<FontProvider> font_provider,
+      std::unique_ptr<Subsetter> subsetter,
+      std::unique_ptr<BinaryDiff> binary_diff, std::unique_ptr<Hasher> hasher,
+      std::unique_ptr<CodepointMapper> codepoint_mapper,
+      std::unique_ptr<CodepointMappingChecksum> codepoint_mapping_checksum)
       : font_provider_(std::move(font_provider)),
         subsetter_(std::move(subsetter)),
         binary_diff_(std::move(binary_diff)),
         hasher_(std::move(hasher)),
-        codepoint_mapper_(std::move(codepoint_mapper)) {}
+        codepoint_mapper_(std::move(codepoint_mapper)),
+        codepoint_mapping_checksum_(std::move(codepoint_mapping_checksum)) {}
 
   // Handle a patch request from a client. Writes the resulting response
   // into response.
@@ -61,6 +62,7 @@ class PatchSubsetServerImpl : public PatchSubsetServer {
   std::unique_ptr<BinaryDiff> binary_diff_;
   std::unique_ptr<Hasher> hasher_;
   std::unique_ptr<CodepointMapper> codepoint_mapper_;
+  std::unique_ptr<CodepointMappingChecksum> codepoint_mapping_checksum_;
 };
 
 }  // namespace patch_subset
