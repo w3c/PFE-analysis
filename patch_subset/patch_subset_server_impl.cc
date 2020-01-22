@@ -76,6 +76,9 @@ StatusCode PatchSubsetServerImpl::Handle(const std::string& font_id,
 
   if (hb_set_get_population(codepoints_have.get()) == 0) {
     response->set_type(ResponseType::REBASE);
+    if (codepoint_mapper_) {
+      AddCodepointRemapping(font_data, response->mutable_codepoint_remapping());
+    }
   } else {
     response->set_type(ResponseType::PATCH);
   }
@@ -85,10 +88,25 @@ StatusCode PatchSubsetServerImpl::Handle(const std::string& font_id,
 
   AddFingerprints(font_data, client_target_subset, response);
 
-  // TODO(garretrieger): if this is a REBASE request then compute and send a
-  //                     codepoint remapping.
-
   return StatusCode::kOk;
+}
+
+void PatchSubsetServerImpl::AddCodepointRemapping(
+    const FontData& font_data, CodepointRemappingProto* response) {
+  hb_set_t* codepoints = hb_set_create();
+  subsetter_->CodepointsInFont(font_data, codepoints);
+
+  std::vector<hb_codepoint_t> mapping;
+  codepoint_mapper_->ComputeMapping(*codepoints, &mapping);
+
+  int previous_cp = 0;
+  for (hb_codepoint_t cp : mapping) {
+    response->mutable_codepoint_ordering()->add_deltas(cp - previous_cp);
+    previous_cp = cp;
+  }
+
+  // TODO(garretrieger): compute and set the fingerprint.
+  // TODO(garretrieger): add a grouping strategy if it's needed.
 }
 
 StatusCode PatchSubsetServerImpl::ComputeSubsets(

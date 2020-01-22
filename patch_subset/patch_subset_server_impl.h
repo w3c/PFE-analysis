@@ -6,6 +6,7 @@
 #include "common/status.h"
 #include "hb.h"
 #include "patch_subset/binary_diff.h"
+#include "patch_subset/codepoint_mapper.h"
 #include "patch_subset/font_provider.h"
 #include "patch_subset/hasher.h"
 #include "patch_subset/patch_subset.pb.h"
@@ -20,13 +21,15 @@ class PatchSubsetServerImpl : public PatchSubsetServer {
   PatchSubsetServerImpl(std::unique_ptr<FontProvider> font_provider,
                         std::unique_ptr<Subsetter> subsetter,
                         std::unique_ptr<BinaryDiff> binary_diff,
-                        std::unique_ptr<Hasher> hasher)
+                        std::unique_ptr<Hasher> hasher,
+                        std::unique_ptr<CodepointMapper> codepoint_mapper)
       // TODO(garretrieger): take a boolean that specifies if codepoint
       //                     remapping should be used.
       : font_provider_(std::move(font_provider)),
         subsetter_(std::move(subsetter)),
         binary_diff_(std::move(binary_diff)),
-        hasher_(std::move(hasher)) {}
+        hasher_(std::move(hasher)),
+        codepoint_mapper_(std::move(codepoint_mapper)) {}
 
   // Handle a patch request from a client. Writes the resulting response
   // into response.
@@ -35,6 +38,9 @@ class PatchSubsetServerImpl : public PatchSubsetServer {
                     PatchResponseProto* response /* OUT */) override;
 
  private:
+  void AddCodepointRemapping(const FontData& font_data,
+                             CodepointRemappingProto* response);
+
   StatusCode ComputeSubsets(const std::string& font_id,
                             const FontData& font_data,
                             const hb_set_t& codepoints_have,
@@ -54,6 +60,7 @@ class PatchSubsetServerImpl : public PatchSubsetServer {
   std::unique_ptr<Subsetter> subsetter_;
   std::unique_ptr<BinaryDiff> binary_diff_;
   std::unique_ptr<Hasher> hasher_;
+  std::unique_ptr<CodepointMapper> codepoint_mapper_;
 };
 
 }  // namespace patch_subset
