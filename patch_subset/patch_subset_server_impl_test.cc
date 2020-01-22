@@ -6,6 +6,7 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "hb.h"
+#include "patch_subset/codepoint_mapper.h"
 #include "patch_subset/compressed_set.h"
 #include "patch_subset/fake_subsetter.h"
 #include "patch_subset/hb_set_unique_ptr.h"
@@ -49,7 +50,8 @@ class PatchSubsetServerImplTest : public ::testing::Test {
         server_(std::unique_ptr<FontProvider>(font_provider_),
                 std::unique_ptr<Subsetter>(new FakeSubsetter()),
                 std::unique_ptr<BinaryDiff>(binary_diff_),
-                std::unique_ptr<Hasher>(hasher_)),
+                std::unique_ptr<Hasher>(hasher_),
+                std::unique_ptr<CodepointMapper>(nullptr)),
         set_abcd_(make_hb_set_from_ranges(1, 0x61, 0x64)),
         set_ab_(make_hb_set_from_ranges(1, 0x61, 0x62)) {}
 

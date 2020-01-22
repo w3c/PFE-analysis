@@ -10,6 +10,7 @@
 #include "patch_subset/brotli_binary_diff.h"
 #include "patch_subset/brotli_binary_patch.h"
 #include "patch_subset/brotli_request_logger.h"
+#include "patch_subset/codepoint_mapper.h"
 #include "patch_subset/farm_hasher.h"
 #include "patch_subset/file_font_provider.h"
 #include "patch_subset/font_provider.h"
@@ -25,6 +26,7 @@ using ::patch_subset::BrotliBinaryDiff;
 using ::patch_subset::BrotliBinaryPatch;
 using ::patch_subset::BrotliRequestLogger;
 using ::patch_subset::ClientState;
+using ::patch_subset::CodepointMapper;
 using ::patch_subset::FarmHasher;
 using ::patch_subset::FileFontProvider;
 using ::patch_subset::FontProvider;
@@ -47,7 +49,8 @@ class PatchSubsetSession {
         server_(std::unique_ptr<FontProvider>(font_provider_),
                 std::unique_ptr<Subsetter>(new HarfbuzzSubsetter()),
                 std::unique_ptr<BinaryDiff>(binary_diff_),
-                std::unique_ptr<Hasher>(new FarmHasher())),
+                std::unique_ptr<Hasher>(new FarmHasher()),
+                std::unique_ptr<CodepointMapper>(nullptr)),
         client_(&server_, &brotli_request_logger_,
                 std::unique_ptr<BinaryPatch>(binary_patch_),
                 std::unique_ptr<Hasher>(new FarmHasher())) {
