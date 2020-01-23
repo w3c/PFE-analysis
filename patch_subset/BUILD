@@ -76,6 +76,7 @@ cc_library(
     name = "common",
     srcs = [
         "brotli_binary_diff.cc",
+        "codepoint_map.cc",
         "compressed_set.cc",
         "farm_hasher.cc",
         "file_font_provider.cc",
@@ -85,6 +86,7 @@ cc_library(
     hdrs = [
         "binary_diff.h",
         "brotli_binary_diff.h",
+        "codepoint_map.h",
         "compressed_set.h",
         "farm_hasher.h",
         "file_font_provider.h",
@@ -117,6 +119,7 @@ cc_test(
         "brotli_patching_test.cc",
         "brotli_request_logger_test.cc",
         "client_server_integration_test.cc",
+        "codepoint_map_test.cc",
         "codepoint_mapping_checksum_impl_test.cc",
         "compressed_set_test.cc",
         "fake_subsetter.h",
