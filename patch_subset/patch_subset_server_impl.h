@@ -47,7 +47,9 @@ class PatchSubsetServerImpl : public PatchSubsetServer {
   void CheckOriginalFingerprint(uint64_t original_fingerprint,
                                 RequestState* state) const;
 
-  void AddCodepointRemapping(const FontData& font_data,
+  void ComputeCodepointRemapping(RequestState* state) const;
+
+  void AddCodepointRemapping(const RequestState& state,
                              CodepointRemappingProto* response) const;
 
   StatusCode ComputeSubsets(const std::string& font_id,

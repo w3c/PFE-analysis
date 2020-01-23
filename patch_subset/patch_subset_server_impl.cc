@@ -18,7 +18,9 @@ namespace patch_subset {
 // handling a single request.
 struct RequestState {
   RequestState()
-      : codepoints_have(make_hb_set()), codepoints_needed(make_hb_set()) {}
+      : codepoints_have(make_hb_set()),
+        codepoints_needed(make_hb_set()),
+        mapping() {}
 
   bool IsPatch() const { return !hb_set_is_empty(codepoints_have.get()); }
 
@@ -26,6 +28,7 @@ struct RequestState {
 
   hb_set_unique_ptr codepoints_have;
   hb_set_unique_ptr codepoints_needed;
+  std::vector<hb_codepoint_t> mapping;
   FontData font_data;
   FontData client_subset;
   FontData client_target_subset;
@@ -46,6 +49,10 @@ StatusCode PatchSubsetServerImpl::Handle(const std::string& font_id,
   }
 
   CheckOriginalFingerprint(request.original_font_fingerprint(), &state);
+
+  if (codepoint_mapper_) {
+    ComputeCodepointRemapping(&state);
+  }
 
   if (!Check(result = ComputeSubsets(font_id, &state))) {
     return result;
@@ -75,12 +82,6 @@ void PatchSubsetServerImpl::LoadInputCodepoints(
   CompressedSet::Decode(request.codepoints_needed(),
                         state->codepoints_needed.get());
   hb_set_union(state->codepoints_needed.get(), state->codepoints_have.get());
-
-  // TODO(garretrieger): add a function that adjusts the codepoint sets (if
-  // codepoints_have is set
-  //   and we have a remapper available).
-  //   Should also check the fingerprint and return failure if it doesn't match.
-  //   On a no match, terminate early and send a re-index response.
 }
 
 void PatchSubsetServerImpl::CheckOriginalFingerprint(
@@ -93,16 +94,29 @@ void PatchSubsetServerImpl::CheckOriginalFingerprint(
   }
 }
 
-void PatchSubsetServerImpl::AddCodepointRemapping(
-    const FontData& font_data, CodepointRemappingProto* response) const {
+void PatchSubsetServerImpl::ComputeCodepointRemapping(
+    RequestState* state) const {
   hb_set_t* codepoints = hb_set_create();
-  subsetter_->CodepointsInFont(font_data, codepoints);
+  subsetter_->CodepointsInFont(state->font_data, codepoints);
+  codepoint_mapper_->ComputeMapping(*codepoints, &state->mapping);
 
-  std::vector<hb_codepoint_t> mapping;
-  codepoint_mapper_->ComputeMapping(*codepoints, &mapping);
+  if (state->IsRebase()) {
+    // Don't remap input codepoints for a rebase request (client isn't
+    // using the mapping yet.)
+    return;
+  }
 
+  return;
+  // TODO(garretrieger): Re-map input codepoints by using the computed mapping.
+  //
+  // Should also check the fingerprint if it doesn't match send a re-index
+  // response.
+}
+
+void PatchSubsetServerImpl::AddCodepointRemapping(
+    const RequestState& state, CodepointRemappingProto* response) const {
   int previous_cp = 0;
-  for (hb_codepoint_t cp : mapping) {
+  for (hb_codepoint_t cp : state.mapping) {
     response->mutable_codepoint_ordering()->add_deltas(cp - previous_cp);
     previous_cp = cp;
   }
@@ -152,8 +166,7 @@ void PatchSubsetServerImpl::ConstructResponse(
   if (state.IsRebase()) {
     response->set_type(ResponseType::REBASE);
     if (codepoint_mapper_) {
-      AddCodepointRemapping(state.font_data,
-                            response->mutable_codepoint_remapping());
+      AddCodepointRemapping(state, response->mutable_codepoint_remapping());
     }
   } else {
     response->set_type(ResponseType::PATCH);
