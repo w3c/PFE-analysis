@@ -16,6 +16,8 @@
 
 namespace patch_subset {
 
+struct RequestState;
+
 class PatchSubsetServerImpl : public PatchSubsetServer {
  public:
   // Takes ownership of font_provider, subsetter, and binary_diff.
@@ -39,23 +41,31 @@ class PatchSubsetServerImpl : public PatchSubsetServer {
                     PatchResponseProto* response /* OUT */) override;
 
  private:
+  void LoadInputCodepoints(const PatchRequestProto& request,
+                           RequestState* state) const;
+
+  void CheckOriginalFingerprint(uint64_t original_fingerprint,
+                                RequestState* state) const;
+
   void AddCodepointRemapping(const FontData& font_data,
-                             CodepointRemappingProto* response);
+                             CodepointRemappingProto* response) const;
 
   StatusCode ComputeSubsets(const std::string& font_id,
-                            const FontData& font_data,
-                            const hb_set_t& codepoints_have,
-                            const hb_set_t& codepoints_needed,
-                            FontData* client_subset,
-                            FontData* client_target_subset);
+                            RequestState* state) const;
 
-  StatusCode ValidateFingerPrint(uint64_t fingerprint, const FontData& data);
+  void ValidatePatchBase(uint64_t base_fingerprint, RequestState* state) const;
+
+  void ConstructResponse(const RequestState& state,
+                         PatchResponseProto* response) const;
+
+  StatusCode ValidateFingerPrint(uint64_t fingerprint,
+                                 const FontData& data) const;
 
   void AddFingerprints(const FontData& font_data, const FontData& target_subset,
-                       PatchResponseProto* response);
+                       PatchResponseProto* response) const;
 
-  bool Check(StatusCode result);
-  bool Check(StatusCode result, const std::string& message);
+  bool Check(StatusCode result) const;
+  bool Check(StatusCode result, const std::string& message) const;
 
   std::unique_ptr<FontProvider> font_provider_;
   std::unique_ptr<Subsetter> subsetter_;
