@@ -154,6 +154,10 @@ void PatchSubsetClient::CreateRequest(const hb_set_t& codepoints_have,
   CompressedSetProto codepoints_needed_encoded;
   CompressedSet::Encode(codepoints_needed, &codepoints_needed_encoded);
   *request->mutable_codepoints_needed() = codepoints_needed_encoded;
+
+  if (state.has_codepoint_remapping()) {
+    request->set_index_fingerprint(state.codepoint_remapping().fingerprint());
+  }
 }
 
 void PatchSubsetClient::LogRequest(const PatchRequestProto& request,

@@ -146,6 +146,8 @@ TEST_F(PatchSubsetClientTest, SendPatchRequest_WithCodepointMapping) {
 
   PatchRequestProto expected_request =
       CreateRequest(*codepoints_have_encoded, *codepoints_needed_encoded);
+  expected_request.set_index_fingerprint(13);
+
   ExpectRequest(expected_request);
   ExpectChecksum(roboto_ab_.str(), kBaseFingerprint);
 
@@ -160,6 +162,7 @@ TEST_F(PatchSubsetClientTest, SendPatchRequest_WithCodepointMapping) {
   state.set_font_data(roboto_ab_.data(), roboto_ab_.size());
   state.set_original_font_fingerprint(kOriginalFingerprint);
   map.ToProto(state.mutable_codepoint_remapping());
+  state.mutable_codepoint_remapping()->set_fingerprint(13);
 
   client_->Extend(*codepoints_needed, &state);
 }

@@ -32,7 +32,7 @@ class CodepointMap {
 
   // Load the codepoint remapping specified in 'proto'. Replaces
   // any existing mappings currently in this object.
-  StatusCode FromProto(const CodepointRemappingProto& proto);
+  void FromProto(const CodepointRemappingProto& proto);
 
   // Serialize this mapping to a CodepointRemappingProto.
   StatusCode ToProto(CodepointRemappingProto* proto /* OUT */) const;
