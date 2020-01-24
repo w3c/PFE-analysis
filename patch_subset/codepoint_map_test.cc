@@ -98,6 +98,21 @@ TEST_F(CodepointMapTest, DecodeMissing) {
   EXPECT_EQ(StatusCode::kInvalidArgument, codepoint_map_.Decode(&missing_cp));
 }
 
+TEST_F(CodepointMapTest, Fromroto) {
+  CodepointRemappingProto proto;
+  // Encode 9, 5, 8:
+  proto.mutable_codepoint_ordering()->add_deltas(9);
+  proto.mutable_codepoint_ordering()->add_deltas(-4);
+  proto.mutable_codepoint_ordering()->add_deltas(3);
+
+  codepoint_map_.Clear();
+  codepoint_map_.FromProto(proto);
+
+  ExpectEncodes(9, 0);
+  ExpectEncodes(5, 1);
+  ExpectEncodes(8, 2);
+}
+
 TEST_F(CodepointMapTest, ToProto) {
   CodepointRemappingProto proto;
 

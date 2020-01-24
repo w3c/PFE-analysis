@@ -16,10 +16,16 @@ void CodepointMap::AddMapping(hb_codepoint_t from, hb_codepoint_t to) {
   decode_map[to] = from;
 }
 
-StatusCode CodepointMap::FromProto(const CodepointRemappingProto& proto) const {
-  // TODO(garretrieger): implement me!
-  LOG(WARNING) << "Not implemeneted yet.";
-  return StatusCode::kUnimplemented;
+void CodepointMap::FromProto(const CodepointRemappingProto& proto) {
+  Clear();
+
+  int index = 0;
+  int last_cp = 0;
+  for (int delta : proto.codepoint_ordering().deltas()) {
+    int cp = last_cp + delta;
+    AddMapping(cp, index++);
+    last_cp = cp;
+  }
 }
 
 StatusCode CodepointMap::ToProto(CodepointRemappingProto* proto) const {

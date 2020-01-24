@@ -68,12 +68,9 @@ StatusCode PatchSubsetClient::EncodeCodepoints(const ClientState& state,
   }
 
   CodepointMap map;
-  StatusCode result = map.FromProto(state.codepoint_remapping());
-  if (result != StatusCode::kOk) {
-    LOG(WARNING) << "Failed to load codepoint remapping proto.";
-    return result;
-  }
+  map.FromProto(state.codepoint_remapping());
 
+  StatusCode result;
   map.IntersectWithMappedCodepoints(codepoints_have);
   if ((result = map.Encode(codepoints_have)) != StatusCode::kOk) {
     LOG(WARNING) << "Failed to encode codepoints_have with the mapping.";
