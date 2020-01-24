@@ -125,6 +125,9 @@ class PatchSubsetServerImplWithCodepointRemappingTest
 };
 
 // TODO(garretrieger): subsetter failure test.
+// TODO(garretrieger):
+//  - REINDEX response
+//  - PATCH response, with client using codepoint mapping.
 
 TEST_F(PatchSubsetServerImplTest, NewRequest) {
   ExpectRoboto();

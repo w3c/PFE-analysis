@@ -22,19 +22,26 @@ struct RequestState {
   RequestState()
       : codepoints_have(make_hb_set()),
         codepoints_needed(make_hb_set()),
-        mapping() {}
+        mapping(),
+        codepoint_mapping_invalid(false) {}
 
-  bool IsPatch() const { return !hb_set_is_empty(codepoints_have.get()); }
+  bool IsPatch() const {
+    return !IsReindex() && !hb_set_is_empty(codepoints_have.get());
+  }
 
-  bool IsRebase() const { return !IsPatch(); }
+  bool IsRebase() const { return !IsReindex() && !IsPatch(); }
+
+  bool IsReindex() const { return codepoint_mapping_invalid; }
 
   hb_set_unique_ptr codepoints_have;
   hb_set_unique_ptr codepoints_needed;
+  uint64_t index_fingerprint;
   CodepointMap mapping;
   FontData font_data;
   FontData client_subset;
   FontData client_target_subset;
   FontData patch;
+  bool codepoint_mapping_invalid;
 };
 
 StatusCode PatchSubsetServerImpl::Handle(const std::string& font_id,
@@ -53,7 +60,14 @@ StatusCode PatchSubsetServerImpl::Handle(const std::string& font_id,
   CheckOriginalFingerprint(request.original_font_fingerprint(), &state);
 
   if (codepoint_mapper_) {
-    ComputeCodepointRemapping(&state);
+    if (!Check(ComputeCodepointRemapping(&state))) {
+      return result;
+    }
+  }
+
+  if (state.IsReindex()) {
+    ConstructResponse(state, response);
+    return StatusCode::kOk;
   }
 
   if (!Check(result = ComputeSubsets(font_id, &state))) {
@@ -84,6 +98,7 @@ void PatchSubsetServerImpl::LoadInputCodepoints(
   CompressedSet::Decode(request.codepoints_needed(),
                         state->codepoints_needed.get());
   hb_set_union(state->codepoints_needed.get(), state->codepoints_have.get());
+  state->index_fingerprint = request.index_fingerprint();
 }
 
 void PatchSubsetServerImpl::CheckOriginalFingerprint(
@@ -96,7 +111,7 @@ void PatchSubsetServerImpl::CheckOriginalFingerprint(
   }
 }
 
-void PatchSubsetServerImpl::ComputeCodepointRemapping(
+StatusCode PatchSubsetServerImpl::ComputeCodepointRemapping(
     RequestState* state) const {
   hb_set_t* codepoints = hb_set_create();
   subsetter_->CodepointsInFont(state->font_data, codepoints);
@@ -105,14 +120,31 @@ void PatchSubsetServerImpl::ComputeCodepointRemapping(
   if (state->IsRebase()) {
     // Don't remap input codepoints for a rebase request (client isn't
     // using the mapping yet.)
-    return;
+    return StatusCode::kOk;
   }
 
-  return;
-  // TODO(garretrieger): Re-map input codepoints by using the computed mapping.
-  //
-  // Should also check the fingerprint if it doesn't match send a re-index
-  // response.
+  CodepointRemappingProto mapping_proto;
+  if (!Check(state->mapping.ToProto(&mapping_proto),
+             "Invalid codepoint mapping. Unable to convert to proto.")) {
+    // This typically shouldn't happen, so bail with internal error.
+    return StatusCode::kInternal;
+  }
+
+  uint64_t expected_checksum =
+      codepoint_mapping_checksum_->Checksum(mapping_proto);
+  if (expected_checksum != state->index_fingerprint) {
+    LOG(WARNING) << "Client index finger print (" << state->index_fingerprint
+                 << ") does not match expected finger print ("
+                 << expected_checksum << "). Sending a REINDEX response.";
+    state->codepoint_mapping_invalid = true;
+    return StatusCode::kOk;
+  }
+
+  // Codepoints given to use by the client are using the computed codepoint
+  // mapping, so translate the provided sets back to actual codepoints.
+  state->mapping.Decode(state->codepoints_have.get());
+  state->mapping.Decode(state->codepoints_needed.get());
+  return StatusCode::kOk;
 }
 
 void PatchSubsetServerImpl::AddCodepointRemapping(
@@ -158,14 +190,24 @@ void PatchSubsetServerImpl::ValidatePatchBase(uint64_t base_fingerprint,
 
 void PatchSubsetServerImpl::ConstructResponse(
     const RequestState& state, PatchResponseProto* response) const {
-  if (state.IsRebase()) {
+  if (state.IsReindex()) {
+    response->set_type(ResponseType::REINDEX);
+  } else if (state.IsRebase()) {
     response->set_type(ResponseType::REBASE);
-    if (codepoint_mapper_) {
-      AddCodepointRemapping(state, response->mutable_codepoint_remapping());
-    }
   } else {
     response->set_type(ResponseType::PATCH);
   }
+
+  if ((state.IsReindex() || state.IsRebase()) && codepoint_mapper_) {
+    AddCodepointRemapping(state, response->mutable_codepoint_remapping());
+  }
+
+  if (state.IsReindex()) {
+    AddFingerprints(state.font_data, response);
+    // Early return, no patch is needed for a re-index.
+    return;
+  }
+
   PatchProto* patch_proto = response->mutable_patch();
   patch_proto->set_format(PatchFormat::BROTLI_SHARED_DICT);
   patch_proto->set_patch(state.patch.data(), state.patch.size());
@@ -188,6 +230,12 @@ void PatchSubsetServerImpl::AddFingerprints(
       hasher_->Checksum(string_view(font_data.str())));
   response->mutable_patch()->set_patched_fingerprint(
       hasher_->Checksum(string_view(target_subset.str())));
+}
+
+void PatchSubsetServerImpl::AddFingerprints(
+    const FontData& font_data, PatchResponseProto* response) const {
+  response->set_original_font_fingerprint(
+      hasher_->Checksum(string_view(font_data.str())));
 }
 
 bool PatchSubsetServerImpl::Check(StatusCode result) const {
