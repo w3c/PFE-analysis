@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "hb.h"
+#include "patch_subset/codepoint_map.h"
 
 namespace patch_subset {
 
@@ -18,7 +19,7 @@ class CodepointMapper {
   // To interpret the mapping vector: codepoint value 'mapping[i]'
   // is mapped to value 'i'.
   virtual void ComputeMapping(const hb_set_t& codepoints,
-                              std::vector<hb_codepoint_t>* mapping) const = 0;
+                              CodepointMap* mapping) const = 0;
 };
 
 }  // namespace patch_subset

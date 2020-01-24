@@ -6,16 +6,24 @@
 
 #include "common/status.h"
 #include "hb.h"
+#include "patch_subset/patch_subset.pb.h"
 
 namespace patch_subset {
 
 class CodepointMap {
  public:
-  void SetMapping(const std::vector<hb_codepoint_t> mapping);
+  void Clear();
+
+  void AddMapping(hb_codepoint_t from, hb_codepoint_t to);
+
+  StatusCode FromProto(const CodepointRemappingProto& proto) const;
+  StatusCode ToProto(CodepointRemappingProto* proto) const;
 
   StatusCode Encode(hb_set_t* codepoints) const;
+  StatusCode Encode(hb_codepoint_t* cp /* IN/OUT */) const;
 
   StatusCode Decode(hb_set_t* codepoints) const;
+  StatusCode Decode(hb_codepoint_t* cp /* IN/OUT */) const;
 
  private:
   std::unordered_map<hb_codepoint_t, hb_codepoint_t> encode_map;

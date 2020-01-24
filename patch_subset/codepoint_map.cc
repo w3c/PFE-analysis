@@ -6,13 +6,54 @@
 
 namespace patch_subset {
 
-void CodepointMap::SetMapping(const std::vector<hb_codepoint_t> mapping) {
+void CodepointMap::Clear() {
   encode_map.clear();
   decode_map.clear();
-  for (size_t new_cp = 0; new_cp < mapping.size(); new_cp++) {
-    encode_map[mapping[new_cp]] = new_cp;
-    decode_map[new_cp] = mapping[new_cp];
+}
+
+void CodepointMap::AddMapping(hb_codepoint_t from, hb_codepoint_t to) {
+  encode_map[from] = to;
+  decode_map[to] = from;
+}
+
+StatusCode CodepointMap::FromProto(const CodepointRemappingProto& proto) const {
+  // TODO(garretrieger): implement me!
+  LOG(WARNING) << "Not implemeneted yet.";
+  return StatusCode::kUnimplemented;
+}
+
+StatusCode CodepointMap::ToProto(CodepointRemappingProto* proto) const {
+  CompressedListProto* codepoint_ordering = proto->mutable_codepoint_ordering();
+
+  int last_cp = 0;
+  for (unsigned int i = 0; i < encode_map.size(); i++) {
+    hb_codepoint_t cp_for_index = i;
+    StatusCode result = Decode(&cp_for_index);
+    if (result != StatusCode::kOk) {
+      return result;
+    }
+
+    int delta = cp_for_index - last_cp;
+    last_cp = cp_for_index;
+
+    codepoint_ordering->add_deltas(delta);
   }
+
+  return StatusCode::kOk;
+}
+
+StatusCode Remap(
+    const std::unordered_map<hb_codepoint_t, hb_codepoint_t>& mapping,
+    hb_codepoint_t* cp) {
+  auto new_cp = mapping.find(*cp);
+  if (new_cp == mapping.end()) {
+    LOG(WARNING)
+        << "Encountered codepoint that is unspecified in the remapping: " << cp;
+    return StatusCode::kInvalidArgument;
+  }
+
+  *cp = new_cp->second;
+  return StatusCode::kOk;
 }
 
 StatusCode Remap(
@@ -22,15 +63,12 @@ StatusCode Remap(
 
   for (hb_codepoint_t cp = HB_SET_VALUE_INVALID;
        hb_set_next(codepoints, &cp);) {
-    auto new_cp = mapping.find(cp);
-    if (new_cp == mapping.end()) {
-      LOG(WARNING)
-          << "Encountered codepoint that is unspecified in the remapping: "
-          << cp;
-      return StatusCode::kInvalidArgument;
+    hb_codepoint_t new_cp = cp;
+    StatusCode result = Remap(mapping, &new_cp);
+    if (result != StatusCode::kOk) {
+      return result;
     }
-
-    hb_set_add(new_codepoints.get(), new_cp->second);
+    hb_set_add(new_codepoints.get(), new_cp);
   }
 
   hb_set_clear(codepoints);
@@ -43,8 +81,16 @@ StatusCode CodepointMap::Encode(hb_set_t* codepoints) const {
   return Remap(encode_map, codepoints);
 }
 
+StatusCode CodepointMap::Encode(hb_codepoint_t* cp) const {
+  return Remap(encode_map, cp);
+}
+
 StatusCode CodepointMap::Decode(hb_set_t* codepoints) const {
   return Remap(decode_map, codepoints);
+}
+
+StatusCode CodepointMap::Decode(hb_codepoint_t* cp) const {
+  return Remap(decode_map, cp);
 }
 
 }  // namespace patch_subset

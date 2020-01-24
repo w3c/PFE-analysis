@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "hb.h"
+#include "patch_subset/codepoint_map.h"
 #include "patch_subset/codepoint_mapper.h"
 
 namespace patch_subset {
@@ -16,7 +17,7 @@ class SimpleCodepointMapper : public CodepointMapper {
   SimpleCodepointMapper() {}
 
   void ComputeMapping(const hb_set_t& codepoints,
-                      std::vector<hb_codepoint_t>* mapping) const override;
+                      CodepointMap* mapping) const override;
 
  private:
 };

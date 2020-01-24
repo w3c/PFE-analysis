@@ -6,6 +6,8 @@
 #include "common/logging.h"
 #include "hb-subset.h"
 #include "hb.h"
+#include "patch_subset/codepoint_map.h"
+#include "patch_subset/codepoint_mapper.h"
 #include "patch_subset/compressed_set.h"
 #include "patch_subset/hb_set_unique_ptr.h"
 #include "patch_subset/patch_subset.pb.h"
@@ -28,7 +30,7 @@ struct RequestState {
 
   hb_set_unique_ptr codepoints_have;
   hb_set_unique_ptr codepoints_needed;
-  std::vector<hb_codepoint_t> mapping;
+  CodepointMap mapping;
   FontData font_data;
   FontData client_subset;
   FontData client_target_subset;
@@ -115,14 +117,7 @@ void PatchSubsetServerImpl::ComputeCodepointRemapping(
 
 void PatchSubsetServerImpl::AddCodepointRemapping(
     const RequestState& state, CodepointRemappingProto* response) const {
-  int previous_cp = 0;
-  for (hb_codepoint_t cp : state.mapping) {
-    response->mutable_codepoint_ordering()->add_deltas(cp - previous_cp);
-    previous_cp = cp;
-  }
-
-  // TODO(garretrieger): add a grouping strategy if it's needed.
-
+  state.mapping.ToProto(response);
   response->set_fingerprint(codepoint_mapping_checksum_->Checksum(*response));
 }
 
