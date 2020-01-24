@@ -39,9 +39,13 @@ class FakeSubsetter : public Subsetter {
 
   void CodepointsInFont(const FontData& font,
                         hb_set_t* codepoints) const override {
-    hb_set_add(codepoints, 1);
-    hb_set_add(codepoints, 2);
-    hb_set_add(codepoints, 3);
+    // a - f
+    hb_set_add(codepoints, 0x61);
+    hb_set_add(codepoints, 0x62);
+    hb_set_add(codepoints, 0x63);
+    hb_set_add(codepoints, 0x64);
+    hb_set_add(codepoints, 0x65);
+    hb_set_add(codepoints, 0x66);
   }
 };
 

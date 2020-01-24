@@ -106,7 +106,9 @@ class PatchSubsetServerImplWithCodepointRemappingTest
                 std::unique_ptr<Hasher>(hasher_),
                 std::unique_ptr<CodepointMapper>(new SimpleCodepointMapper()),
                 std::unique_ptr<CodepointMappingChecksum>(
-                    codepoint_mapping_checksum_)) {}
+                    codepoint_mapping_checksum_)),
+        set_abcd_encoded_(make_hb_set_from_ranges(1, 0, 3)),
+        set_ab_encoded_(make_hb_set_from_ranges(1, 0, 1)) {}
 
   void ExpectCodepointMappingChecksum(std::vector<int> mapping_deltas,
                                       uint64_t checksum) {
@@ -122,12 +124,12 @@ class PatchSubsetServerImplWithCodepointRemappingTest
 
   MockCodepointMappingChecksum* codepoint_mapping_checksum_;
   PatchSubsetServerImpl server_;
+
+  hb_set_unique_ptr set_abcd_encoded_;
+  hb_set_unique_ptr set_ab_encoded_;
 };
 
 // TODO(garretrieger): subsetter failure test.
-// TODO(garretrieger):
-//  - REINDEX response
-//  - PATCH response, with client using codepoint mapping.
 
 TEST_F(PatchSubsetServerImplTest, NewRequest) {
   ExpectRoboto();
@@ -159,7 +161,7 @@ TEST_F(PatchSubsetServerImplWithCodepointRemappingTest,
   ExpectChecksum("Roboto-Regular.ttf", 42);
   ExpectChecksum("Roboto-Regular.ttf:abcd", 43);
 
-  ExpectCodepointMappingChecksum({1, 1, 1}, 44);
+  ExpectCodepointMappingChecksum({97, 1, 1, 1, 1, 1}, 44);
 
   PatchRequestProto request;
   PatchResponseProto response;
@@ -171,8 +173,10 @@ TEST_F(PatchSubsetServerImplWithCodepointRemappingTest,
   // Check that a codepoint mapping response has been included.
   EXPECT_EQ(response.codepoint_remapping().fingerprint(), 44);
   EXPECT_EQ(response.codepoint_remapping().codepoint_ordering().deltas_size(),
-            3);
-  for (int i = 0; i < 3; i++) {
+            6);
+
+  EXPECT_EQ(response.codepoint_remapping().codepoint_ordering().deltas(0), 97);
+  for (int i = 1; i < 6; i++) {
     EXPECT_EQ(response.codepoint_remapping().codepoint_ordering().deltas(i), 1);
   }
 }
@@ -203,12 +207,41 @@ TEST_F(PatchSubsetServerImplTest, PatchRequest) {
   EXPECT_FALSE(response.has_codepoint_remapping());
 }
 
-TEST_F(PatchSubsetServerImplWithCodepointRemappingTest, PatchRequest) {
+TEST_F(PatchSubsetServerImplWithCodepointRemappingTest,
+       PatchRequestWithCodepointRemapping) {
   ExpectRoboto();
   ExpectDiff();
   ExpectChecksum("Roboto-Regular.ttf", 42);
   ExpectChecksum("Roboto-Regular.ttf:ab", 43);
   ExpectChecksum("Roboto-Regular.ttf:abcd", 44);
+  ExpectCodepointMappingChecksum({97, 1, 1, 1, 1, 1}, 44);
+
+  PatchRequestProto request;
+  PatchResponseProto response;
+  CompressedSet::Encode(*set_ab_encoded_, request.mutable_codepoints_have());
+  CompressedSet::Encode(*set_abcd_encoded_,
+                        request.mutable_codepoints_needed());
+  request.set_original_font_fingerprint(42);
+  request.set_base_fingerprint(43);
+  request.set_index_fingerprint(44);
+
+  EXPECT_EQ(server_.Handle("Roboto-Regular.ttf", request, &response),
+            StatusCode::kOk);
+  EXPECT_EQ(response.original_font_fingerprint(), 42);
+  EXPECT_EQ(response.type(), ResponseType::PATCH);
+  EXPECT_EQ(response.patch().patch(),
+            "Roboto-Regular.ttf:abcd - Roboto-Regular.ttf:ab");
+  EXPECT_EQ(response.patch().patched_fingerprint(), 44);
+  EXPECT_EQ(response.patch().format(), PatchFormat::BROTLI_SHARED_DICT);
+
+  // Patch request should not send back a codepoint remapping.
+  EXPECT_FALSE(response.has_codepoint_remapping());
+}
+
+TEST_F(PatchSubsetServerImplWithCodepointRemappingTest, BadIndexChecksum) {
+  ExpectRoboto();
+  ExpectChecksum("Roboto-Regular.ttf", 42);
+  ExpectCodepointMappingChecksum({97, 1, 1, 1, 1, 1}, 44);
 
   PatchRequestProto request;
   PatchResponseProto response;
@@ -216,16 +249,23 @@ TEST_F(PatchSubsetServerImplWithCodepointRemappingTest, PatchRequest) {
   CompressedSet::Encode(*set_abcd_, request.mutable_codepoints_needed());
   request.set_original_font_fingerprint(42);
   request.set_base_fingerprint(43);
+  request.set_index_fingerprint(123);
 
   EXPECT_EQ(server_.Handle("Roboto-Regular.ttf", request, &response),
             StatusCode::kOk);
 
-  // Patch request should not send back a codepoint remapping.
-  EXPECT_FALSE(response.has_codepoint_remapping());
-}
+  // Re-index should have no patch, but contain a codepoint mapping.
+  EXPECT_EQ(response.type(), ResponseType::REINDEX);
+  EXPECT_FALSE(response.has_patch());
+  EXPECT_EQ(response.codepoint_remapping().fingerprint(), 44);
 
-// TODO(garretrieger): test for bad codepoint remapping checksum (on patch
-// request).
+  EXPECT_EQ(response.codepoint_remapping().codepoint_ordering().deltas_size(),
+            6);
+  EXPECT_EQ(response.codepoint_remapping().codepoint_ordering().deltas(0), 97);
+  for (int i = 1; i < 6; i++) {
+    EXPECT_EQ(response.codepoint_remapping().codepoint_ordering().deltas(i), 1);
+  }
+}
 
 TEST_F(PatchSubsetServerImplTest, BadOriginalFontChecksum) {
   ExpectRoboto();
