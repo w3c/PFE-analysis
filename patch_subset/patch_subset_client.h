@@ -32,6 +32,10 @@ class PatchSubsetClient {
   StatusCode Extend(const hb_set_t& additional_codepoints, ClientState* state);
 
  private:
+  StatusCode EncodeCodepoints(const ClientState& state,
+                              hb_set_t* codepoints_have,
+                              hb_set_t* codepoints_needed);
+
   void CreateRequest(const hb_set_t& codepoints_have,
                      const hb_set_t& codepoints_needed,
                      const ClientState& state, PatchRequestProto* request);

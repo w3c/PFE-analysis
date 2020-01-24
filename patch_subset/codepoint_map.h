@@ -54,6 +54,10 @@ class CodepointMap {
   // Restore encoded cp to it's original value.
   StatusCode Decode(hb_codepoint_t* cp /* IN/OUT */) const;
 
+  // Given a set of untransformed codepoints, intersects it
+  // with the set of codepoints that this mapping can map.
+  void IntersectWithMappedCodepoints(hb_set_t* codepoints) const;
+
  private:
   std::unordered_map<hb_codepoint_t, hb_codepoint_t> encode_map;
   std::unordered_map<hb_codepoint_t, hb_codepoint_t> decode_map;

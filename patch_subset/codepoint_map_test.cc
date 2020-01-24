@@ -112,4 +112,12 @@ TEST_F(CodepointMapTest, ToProto) {
   EXPECT_EQ(proto.codepoint_ordering().deltas(2), 1);
 }
 
+TEST_F(CodepointMapTest, IntersectWithMappedCodepoints) {
+  hb_set_unique_ptr codepoints = make_hb_set(2, 4, 7, 9);
+  codepoint_map_.IntersectWithMappedCodepoints(codepoints.get());
+
+  hb_set_unique_ptr expected = make_hb_set(2, 4, 7);
+  EXPECT_TRUE(hb_set_is_equal(codepoints.get(), expected.get()));
+}
+
 }  // namespace patch_subset

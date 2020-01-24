@@ -3,6 +3,7 @@
 #include "common/logging.h"
 #include "common/status.h"
 #include "hb.h"
+#include "patch_subset/codepoint_map.h"
 #include "patch_subset/compressed_set.h"
 #include "patch_subset/hb_set_unique_ptr.h"
 #include "patch_subset/patch_subset.pb.h"
@@ -28,6 +29,12 @@ StatusCode PatchSubsetClient::Extend(const hb_set_t& additional_codepoints,
   hb_set_union(new_codepoints.get(), &additional_codepoints);
   hb_set_subtract(new_codepoints.get(), existing_codepoints.get());
 
+  StatusCode result =
+      EncodeCodepoints(*state, existing_codepoints.get(), new_codepoints.get());
+  if (result != StatusCode::kOk) {
+    return result;
+  }
+
   if (!hb_set_get_population(new_codepoints.get())) {
     // No new codepoints are needed. No action needed.
     return StatusCode::kOk;
@@ -37,7 +44,7 @@ StatusCode PatchSubsetClient::Extend(const hb_set_t& additional_codepoints,
   CreateRequest(*existing_codepoints, *new_codepoints, *state, &request);
 
   PatchResponseProto response;
-  StatusCode result = server_->Handle(state->font_id(), request, &response);
+  result = server_->Handle(state->font_id(), request, &response);
   if (result != StatusCode::kOk) {
     LOG(WARNING) << "Got a failure from the patch subset server (code = "
                  << result << ").";
@@ -50,6 +57,35 @@ StatusCode PatchSubsetClient::Extend(const hb_set_t& additional_codepoints,
   }
 
   LogRequest(request, response);
+  return StatusCode::kOk;
+}
+
+StatusCode PatchSubsetClient::EncodeCodepoints(const ClientState& state,
+                                               hb_set_t* codepoints_have,
+                                               hb_set_t* codepoints_needed) {
+  if (!state.has_codepoint_remapping()) {
+    return StatusCode::kOk;
+  }
+
+  CodepointMap map;
+  StatusCode result = map.FromProto(state.codepoint_remapping());
+  if (result != StatusCode::kOk) {
+    LOG(WARNING) << "Failed to load codepoint remapping proto.";
+    return result;
+  }
+
+  map.IntersectWithMappedCodepoints(codepoints_have);
+  if ((result = map.Encode(codepoints_have)) != StatusCode::kOk) {
+    LOG(WARNING) << "Failed to encode codepoints_have with the mapping.";
+    return result;
+  }
+
+  map.IntersectWithMappedCodepoints(codepoints_needed);
+  if ((result = map.Encode(codepoints_needed)) != StatusCode::kOk) {
+    LOG(WARNING) << "Failed to encode codepoints_needed with the mapping.";
+    return result;
+  }
+
   return StatusCode::kOk;
 }
 
@@ -96,6 +132,10 @@ StatusCode PatchSubsetClient::AmendState(const PatchResponseProto& response,
 
   state->set_font_data(patched.data(), patched.size());
   state->set_original_font_fingerprint(response.original_font_fingerprint());
+
+  if (response.has_codepoint_remapping()) {
+    *state->mutable_codepoint_remapping() = response.codepoint_remapping();
+  }
 
   return StatusCode::kOk;
 }

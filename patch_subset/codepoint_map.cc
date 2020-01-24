@@ -101,4 +101,13 @@ StatusCode CodepointMap::Decode(hb_codepoint_t* cp) const {
   return ApplyMappingTo(decode_map, cp);
 }
 
+void CodepointMap::IntersectWithMappedCodepoints(hb_set_t* codepoints) const {
+  hb_set_unique_ptr mapped_codepoints = make_hb_set();
+  for (auto entry : encode_map) {
+    hb_set_add(mapped_codepoints.get(), entry.first);
+  }
+
+  hb_set_intersect(codepoints, mapped_codepoints.get());
+}
+
 }  // namespace patch_subset
