@@ -7,23 +7,18 @@
 
 #include "common/status.h"
 #include "hb.h"
-#include "patch_subset/brotli_binary_diff.h"
 #include "patch_subset/brotli_binary_patch.h"
 #include "patch_subset/brotli_request_logger.h"
-#include "patch_subset/codepoint_mapper.h"
-#include "patch_subset/codepoint_mapping_checksum.h"
 #include "patch_subset/farm_hasher.h"
 #include "patch_subset/file_font_provider.h"
 #include "patch_subset/font_provider.h"
-#include "patch_subset/harfbuzz_subsetter.h"
 #include "patch_subset/memory_request_logger.h"
 #include "patch_subset/patch_subset.pb.h"
 #include "patch_subset/patch_subset_client.h"
+#include "patch_subset/patch_subset_server.h"
 #include "patch_subset/patch_subset_server_impl.h"
 
-using ::patch_subset::BinaryDiff;
 using ::patch_subset::BinaryPatch;
-using ::patch_subset::BrotliBinaryDiff;
 using ::patch_subset::BrotliBinaryPatch;
 using ::patch_subset::BrotliRequestLogger;
 using ::patch_subset::ClientState;
@@ -32,10 +27,10 @@ using ::patch_subset::CodepointMappingChecksum;
 using ::patch_subset::FarmHasher;
 using ::patch_subset::FileFontProvider;
 using ::patch_subset::FontProvider;
-using ::patch_subset::HarfbuzzSubsetter;
 using ::patch_subset::Hasher;
 using ::patch_subset::MemoryRequestLogger;
 using ::patch_subset::PatchSubsetClient;
+using ::patch_subset::PatchSubsetServer;
 using ::patch_subset::PatchSubsetServerImpl;
 using ::patch_subset::StatusCode;
 using ::patch_subset::Subsetter;
@@ -43,18 +38,13 @@ using ::patch_subset::Subsetter;
 class PatchSubsetSession {
  public:
   PatchSubsetSession(const std::string& font_directory,
-                     const std::string& font_id)
+                     const std::string& font_id, bool with_codepoint_remapping)
       : font_provider_(new FileFontProvider(font_directory)),
-        binary_diff_(new BrotliBinaryDiff()),
         binary_patch_(new BrotliBinaryPatch()),
         brotli_request_logger_(&request_logger_),
-        server_(std::unique_ptr<FontProvider>(font_provider_),
-                std::unique_ptr<Subsetter>(new HarfbuzzSubsetter()),
-                std::unique_ptr<BinaryDiff>(binary_diff_),
-                std::unique_ptr<Hasher>(new FarmHasher()),
-                std::unique_ptr<CodepointMapper>(nullptr),
-                std::unique_ptr<CodepointMappingChecksum>(nullptr)),
-        client_(&server_, &brotli_request_logger_,
+        server_(std::move(PatchSubsetServerImpl::CreateServer(
+            font_directory, with_codepoint_remapping))),
+        client_(server_.get(), &brotli_request_logger_,
                 std::unique_ptr<BinaryPatch>(binary_patch_),
                 std::unique_ptr<Hasher>(new FarmHasher())) {
     client_state_.set_font_id(font_id);
@@ -73,11 +63,10 @@ class PatchSubsetSession {
   }
 
   FontProvider* font_provider_;
-  BinaryDiff* binary_diff_;
   BinaryPatch* binary_patch_;
   MemoryRequestLogger request_logger_;
   BrotliRequestLogger brotli_request_logger_;
-  PatchSubsetServerImpl server_;
+  std::unique_ptr<PatchSubsetServer> server_;
   PatchSubsetClient client_;
   ClientState client_state_;
 };
@@ -88,7 +77,7 @@ PatchSubsetSession* PatchSubsetSession_new(const char* font_directory,
                                            const char* font_id) {
   std::string font_directory_string(font_directory);
   std::string font_id_string(font_id);
-  return new PatchSubsetSession(font_directory_string, font_id);
+  return new PatchSubsetSession(font_directory_string, font_id, false);
 }
 
 void PatchSubsetSession_delete(PatchSubsetSession* session) { delete session; }
