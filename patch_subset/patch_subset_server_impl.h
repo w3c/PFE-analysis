@@ -6,12 +6,18 @@
 #include "common/status.h"
 #include "hb.h"
 #include "patch_subset/binary_diff.h"
+#include "patch_subset/brotli_binary_diff.h"
 #include "patch_subset/codepoint_mapper.h"
 #include "patch_subset/codepoint_mapping_checksum.h"
+#include "patch_subset/codepoint_mapping_checksum_impl.h"
+#include "patch_subset/farm_hasher.h"
+#include "patch_subset/file_font_provider.h"
 #include "patch_subset/font_provider.h"
+#include "patch_subset/harfbuzz_subsetter.h"
 #include "patch_subset/hasher.h"
 #include "patch_subset/patch_subset.pb.h"
 #include "patch_subset/patch_subset_server.h"
+#include "patch_subset/simple_codepoint_mapper.h"
 #include "patch_subset/subsetter.h"
 
 namespace patch_subset {
@@ -20,6 +26,23 @@ struct RequestState;
 
 class PatchSubsetServerImpl : public PatchSubsetServer {
  public:
+  static std::unique_ptr<PatchSubsetServer> CreateServer(
+      const std::string& font_directory, bool with_codepoint_remapping) {
+    Hasher* hasher = new FarmHasher();
+    CodepointMapper* codepoint_mapper =
+        with_codepoint_remapping ? new SimpleCodepointMapper() : nullptr;
+    CodepointMappingChecksum* mapping_checksum =
+        with_codepoint_remapping ? new CodepointMappingChecksumImpl(hasher)
+                                 : nullptr;
+    return std::unique_ptr<PatchSubsetServer>(new PatchSubsetServerImpl(
+        std::unique_ptr<FontProvider>(new FileFontProvider(font_directory)),
+        std::unique_ptr<Subsetter>(new HarfbuzzSubsetter()),
+        std::unique_ptr<BinaryDiff>(new BrotliBinaryDiff()),
+        std::unique_ptr<Hasher>(hasher),
+        std::unique_ptr<CodepointMapper>(codepoint_mapper),
+        std::unique_ptr<CodepointMappingChecksum>(mapping_checksum)));
+  }
+
   // Takes ownership of font_provider, subsetter, and binary_diff.
   PatchSubsetServerImpl(
       std::unique_ptr<FontProvider> font_provider,
