@@ -41,14 +41,32 @@ get_requests.restype = POINTER(RECORD)
 Record = collections.namedtuple("Record", ["request_size", "response_size"])
 
 
-# Module methods
-def name():
-  return "PatchSubset_PFE"
+def create_with_codepoint_remapping():
+  return PatchSubsetMethod(True)
 
 
-def start_session(font_loader):
-  """Starts a new PFE session for this method."""
-  return PatchSubsetPfeSession(font_loader)
+def create_without_codepoint_remapping():
+  return PatchSubsetMethod(False)
+
+
+class PatchSubsetMethod:
+  """Patch and subset PFE method."""
+
+  def __init__(self, with_codepoint_remapping):
+    """If with_codepoint_remapping is set then the underlying
+    client/server will use codepoint remapping when talking
+    to each other."""
+    self.with_codepoint_remapping = with_codepoint_remapping
+
+  def name(self):  # pylint: disable=no-self-use
+    if not self.with_codepoint_remapping:
+      return "PatchSubset_PFE"
+
+    return "PatchSubset_PFE_Remapping"
+
+  def start_session(self, font_loader):
+    """Starts a new PFE session for this method."""
+    return PatchSubsetPfeSession(font_loader, self.with_codepoint_remapping)
 
 
 class PatchSubsetError(Exception):
@@ -62,10 +80,13 @@ class FontSession:
   for each page view for a particular font.
   """
 
-  def __init__(self, font_loader, font_id, page_view_count):
+  def __init__(self, font_loader, font_id, page_view_count,
+               with_codepoint_remapping):
     font_directory_c = c_char_p(font_loader.directory().encode("utf-8"))
     font_id_c = c_char_p(font_id.encode("utf-8"))
-    self.session = c_void_p(new_session(font_directory_c, font_id_c))
+    self.session = c_void_p(
+        new_session(font_directory_c, font_id_c,
+                    c_bool(with_codepoint_remapping)))
     self.delete_session = patch_subset.PatchSubsetSession_delete
     self.records_by_view = [[]] * page_view_count
     self.last_record_index = None
@@ -140,10 +161,11 @@ def to_request_graph(records):
 class PatchSubsetPfeSession:
   """Fake progressive font enrichment session."""
 
-  def __init__(self, font_loader):
+  def __init__(self, font_loader, with_codepoint_remapping):
     self.sessions_by_font = dict()
     self.page_view_count = 0
     self.font_loader = font_loader
+    self.with_codepoint_remapping = with_codepoint_remapping
 
   def page_view(self, codepoints_by_font):  # pylint: disable=no-self-use,unused-argument
     """Processes a page view.
@@ -157,8 +179,9 @@ class PatchSubsetPfeSession:
 
     for font_id, codepoints in codepoints_by_font.items():
       if font_id not in self.sessions_by_font:
-        self.sessions_by_font[font_id] = FontSession(self.font_loader, font_id,
-                                                     self.page_view_count)
+        self.sessions_by_font[font_id] = FontSession(
+            self.font_loader, font_id, self.page_view_count,
+            self.with_codepoint_remapping)
 
       self.sessions_by_font[font_id].extend(codepoints)
 

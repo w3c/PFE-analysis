@@ -74,10 +74,12 @@ class PatchSubsetSession {
 extern "C" {
 
 PatchSubsetSession* PatchSubsetSession_new(const char* font_directory,
-                                           const char* font_id) {
+                                           const char* font_id,
+                                           bool with_codepoint_remapping) {
   std::string font_directory_string(font_directory);
   std::string font_id_string(font_id);
-  return new PatchSubsetSession(font_directory_string, font_id, false);
+  return new PatchSubsetSession(font_directory_string, font_id,
+                                with_codepoint_remapping);
 }
 
 void PatchSubsetSession_delete(PatchSubsetSession* session) { delete session; }

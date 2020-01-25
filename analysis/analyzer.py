@@ -54,7 +54,8 @@ PFE_METHODS = [
     optimal_pfe_method,
     unicode_range_pfe_method,
     whole_font_pfe_method,
-    patch_subset_method,
+    patch_subset_method.create_with_codepoint_remapping(),
+    patch_subset_method.create_without_codepoint_remapping(),
 ]
 
 NETWORK_MODELS = [
