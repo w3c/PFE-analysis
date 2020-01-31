@@ -1,5 +1,4 @@
-// Proto definition of the input data set for the analyis.
-// Used to represent sequences of page views.
+// Proto format used by the open source incxfer analysis code.
 syntax = "proto3";
 
 package analysis;
@@ -7,6 +6,19 @@ package analysis;
 message PageContentProto {
   string font_name = 1;
   repeated uint32 codepoints = 2;
+
+  // This is used to add data from logs of existing PFE method(s).
+  // Records the resulting request/response sizes incurred by that
+  // method for this page view.
+  //
+  // The analysis will generate costs for this method along with
+  // the simulated methods.
+  repeated PfeRequest logged_requests = 3;
+}
+
+message PfeRequest {
+  uint32 request_size = 1;
+  uint32 response_size = 2;
 }
 
 message PageViewProto {
@@ -19,4 +31,8 @@ message PageViewSequenceProto {
 
 message DataSetProto {
   repeated PageViewSequenceProto sequences = 1;
+
+  // If logged requests are included this is the name
+  // of the PFE_method they came from.
+  string logged_method_name = 2;
 }
