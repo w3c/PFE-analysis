@@ -1,6 +1,7 @@
 py_library(
     name = "pfe_methods",
     srcs = [
+        "logged_pfe_method.py",
         "optimal_pfe_method.py",
         "subset_sizer.py",
         "unicode_range_pfe_method.py",
@@ -50,6 +51,16 @@ py_test(
     ],
     data = [
         "//patch_subset:testdata",
+    ],
+    deps = [
+        ":pfe_methods",
+    ],
+)
+
+py_test(
+    name = "logged_pfe_method_test",
+    srcs = [
+        "logged_pfe_method_test.py",
     ],
     deps = [
         ":pfe_methods",
