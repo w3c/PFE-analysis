@@ -23,6 +23,15 @@ class MockPfeSession:  # pylint: disable=missing-class-docstring
     pass
 
 
+class MockLoggedPfeSession:  # pylint: disable=missing-class-docstring
+
+  def page_view_proto(self, proto):
+    pass
+
+  def get_request_graphs(self):
+    pass
+
+
 def sequence(views):
   """Helper to create a sequence of page view proto's."""
   result = []
@@ -72,6 +81,15 @@ class SimulationTest(unittest.TestCase):
     self.mock_pfe_session_2.page_view = mock.MagicMock()
     self.mock_pfe_session_2.get_request_graphs = mock.MagicMock(
         return_value=[graph_2] * 2)
+
+    self.mock_logged_pfe_method = MockPfeMethod()
+    self.mock_logged_pfe_session = MockLoggedPfeSession()
+    self.mock_logged_pfe_method.name = mock.MagicMock(return_value="Logged_PFE")
+    self.mock_logged_pfe_method.start_session = mock.MagicMock(
+        return_value=self.mock_logged_pfe_session)
+    self.mock_logged_pfe_session.page_view_proto = mock.MagicMock()
+    self.mock_logged_pfe_session.get_request_graphs = mock.MagicMock(
+        return_value=[self.graph_1])
 
     self.page_view_sequence = sequence([
         {
@@ -123,6 +141,16 @@ class SimulationTest(unittest.TestCase):
         mock.call({"open_sans": {10, 11, 12}})
     ])
     self.mock_pfe_session.get_request_graphs.assert_called_once_with()
+
+  def test_simulate_logged(self):
+    a_font_loader = font_loader.FontLoader("fonts/are/here")
+    self.assertEqual(
+        simulation.simulate_sequence(self.page_view_sequence,
+                                     self.mock_logged_pfe_method, a_font_loader),
+        [self.graph_1])
+    self.mock_logged_pfe_method.start_session.assert_called_once_with(a_font_loader)
+    self.mock_logged_pfe_session.page_view_proto.assert_called()
+    self.mock_logged_pfe_session.get_request_graphs.assert_called_once_with()
 
   def test_simulate_all(self):
     self.maxDiff = None  # pylint: disable=invalid-name
