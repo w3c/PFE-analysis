@@ -96,9 +96,11 @@ class NetworkResult:
     self.cost_per_page_view = distribution.Distribution(
         distribution.LinearBucketer(5))
     self.total_cost = 0
+    self.total_wait_time_ms = 0
 
   def add_time(self, total_time_ms, the_cost):
     self.total_cost += the_cost
+    self.total_wait_time_ms += total_time_ms
     self.latency_distribution.add_value(total_time_ms)
     self.cost_per_page_view.add_value(the_cost)
 
@@ -107,6 +109,7 @@ class NetworkResult:
     network_proto = result_pb2.NetworkResultProto()
     network_proto.network_model_name = self.name
     network_proto.total_cost = self.total_cost
+    network_proto.total_wait_time_ms = self.total_wait_time_ms
     network_proto.wait_per_page_view_ms.CopyFrom(
         self.latency_distribution.to_proto())
     network_proto.cost_per_page_view.CopyFrom(
@@ -143,7 +146,7 @@ def to_method_result_proto(method_name, totals, cost_function):
     response_bytes_per_page_view.add_value(total.response_bytes)
     total_request_count += total.num_requests
     total_request_bytes += total.request_bytes
-    total_response_bytes += total.request_bytes
+    total_response_bytes += total.response_bytes
 
     for network, total_time in total.time_per_network.items():
       if network in result_by_network:
