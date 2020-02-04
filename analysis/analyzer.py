@@ -135,9 +135,15 @@ def to_method_result_proto(method_name, totals, cost_function):
       distribution.LinearBucketer(5))
 
   result_by_network = dict()
+  total_request_count = 0
+  total_request_bytes = 0
+  total_response_bytes = 0
   for total in totals:
     request_bytes_per_page_view.add_value(total.request_bytes)
     response_bytes_per_page_view.add_value(total.response_bytes)
+    total_request_count += total.num_requests
+    total_request_bytes += total.request_bytes
+    total_response_bytes += total.request_bytes
 
     for network, total_time in total.time_per_network.items():
       if network in result_by_network:
@@ -152,6 +158,9 @@ def to_method_result_proto(method_name, totals, cost_function):
       request_bytes_per_page_view.to_proto())
   method_result_proto.response_bytes_per_page_view.CopyFrom(
       response_bytes_per_page_view.to_proto())
+  method_result_proto.total_request_bytes = total_request_bytes
+  method_result_proto.total_response_bytes = total_response_bytes
+  method_result_proto.total_request_count = total_request_count
   for result in sorted(result_by_network.values(),
                        key=lambda result: result.name):
     method_result_proto.results_by_network.append(result.to_proto())
