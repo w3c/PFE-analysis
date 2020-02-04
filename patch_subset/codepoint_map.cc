@@ -23,6 +23,14 @@ StatusCode CodepointMap::FromProto(const CodepointRemappingProto& proto) const {
 }
 
 StatusCode CodepointMap::ToProto(CodepointRemappingProto* proto) const {
+  // A CodepopointRemappingProto encodes a mapping as a list such that:
+  //
+  // codepoint_ordering[encoded_value] = decoded_value
+  //
+  // Integers in proto bufs are variable length encoded. So to reduce the
+  // number of bytes required to serialize this list, it is written
+  // as a series of deltas between the value at the current index and the
+  // value at the previous index of the list.
   CompressedListProto* codepoint_ordering = proto->mutable_codepoint_ordering();
 
   int last_cp = 0;
@@ -42,7 +50,7 @@ StatusCode CodepointMap::ToProto(CodepointRemappingProto* proto) const {
   return StatusCode::kOk;
 }
 
-StatusCode Remap(
+StatusCode ApplyMappingTo(
     const std::unordered_map<hb_codepoint_t, hb_codepoint_t>& mapping,
     hb_codepoint_t* cp) {
   auto new_cp = mapping.find(*cp);
@@ -56,7 +64,7 @@ StatusCode Remap(
   return StatusCode::kOk;
 }
 
-StatusCode Remap(
+StatusCode ApplyMappingTo(
     const std::unordered_map<hb_codepoint_t, hb_codepoint_t>& mapping,
     hb_set_t* codepoints) {
   hb_set_unique_ptr new_codepoints = make_hb_set();
@@ -64,7 +72,7 @@ StatusCode Remap(
   for (hb_codepoint_t cp = HB_SET_VALUE_INVALID;
        hb_set_next(codepoints, &cp);) {
     hb_codepoint_t new_cp = cp;
-    StatusCode result = Remap(mapping, &new_cp);
+    StatusCode result = ApplyMappingTo(mapping, &new_cp);
     if (result != StatusCode::kOk) {
       return result;
     }
@@ -78,19 +86,19 @@ StatusCode Remap(
 }
 
 StatusCode CodepointMap::Encode(hb_set_t* codepoints) const {
-  return Remap(encode_map, codepoints);
+  return ApplyMappingTo(encode_map, codepoints);
 }
 
 StatusCode CodepointMap::Encode(hb_codepoint_t* cp) const {
-  return Remap(encode_map, cp);
+  return ApplyMappingTo(encode_map, cp);
 }
 
 StatusCode CodepointMap::Decode(hb_set_t* codepoints) const {
-  return Remap(decode_map, codepoints);
+  return ApplyMappingTo(decode_map, codepoints);
 }
 
 StatusCode CodepointMap::Decode(hb_codepoint_t* cp) const {
-  return Remap(decode_map, cp);
+  return ApplyMappingTo(decode_map, cp);
 }
 
 }  // namespace patch_subset
