@@ -150,7 +150,8 @@ class SimulationTest(unittest.TestCase):
                                      a_font_loader), [self.graph_1])
     self.mock_logged_pfe_method.start_session.assert_called_once_with(
         a_font_loader)
-    self.mock_logged_pfe_session.page_view_proto.assert_called()
+    self.mock_logged_pfe_session.page_view_proto.assert_has_calls(
+        [mock.call(page_view) for page_view in self.page_view_sequence])
     self.mock_logged_pfe_session.get_request_graphs.assert_called_once_with()
 
   def test_simulate_all(self):
