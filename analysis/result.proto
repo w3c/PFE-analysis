@@ -25,7 +25,7 @@ message NetworkResultProto {
   double total_cost = 2;
   DistributionProto wait_per_page_view_ms = 3;
   DistributionProto cost_per_page_view = 4;
-  double total_latency = 5;
+  double total_wait_time_ms = 5;
 }
 
 message DistributionProto {

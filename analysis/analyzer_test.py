@@ -17,16 +17,17 @@ class AnalyzerTest(unittest.TestCase):
     method_proto.method_name = "Fake_PFE"
     method_proto.request_bytes_per_page_view.buckets.add(end=1000)
     method_proto.request_bytes_per_page_view.buckets.add(end=1005, count=2)
-    method_proto.response_bytes_per_page_view.buckets.add(end=1000)
-    method_proto.response_bytes_per_page_view.buckets.add(end=1005, count=2)
+    method_proto.response_bytes_per_page_view.buckets.add(end=2000)
+    method_proto.response_bytes_per_page_view.buckets.add(end=2005, count=2)
 
     method_proto.total_request_bytes = 2000
-    method_proto.total_response_bytes = 2000
+    method_proto.total_response_bytes = 4000
     method_proto.total_request_count = 12
 
     network_proto = result_pb2.NetworkResultProto()
     network_proto.network_model_name = "fast"
     network_proto.total_cost = 40
+    network_proto.total_wait_time_ms = 400
     network_proto.wait_per_page_view_ms.buckets.add(end=200)
     network_proto.wait_per_page_view_ms.buckets.add(end=205, count=2)
     network_proto.cost_per_page_view.buckets.add(end=20)
@@ -36,6 +37,7 @@ class AnalyzerTest(unittest.TestCase):
     network_proto = result_pb2.NetworkResultProto()
     network_proto.network_model_name = "slow"
     network_proto.total_cost = 420
+    network_proto.total_wait_time_ms = 4200
     network_proto.wait_per_page_view_ms.buckets.add(end=2100)
     network_proto.wait_per_page_view_ms.buckets.add(end=2105, count=2)
     network_proto.cost_per_page_view.buckets.add(end=210)
@@ -49,11 +51,11 @@ class AnalyzerTest(unittest.TestCase):
                     simulation.GraphTotals({
                         "slow": 2100,
                         "fast": 200
-                    }, 1000, 1000, 5),
+                    }, 1000, 2000, 5),
                     simulation.GraphTotals({
                         "slow": 2100,
                         "fast": 200
-                    }, 1000, 1000, 7),
+                    }, 1000, 2000, 7),
                 ],
             }, mock_cost), [method_proto])
 
