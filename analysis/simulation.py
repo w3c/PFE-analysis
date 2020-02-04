@@ -67,13 +67,13 @@ def simulate_sequence(sequence, pfe_method, a_font_loader):
   Returns a request graph for each page view in the sequence.
   """
   session = pfe_method.start_session(a_font_loader)
-  dont_convert_proto = (hasattr(session, "page_view_proto") and callable(session.page_view_proto))
+  dont_convert_proto = (hasattr(session, "page_view_proto") and
+                        callable(session.page_view_proto))
   for page_view in sequence:
     if dont_convert_proto:
       session.page_view_proto(page_view)
     else:
       session.page_view(codepoints_by_font(page_view))
-
 
   return session.get_request_graphs()
 
