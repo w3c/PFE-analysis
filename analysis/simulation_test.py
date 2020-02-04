@@ -146,9 +146,10 @@ class SimulationTest(unittest.TestCase):
     a_font_loader = font_loader.FontLoader("fonts/are/here")
     self.assertEqual(
         simulation.simulate_sequence(self.page_view_sequence,
-                                     self.mock_logged_pfe_method, a_font_loader),
-        [self.graph_1])
-    self.mock_logged_pfe_method.start_session.assert_called_once_with(a_font_loader)
+                                     self.mock_logged_pfe_method,
+                                     a_font_loader), [self.graph_1])
+    self.mock_logged_pfe_method.start_session.assert_called_once_with(
+        a_font_loader)
     self.mock_logged_pfe_session.page_view_proto.assert_called()
     self.mock_logged_pfe_session.get_request_graphs.assert_called_once_with()
 
