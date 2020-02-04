@@ -45,11 +45,11 @@ class AnalyzerTest(unittest.TestCase):
                     simulation.GraphTotals({
                         "slow": 2100,
                         "fast": 200
-                    }, 1000, 1000),
+                    }, 1000, 1000, 5),
                     simulation.GraphTotals({
                         "slow": 2100,
                         "fast": 200
-                    }, 1000, 1000),
+                    }, 1000, 1000, 7),
                 ],
             }, mock_cost), [method_proto])
 

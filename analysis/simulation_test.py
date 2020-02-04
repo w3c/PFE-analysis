@@ -169,7 +169,7 @@ class SimulationTest(unittest.TestCase):
         }]),
     ]
 
-    graph = simulation.GraphTotals({"fast": 100, "slow": 200}, 1000, 1000)
+    graph = simulation.GraphTotals({"fast": 100, "slow": 200}, 1000, 1000, 1)
     self.assertEqual(
         simulation.simulate_all(
             sequences,
