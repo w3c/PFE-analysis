@@ -20,6 +20,10 @@ class AnalyzerTest(unittest.TestCase):
     method_proto.response_bytes_per_page_view.buckets.add(end=1000)
     method_proto.response_bytes_per_page_view.buckets.add(end=1005, count=2)
 
+    method_proto.total_request_bytes = 2000
+    method_proto.total_response_bytes = 2000
+    method_proto.total_request_count = 12
+
     network_proto = result_pb2.NetworkResultProto()
     network_proto.network_model_name = "fast"
     network_proto.total_cost = 40
