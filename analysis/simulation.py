@@ -6,7 +6,8 @@ import itertools
 from analysis import font_loader
 
 GraphTotals = collections.namedtuple(
-    "GraphTotals", ["time_per_network", "request_bytes", "response_bytes", "num_requests"])
+    "GraphTotals",
+    ["time_per_network", "request_bytes", "response_bytes", "num_requests"])
 
 # Bandwidth is in bytes per ms, RTT is ms
 NetworkModel = collections.namedtuple(

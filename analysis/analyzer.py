@@ -93,23 +93,24 @@ class NetworkResult:
     self.name = name
     self.latency_distribution = distribution.Distribution(
         distribution.LinearBucketer(5))
-    self.cost_distribution = distribution.Distribution(
+    self.cost_per_page_view = distribution.Distribution(
         distribution.LinearBucketer(5))
     self.total_cost = 0
 
   def add_time(self, total_time_ms, the_cost):
     self.total_cost += the_cost
     self.latency_distribution.add_value(total_time_ms)
-    self.cost_distribution.add_value(the_cost)
+    self.cost_per_page_view.add_value(the_cost)
 
   def to_proto(self):
     """Convert this to a NetworkResultProto."""
     network_proto = result_pb2.NetworkResultProto()
     network_proto.network_model_name = self.name
     network_proto.total_cost = self.total_cost
-    network_proto.request_latency_distribution.CopyFrom(
+    network_proto.wait_per_page_view_ms.CopyFrom(
         self.latency_distribution.to_proto())
-    network_proto.cost_distribution.CopyFrom(self.cost_distribution.to_proto())
+    network_proto.cost_per_page_view.CopyFrom(
+        self.cost_per_page_view.to_proto())
     return network_proto
 
 
@@ -128,15 +129,15 @@ def to_method_result_proto(method_name, totals, cost_function):
   """Converts a set of totals for a method into the corresponding proto."""
   method_result_proto = result_pb2.MethodResultProto()
   method_result_proto.method_name = method_name
-  request_size_distribution = distribution.Distribution(
+  request_bytes_per_page_view = distribution.Distribution(
       distribution.LinearBucketer(5))
-  response_size_distribution = distribution.Distribution(
+  response_bytes_per_page_view = distribution.Distribution(
       distribution.LinearBucketer(5))
 
   result_by_network = dict()
   for total in totals:
-    request_size_distribution.add_value(total.request_bytes)
-    response_size_distribution.add_value(total.response_bytes)
+    request_bytes_per_page_view.add_value(total.request_bytes)
+    response_bytes_per_page_view.add_value(total.response_bytes)
 
     for network, total_time in total.time_per_network.items():
       if network in result_by_network:
@@ -147,10 +148,10 @@ def to_method_result_proto(method_name, totals, cost_function):
 
       network_result.add_time(total_time, cost_function(total_time))
 
-  method_result_proto.request_size_distribution.CopyFrom(
-      request_size_distribution.to_proto())
-  method_result_proto.response_size_distribution.CopyFrom(
-      response_size_distribution.to_proto())
+  method_result_proto.request_bytes_per_page_view.CopyFrom(
+      request_bytes_per_page_view.to_proto())
+  method_result_proto.response_bytes_per_page_view.CopyFrom(
+      response_bytes_per_page_view.to_proto())
   for result in sorted(result_by_network.values(),
                        key=lambda result: result.name):
     method_result_proto.results_by_network.append(result.to_proto())

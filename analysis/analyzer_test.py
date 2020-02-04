@@ -15,27 +15,27 @@ class AnalyzerTest(unittest.TestCase):
   def test_result_to_protos(self):
     method_proto = result_pb2.MethodResultProto()
     method_proto.method_name = "Fake_PFE"
-    method_proto.request_size_distribution.buckets.add(end=1000)
-    method_proto.request_size_distribution.buckets.add(end=1005, count=2)
-    method_proto.response_size_distribution.buckets.add(end=1000)
-    method_proto.response_size_distribution.buckets.add(end=1005, count=2)
+    method_proto.request_bytes_per_page_view.buckets.add(end=1000)
+    method_proto.request_bytes_per_page_view.buckets.add(end=1005, count=2)
+    method_proto.response_bytes_per_page_view.buckets.add(end=1000)
+    method_proto.response_bytes_per_page_view.buckets.add(end=1005, count=2)
 
     network_proto = result_pb2.NetworkResultProto()
     network_proto.network_model_name = "fast"
     network_proto.total_cost = 40
-    network_proto.request_latency_distribution.buckets.add(end=200)
-    network_proto.request_latency_distribution.buckets.add(end=205, count=2)
-    network_proto.cost_distribution.buckets.add(end=20)
-    network_proto.cost_distribution.buckets.add(end=25, count=2)
+    network_proto.wait_per_page_view_ms.buckets.add(end=200)
+    network_proto.wait_per_page_view_ms.buckets.add(end=205, count=2)
+    network_proto.cost_per_page_view.buckets.add(end=20)
+    network_proto.cost_per_page_view.buckets.add(end=25, count=2)
     method_proto.results_by_network.append(network_proto)
 
     network_proto = result_pb2.NetworkResultProto()
     network_proto.network_model_name = "slow"
     network_proto.total_cost = 420
-    network_proto.request_latency_distribution.buckets.add(end=2100)
-    network_proto.request_latency_distribution.buckets.add(end=2105, count=2)
-    network_proto.cost_distribution.buckets.add(end=210)
-    network_proto.cost_distribution.buckets.add(end=215, count=2)
+    network_proto.wait_per_page_view_ms.buckets.add(end=2100)
+    network_proto.wait_per_page_view_ms.buckets.add(end=2105, count=2)
+    network_proto.cost_per_page_view.buckets.add(end=210)
+    network_proto.cost_per_page_view.buckets.add(end=215, count=2)
     method_proto.results_by_network.append(network_proto)
 
     self.assertEqual(

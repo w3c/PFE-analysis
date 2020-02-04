@@ -17,10 +17,10 @@ summarize_results [--input_file=<path to input>] <mode>
 
 Available modes:
   cost_summary - print out the total cost for each method and network model.
-  request_size_distribution <method> - print out the request size distribution for a particular method.
-  response_size_distribution <method> - print out the request size distribution for a particular method.
-  latency_distriubtion <method> <network> - print out the latency distribution for a particular method and network model.
-  cost_distriubtion <method> <network> - print out the cost distribution for a particular method and network model.
+  request_bytes_per_page_view <method> - print out the distribution of request bytes sent per page view.
+  response_bytes_per_page_view <method> - print out the distribution of response bytes sent per page view.
+  latency_distriubtion <method> <network> - print out the distribution of the time waiting for fonts to load per page view.
+  cost_distriubtion <method> <network> - print out the distribution of costs per page view.
 """
 
 FLAGS = flags.FLAGS
@@ -44,17 +44,18 @@ class MethodResultNotFound(Exception):
 MODE_FUNCTIONS = {
     "cost_summary":
         lambda argv, result_proto: print_cost_summary(result_proto),
-    "latency_distribution":
+    "wait_per_page_view":
         (lambda argv, result_proto: print_network_distribution(
-            argv, result_proto, "request_latency_distribution")),
-    "cost_distribution": (lambda argv, result_proto: print_network_distribution(
-        argv, result_proto, "cost_distribution")),
-    "request_size_distribution":
+            argv, result_proto, "wait_per_page_view_ms")),
+    "cost_per_page_view":
+        (lambda argv, result_proto: print_network_distribution(
+            argv, result_proto, "cost_per_page_view")),
+    "request_bytes_per_page_view":
         (lambda argv, result_proto: print_method_distribution(
-            argv, result_proto, "request_size_distribution")),
-    "response_size_distribution":
+            argv, result_proto, "request_bytes_per_page_view")),
+    "response_bytes_per_page_view":
         (lambda argv, result_proto: print_method_distribution(
-            argv, result_proto, "response_size_distribution")),
+            argv, result_proto, "response_bytes_per_page_view")),
 }
 
 
