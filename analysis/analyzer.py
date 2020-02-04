@@ -24,6 +24,7 @@ from analysis import network_models
 from analysis import page_view_sequence_pb2
 from analysis import result_pb2
 from analysis import simulation
+from analysis.pfe_methods import logged_pfe_method
 from analysis.pfe_methods import optimal_pfe_method
 from analysis.pfe_methods import unicode_range_pfe_method
 from analysis.pfe_methods import whole_font_pfe_method
@@ -211,6 +212,9 @@ def main(argv):
     data_set = read_binary_input(input_data_path)
   else:
     data_set = read_text_input(input_data_path)
+
+  if data_set.logged_method_name:
+    PFE_METHODS.append(logged_pfe_method.for_name(data_set.logged_method_name))
 
   LOG.info("Preparing input data.")
   # the sequence proto's need to be serialized since they are being
