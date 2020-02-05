@@ -16,6 +16,7 @@ USAGE = """Usage:
 summarize_results [--input_file=<path to input>] <mode>
 
 Available modes:
+  summary_report - print out a summary of several key metrics for each method and network model.
   cost_summary - print out the total cost for each method and network model.
   request_bytes_per_page_view <method> - print out the distribution of request bytes sent per page view.
   response_bytes_per_page_view <method> - print out the distribution of response bytes sent per page view.
@@ -42,6 +43,8 @@ class MethodResultNotFound(Exception):
 
 
 MODE_FUNCTIONS = {
+    "summary_report":
+        lambda argv, result_proto: print_summary_report(result_proto),
     "cost_summary":
         lambda argv, result_proto: print_cost_summary(result_proto),
     "wait_per_page_view":
@@ -154,6 +157,35 @@ def print_cost_summary(result_proto):
           method_proto.method_name,
           net_proto.network_model_name,
           net_proto.total_cost,
+      ))
+
+
+def print_summary_report(result_proto):
+  """Converts the result proto into CSV with 3 columns:
+
+  method name, network model name, total cost
+  """
+  print("Method, Network, Cost, Number of Requests, Request Bytes, "
+        "Response Bytes, Bytes, Bytes Transferred Efficiency")
+  optimal_bytes = None
+  for method_proto in result_proto.results:
+    if method_proto.method_name == "Optimal":
+      optimal_bytes = (method_proto.total_request_bytes +
+                       method_proto.total_response_bytes)
+
+  for method_proto in result_proto.results:
+    for net_proto in method_proto.results_by_network:
+      total_bytes = (method_proto.total_request_bytes +
+                     method_proto.total_response_bytes)
+      print("{}, {}, {:.1f}, {}, {}, {}, {}, {:.2f}".format(
+          method_proto.method_name,
+          net_proto.network_model_name,
+          net_proto.total_cost,
+          method_proto.total_request_count,
+          method_proto.total_request_bytes,
+          method_proto.total_response_bytes,
+          total_bytes,
+          optimal_bytes / total_bytes if optimal_bytes else 0,
       ))
 
 
