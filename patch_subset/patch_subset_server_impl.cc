@@ -217,7 +217,11 @@ void PatchSubsetServerImpl::ConstructResponse(
 
 StatusCode PatchSubsetServerImpl::ValidateFingerPrint(
     uint64_t fingerprint, const FontData& data) const {
-  if (hasher_->Checksum(data.str()) != fingerprint) {
+  uint64_t actual_fingerprint = hasher_->Checksum(data.str());
+  if (actual_fingerprint != fingerprint) {
+    LOG(WARNING) << "Finger print mismatch. "
+                 << "Expected = " << fingerprint << " "
+                 << "Actual = " << actual_fingerprint << ".";
     return StatusCode::kInvalidArgument;
   }
   return StatusCode::kOk;
