@@ -43,6 +43,7 @@ cc_library(
         "src/hb-face.h",
         "src/hb-font.h",
         "src/hb-map.h",
+	"src/hb-draw.h",
         "src/hb-ot.h",
         "src/hb-ot-color.h",
         "src/hb-ot-deprecated.h",

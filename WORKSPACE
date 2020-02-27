@@ -5,14 +5,16 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 # Google Test
 http_archive(
     name = "gtest",
-    strip_prefix = "googletest-master",
-    url = "https://github.com/google/googletest/archive/master.zip",
+    sha256 = "94c634d499558a76fa649edb13721dce6e98fb1e7018dfaeba3cd7a083945e91",
+    strip_prefix = "googletest-release-1.10.0",
+    url = "https://github.com/google/googletest/archive/release-1.10.0.zip",
 )
 
 # FontTools
 http_archive(
     name = "fonttools",
     build_file = "//third_party:fonttools.BUILD",
+    sha256 = "9d02d0d4408c0b547360d69a41dd3887e52968f0b9cf654c3b26a2d33c80f319",
     strip_prefix = "fonttools-4.2.0",
     url = "https://github.com/fonttools/fonttools/archive/4.2.0.zip",
 )
@@ -20,6 +22,7 @@ http_archive(
 # Brotli Encoder/Decoder
 http_archive(
     name = "brotli",
+    sha256 = "7a0424ed544806a63bb78698f7dbfd44c7f47d2cca41638e53cd208a7d9247a9",
     strip_prefix = "brotli-shared-brotli",
     url = "https://github.com/google/brotli/archive/shared-brotli.zip",
 )
@@ -28,38 +31,43 @@ http_archive(
 http_archive(
     name = "woff2",
     build_file = "//third_party:woff2.BUILD",
-    strip_prefix = "woff2-master",
-    url = "https://github.com/google/woff2/archive/master.zip",
+    sha256 = "db9ebe2aff6520e22ad9491863fc9e851b71fedbabefbb32508935d0f5cecf91",
+    strip_prefix = "woff2-a0d0ed7da27b708c0a4e96ad7a998bddc933c06e",
+    url = "https://github.com/google/woff2/archive/a0d0ed7da27b708c0a4e96ad7a998bddc933c06e.zip",
 )
 
 # harfbuzz
 http_archive(
     name = "harfbuzz",
     build_file = "//third_party:harfbuzz.BUILD",
-    strip_prefix = "harfbuzz-2.6.4",
-    urls = ["https://github.com/harfbuzz/harfbuzz/archive/2.6.4.zip"],
+    sha256 = "c29c41a2935af0f79d4d113cf11d6e4a4d7b0d88bfd31ea461843a5ebe424af5",
+    strip_prefix = "harfbuzz-5ad761b943721c3541d0ca0472f34f7d54b89b5b",
+    urls = ["https://github.com/harfbuzz/harfbuzz/archive/5ad761b943721c3541d0ca0472f34f7d54b89b5b.zip"],
 )
 
 # farmhash
 http_archive(
     name = "farmhash",
     build_file = "//third_party:farmhash.BUILD",
-    strip_prefix = "farmhash-master",
-    urls = ["https://github.com/google/farmhash/archive/master.zip"],
+    sha256 = "470e87745d1393cc2793f49e9bfbd2c2cf282feeeb0c367f697996fa7e664fc5",
+    strip_prefix = "farmhash-0d859a811870d10f53a594927d0d0b97573ad06d",
+    urls = ["https://github.com/google/farmhash/archive/0d859a811870d10f53a594927d0d0b97573ad06d.zip"],
 )
 
 # abseil-cpp
 http_archive(
     name = "com_google_absl",
-    strip_prefix = "abseil-cpp-master",
-    urls = ["https://github.com/abseil/abseil-cpp/archive/master.zip"],
+    sha256 = "aa6386de0481bd4a096c25a0dc7ae50c2b57a064abd39f961fb3ce68eda933f8",
+    strip_prefix = "abseil-cpp-20200225",
+    urls = ["https://github.com/abseil/abseil-cpp/archive/20200225.zip"],
 )
 
 # abseil-py
 http_archive(
     name = "io_abseil_py",
-    strip_prefix = "abseil-py-master",
-    urls = ["https://github.com/abseil/abseil-py/archive/master.zip"],
+    sha256 = "e7f5624c861c51901d9d40ebb09490cf728e3bd6133c9ce26059cdc548fc201e",
+    strip_prefix = "abseil-py-pypi-v0.9.0",
+    urls = ["https://github.com/abseil/abseil-py/archive/pypi-v0.9.0.zip"],
 )
 
 # six archive - needed by abseil-py
@@ -74,28 +82,16 @@ http_archive(
     ],
 )
 
-# rules_cc defines rules for generating C++ code from Protocol Buffers.
-http_archive(
-    name = "rules_cc",
-    strip_prefix = "rules_cc-master",
-    urls = ["https://github.com/bazelbuild/rules_cc/archive/master.zip"],
-)
-
-# rules_proto defines abstract rules for building Protocol Buffers.
+# Proto buf generating rules
 http_archive(
     name = "rules_proto",
-    strip_prefix = "rules_proto-master",
+    sha256 = "4d421d51f9ecfe9bf96ab23b55c6f2b809cbaf0eea24952683e397decfbd0dd0",
+    strip_prefix = "rules_proto-f6b8d89b90a7956f6782a4a3609b2f0eee3ce965",
     urls = [
-        "https://github.com/bazelbuild/rules_proto/archive/master.zip",
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_proto/archive/f6b8d89b90a7956f6782a4a3609b2f0eee3ce965.tar.gz",
+        "https://github.com/bazelbuild/rules_proto/archive/f6b8d89b90a7956f6782a4a3609b2f0eee3ce965.tar.gz",
     ],
 )
-
-load("@rules_cc//cc:repositories.bzl", "rules_cc_dependencies")
-
-rules_cc_dependencies()
-
 load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
-
 rules_proto_dependencies()
-
 rules_proto_toolchains()
