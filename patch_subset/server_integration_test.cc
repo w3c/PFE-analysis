@@ -15,8 +15,8 @@ using ::absl::string_view;
 namespace patch_subset {
 
 static const uint64_t kOriginalFontFingerprint = 0xA55ED7AAAA5AABB1;
-static const uint64_t kSubsetAbFingerprint = 0x736883EEAB917A2B;
-static const uint64_t kSubsetAbcdFingerprint = 0x6CB91B25FC508BDB;
+static const uint64_t kSubsetAbFingerprint = 0xDCB8D2F90AD39435;
+static const uint64_t kSubsetAbcdFingerprint = 0xDE599C290AA18D7;
 
 class PatchSubsetServerIntegrationTest : public ::testing::Test {
  protected:
