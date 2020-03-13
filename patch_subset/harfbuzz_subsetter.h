@@ -20,6 +20,7 @@ class HarfbuzzSubsetter : public Subsetter {
                         hb_set_t* codepoints) const override;
 
  private:
+  bool ShouldRetainGids(const FontData& font) const;
 };
 
 }  // namespace patch_subset

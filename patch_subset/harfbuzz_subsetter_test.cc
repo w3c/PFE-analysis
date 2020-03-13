@@ -38,6 +38,9 @@ TEST_F(HarfbuzzSubsetterTest, Subset) {
 
   hb_set_unique_ptr subset_codepoints = make_hb_set();
   hb_face_collect_unicodes(subset_face, subset_codepoints.get());
+
+  EXPECT_GT(hb_face_get_glyph_count(subset_face), 10);
+
   hb_face_destroy(subset_face);
 
   EXPECT_TRUE(hb_set_is_equal(codepoints.get(), subset_codepoints.get()));
@@ -88,6 +91,33 @@ TEST_F(HarfbuzzSubsetterTest, CodepointsInFont_BadFont) {
   subsetter_->CodepointsInFont(font_data, result.get());
 
   EXPECT_TRUE(hb_set_is_equal(expected.get(), result.get()));
+}
+
+TEST_F(HarfbuzzSubsetterTest, SubsetNoRetainGids) {
+  FontData font_data;
+  EXPECT_EQ(font_provider_->GetFont("NotoSansJP-Regular.otf", &font_data),
+            StatusCode::kOk);
+
+  hb_set_unique_ptr codepoints = make_hb_set(1, 0xffed);
+
+  FontData subset_data;
+  EXPECT_EQ(subsetter_->Subset(font_data, *codepoints, &subset_data),
+            StatusCode::kOk);
+
+  hb_blob_t* subset_blob =
+      hb_blob_create(subset_data.data(), subset_data.size(),
+                     HB_MEMORY_MODE_READONLY, nullptr, nullptr);
+  hb_face_t* subset_face = hb_face_create(subset_blob, 0);
+  hb_blob_destroy(subset_blob);
+
+  hb_set_unique_ptr subset_codepoints = make_hb_set();
+  hb_face_collect_unicodes(subset_face, subset_codepoints.get());
+
+  EXPECT_EQ(hb_face_get_glyph_count(subset_face), 2);
+
+  hb_face_destroy(subset_face);
+
+  EXPECT_TRUE(hb_set_is_equal(codepoints.get(), subset_codepoints.get()));
 }
 
 }  // namespace patch_subset
