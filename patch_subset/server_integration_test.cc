@@ -14,10 +14,6 @@ using ::absl::string_view;
 
 namespace patch_subset {
 
-static const uint64_t kOriginalFontFingerprint = 0xA55ED7AAAA5AABB1;
-static const uint64_t kSubsetAbFingerprint = 0xDCB8D2F90AD39435;
-static const uint64_t kSubsetAbcdFingerprint = 0xDE599C290AA18D7;
-
 class PatchSubsetServerIntegrationTest : public ::testing::Test {
  protected:
   PatchSubsetServerIntegrationTest()
@@ -31,6 +27,14 @@ class PatchSubsetServerIntegrationTest : public ::testing::Test {
                 std::unique_ptr<CodepointMappingChecksum>(nullptr)) {
     font_provider_->GetFont("Roboto-Regular.abcd.ttf", &roboto_abcd_);
     font_provider_->GetFont("Roboto-Regular.ab.ttf", &roboto_ab_);
+
+    FontData roboto_regular;
+    font_provider_->GetFont("Roboto-Regular.ttf", &roboto_regular);
+
+    FarmHasher hasher;
+    original_font_fingerprint_ = hasher.Checksum(roboto_regular.str());
+    subset_ab_fingerprint_ = hasher.Checksum(roboto_ab_.str());
+    subset_abcd_fingerprint_ = hasher.Checksum(roboto_abcd_.str());
   }
 
   void CheckPatch(const FontData& base, const FontData& target,
@@ -57,6 +61,10 @@ class PatchSubsetServerIntegrationTest : public ::testing::Test {
   FontData empty_;
   FontData roboto_abcd_;
   FontData roboto_ab_;
+
+  uint64_t original_font_fingerprint_;
+  uint64_t subset_ab_fingerprint_;
+  uint64_t subset_abcd_fingerprint_;
 };
 
 TEST_F(PatchSubsetServerIntegrationTest, NewRequest) {
@@ -69,9 +77,9 @@ TEST_F(PatchSubsetServerIntegrationTest, NewRequest) {
   EXPECT_EQ(server_.Handle("Roboto-Regular.ttf", request, &response),
             StatusCode::kOk);
 
-  EXPECT_EQ(response.original_font_fingerprint(), kOriginalFontFingerprint);
+  EXPECT_EQ(response.original_font_fingerprint(), original_font_fingerprint_);
   EXPECT_EQ(response.type(), ResponseType::REBASE);
-  EXPECT_EQ(response.patch().patched_fingerprint(), kSubsetAbcdFingerprint);
+  EXPECT_EQ(response.patch().patched_fingerprint(), subset_abcd_fingerprint_);
   EXPECT_EQ(response.patch().format(), PatchFormat::BROTLI_SHARED_DICT);
 
   CheckPatch(empty_, roboto_abcd_, response.patch().patch());
@@ -84,16 +92,16 @@ TEST_F(PatchSubsetServerIntegrationTest, PatchRequest) {
   PatchRequestProto request;
   CompressedSet::Encode(*set_ab, request.mutable_codepoints_have());
   CompressedSet::Encode(*set_abcd, request.mutable_codepoints_needed());
-  request.set_original_font_fingerprint(kOriginalFontFingerprint);
-  request.set_base_fingerprint(kSubsetAbFingerprint);
+  request.set_original_font_fingerprint(original_font_fingerprint_);
+  request.set_base_fingerprint(subset_ab_fingerprint_);
 
   PatchResponseProto response;
   EXPECT_EQ(server_.Handle("Roboto-Regular.ttf", request, &response),
             StatusCode::kOk);
 
-  EXPECT_EQ(response.original_font_fingerprint(), kOriginalFontFingerprint);
+  EXPECT_EQ(response.original_font_fingerprint(), original_font_fingerprint_);
   EXPECT_EQ(response.type(), ResponseType::PATCH);
-  EXPECT_EQ(response.patch().patched_fingerprint(), kSubsetAbcdFingerprint);
+  EXPECT_EQ(response.patch().patched_fingerprint(), subset_abcd_fingerprint_);
   EXPECT_EQ(response.patch().format(), PatchFormat::BROTLI_SHARED_DICT);
 
   CheckPatch(roboto_ab_, roboto_abcd_, response.patch().patch());
@@ -107,15 +115,15 @@ TEST_F(PatchSubsetServerIntegrationTest, BadOriginalFingerprint) {
   CompressedSet::Encode(*set_ab, request.mutable_codepoints_have());
   CompressedSet::Encode(*set_abcd, request.mutable_codepoints_needed());
   request.set_original_font_fingerprint(0);
-  request.set_base_fingerprint(kSubsetAbFingerprint);
+  request.set_base_fingerprint(subset_ab_fingerprint_);
 
   PatchResponseProto response;
   EXPECT_EQ(server_.Handle("Roboto-Regular.ttf", request, &response),
             StatusCode::kOk);
 
-  EXPECT_EQ(response.original_font_fingerprint(), kOriginalFontFingerprint);
+  EXPECT_EQ(response.original_font_fingerprint(), original_font_fingerprint_);
   EXPECT_EQ(response.type(), ResponseType::REBASE);
-  EXPECT_EQ(response.patch().patched_fingerprint(), kSubsetAbcdFingerprint);
+  EXPECT_EQ(response.patch().patched_fingerprint(), subset_abcd_fingerprint_);
   EXPECT_EQ(response.patch().format(), PatchFormat::BROTLI_SHARED_DICT);
 
   CheckPatch(empty_, roboto_abcd_, response.patch().patch());
@@ -128,16 +136,16 @@ TEST_F(PatchSubsetServerIntegrationTest, BadBaseFingerprint) {
   PatchRequestProto request;
   CompressedSet::Encode(*set_ab, request.mutable_codepoints_have());
   CompressedSet::Encode(*set_abcd, request.mutable_codepoints_needed());
-  request.set_original_font_fingerprint(kOriginalFontFingerprint);
+  request.set_original_font_fingerprint(original_font_fingerprint_);
   request.set_base_fingerprint(0);
 
   PatchResponseProto response;
   EXPECT_EQ(server_.Handle("Roboto-Regular.ttf", request, &response),
             StatusCode::kOk);
 
-  EXPECT_EQ(response.original_font_fingerprint(), kOriginalFontFingerprint);
+  EXPECT_EQ(response.original_font_fingerprint(), original_font_fingerprint_);
   EXPECT_EQ(response.type(), ResponseType::REBASE);
-  EXPECT_EQ(response.patch().patched_fingerprint(), kSubsetAbcdFingerprint);
+  EXPECT_EQ(response.patch().patched_fingerprint(), subset_abcd_fingerprint_);
   EXPECT_EQ(response.patch().format(), PatchFormat::BROTLI_SHARED_DICT);
 
   CheckPatch(empty_, roboto_abcd_, response.patch().patch());
