@@ -50,6 +50,9 @@ flags.DEFINE_bool("output_binary", False,
 flags.DEFINE_integer("parallelism", 12,
                      "Number of processes to use for the simulation.")
 
+flags.DEFINE_list("filter_languages", None,
+                  "List of language tags to filter the input data by.")
+
 PFE_METHODS = [
     optimal_pfe_method,
     unicode_range_pfe_method,
@@ -233,10 +236,13 @@ def main(argv):
   LOG.info("Preparing input data.")
   # the sequence proto's need to be serialized since they are being
   # sent to another process.
-  sequences = [sequence.SerializeToString() for sequence in data_set.sequences]
+  sequences = [
+      sequence.SerializeToString() for sequence in data_set.sequences if
+      not FLAGS.filter_languages or sequence.language in FLAGS.filter_languages
+  ]
   segmented_sequences = segment_sequences(sequences, FLAGS.parallelism * 2)
 
-  LOG.info("Running the simulations.")
+  LOG.info("Running simulations on %s sequences.", len(sequences))
   with Pool(FLAGS.parallelism) as pool:
     results = merge_results(pool.map(do_analysis, segmented_sequences))
 
