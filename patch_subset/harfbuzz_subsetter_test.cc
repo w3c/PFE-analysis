@@ -77,7 +77,7 @@ TEST_F(HarfbuzzSubsetterTest, CodepointsInFont) {
   subsetter_->CodepointsInFont(font_data_1, result.get());
   EXPECT_TRUE(hb_set_is_equal(result.get(), expected.get()));
 
-  expected = make_hb_set(7, 0x41, 0x4D, 0x65, 0x6D, 0x6F, 0x77, 0x73);
+  expected = make_hb_set(6, 0x41, 0x65, 0x6D, 0x6F, 0x73, 0x77);
   result = make_hb_set();
   subsetter_->CodepointsInFont(font_data_2, result.get());
   EXPECT_TRUE(hb_set_is_equal(result.get(), expected.get()));
