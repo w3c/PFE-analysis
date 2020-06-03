@@ -64,6 +64,7 @@ cc_library(
     ],
     copts = [
         "-DHAVE_CONFIG_H",
+        "-DHB_EXPERIMENTAL_API",
         "-Iexternal/PFE_analysis/third_party/harfbuzz",
     ] + select({
         ":macos": ["-DHAVE_XLOCALE_H=1"],
