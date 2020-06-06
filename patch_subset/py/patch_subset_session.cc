@@ -38,12 +38,12 @@ using ::patch_subset::Subsetter;
 class PatchSubsetSession {
  public:
   PatchSubsetSession(const std::string& font_directory,
-                     const std::string& font_id, bool with_codepoint_remapping)
-      : font_provider_(new FileFontProvider(font_directory)),
+                     const std::string& font_id, const std::string& default_font_id, bool with_codepoint_remapping)
+      : font_provider_(new FileFontProvider(font_directory, default_font_id)),
         binary_patch_(new BrotliBinaryPatch()),
         brotli_request_logger_(&request_logger_),
-        server_(std::move(PatchSubsetServerImpl::CreateServer(
-            font_directory, with_codepoint_remapping))),
+        server_(PatchSubsetServerImpl::CreateServer(
+            font_directory, default_font_id, with_codepoint_remapping)),
         client_(server_.get(), &brotli_request_logger_,
                 std::unique_ptr<BinaryPatch>(binary_patch_),
                 std::unique_ptr<Hasher>(new FarmHasher())) {
@@ -75,10 +75,12 @@ extern "C" {
 
 PatchSubsetSession* PatchSubsetSession_new(const char* font_directory,
                                            const char* font_id,
+                                           const char* default_font_id,
                                            bool with_codepoint_remapping) {
   std::string font_directory_string(font_directory);
   std::string font_id_string(font_id);
-  return new PatchSubsetSession(font_directory_string, font_id,
+  std::string default_font_id_string(default_font_id);
+  return new PatchSubsetSession(font_directory_string, font_id_string, default_font_id_string,
                                 with_codepoint_remapping);
 }
 

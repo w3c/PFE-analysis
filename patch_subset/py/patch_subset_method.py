@@ -84,8 +84,9 @@ class FontSession:
                with_codepoint_remapping):
     font_directory_c = c_char_p(font_loader.directory().encode("utf-8"))
     font_id_c = c_char_p(font_id.encode("utf-8"))
+    default_font_id_c = c_char_p(font_loader.default_font().encode("utf-8"))
     self.session = c_void_p(
-        new_session(font_directory_c, font_id_c,
+        new_session(font_directory_c, font_id_c, default_font_id_c,
                     c_bool(with_codepoint_remapping)))
     self.delete_session = patch_subset.PatchSubsetSession_delete
     self.records_by_view = [[]] * page_view_count

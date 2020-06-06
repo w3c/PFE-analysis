@@ -6,6 +6,7 @@ py_library(
         "subset_sizer.py",
         "unicode_range_pfe_method.py",
         "whole_font_pfe_method.py",
+        "range_request_pfe_method.py",
     ],
     visibility = [
         "//analysis:__pkg__",
@@ -35,6 +36,19 @@ py_test(
     name = "unicode_range_pfe_method_test",
     srcs = [
         "unicode_range_pfe_method_test.py",
+    ],
+    data = [
+        "//patch_subset:testdata",
+    ],
+    deps = [
+        ":pfe_methods",
+    ],
+)
+
+py_test(
+    name = "range_request_pfe_method_test",
+    srcs = [
+        "range_request_pfe_method_test.py",
     ],
     data = [
         "//patch_subset:testdata",

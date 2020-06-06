@@ -17,7 +17,7 @@ bazel test ...
 
 ```sh
 # Run the analysis
-bazel run analysis:analyzer -- --input_data=$(pwd)/analysis/sample/english_sequence.textproto --font_directory=$(pwd)/patch_subset/testdata/ > /tmp/pfe-analysis-results.textproto
+SCDontUseServer=1 OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES bazel run analysis:analyzer -- --input_data=$(pwd)/analysis/sample/english_sequence.textproto --input_form=text --font_directory=$(pwd)/patch_subset/testdata/ --default_font_id=Roboto-Regular.ttf > /tmp/pfe-analysis-results.textproto
 
 # Inspect the results
 bazel run tools:summarize_results -- --input_file=/tmp/pfe-analysis-results.textproto cost_summary

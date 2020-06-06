@@ -27,7 +27,7 @@ struct RequestState;
 class PatchSubsetServerImpl : public PatchSubsetServer {
  public:
   static std::unique_ptr<PatchSubsetServer> CreateServer(
-      const std::string& font_directory, bool with_codepoint_remapping) {
+      const std::string& font_directory, const std::string& default_font_id, bool with_codepoint_remapping) {
     Hasher* hasher = new FarmHasher();
     CodepointMapper* codepoint_mapper =
         with_codepoint_remapping ? new SimpleCodepointMapper() : nullptr;
@@ -35,7 +35,7 @@ class PatchSubsetServerImpl : public PatchSubsetServer {
         with_codepoint_remapping ? new CodepointMappingChecksumImpl(hasher)
                                  : nullptr;
     return std::unique_ptr<PatchSubsetServer>(new PatchSubsetServerImpl(
-        std::unique_ptr<FontProvider>(new FileFontProvider(font_directory)),
+        std::unique_ptr<FontProvider>(new FileFontProvider(font_directory, default_font_id)),
         std::unique_ptr<Subsetter>(new HarfbuzzSubsetter()),
         std::unique_ptr<BinaryDiff>(new BrotliBinaryDiff()),
         std::unique_ptr<Hasher>(hasher),

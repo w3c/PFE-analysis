@@ -13,7 +13,10 @@ namespace patch_subset {
 
 StatusCode FileFontProvider::GetFont(const std::string& id,
                                      FontData* out) const {
-  std::string path = base_directory_ + id;
+  std::string font_id = id;
+  if (id.empty())
+    font_id = default_font_id_;
+  std::string path = base_directory_ + font_id;
   hb_blob_t* blob = hb_blob_create_from_file(path.c_str());
   if (!hb_blob_get_length(blob)) {
     hb_blob_destroy(blob);

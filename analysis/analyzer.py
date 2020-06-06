@@ -15,6 +15,7 @@ analysis/page_view_sequence.proto
 import logging
 from multiprocessing import Pool
 import sys
+import json
 
 from absl import app
 from absl import flags
@@ -26,6 +27,7 @@ from analysis import result_pb2
 from analysis import simulation
 from analysis.pfe_methods import logged_pfe_method
 from analysis.pfe_methods import optimal_pfe_method
+from analysis.pfe_methods import range_request_pfe_method
 from analysis.pfe_methods import unicode_range_pfe_method
 from analysis.pfe_methods import whole_font_pfe_method
 from google.protobuf import text_format
@@ -39,13 +41,18 @@ flags.mark_flag_as_required("input_data")
 
 flags.DEFINE_string(
     "font_directory", None,
-    "Directory which contains all font's to be used in the analysis.")
+    "Directory which contains all fonts to be used in the analysis.")
 flags.mark_flag_as_required("font_directory")
 
-flags.DEFINE_bool("input_binary", False,
-                  "If true, will parse the input file as a binary proto.")
+flags.DEFINE_string("input_form", None,
+                    "Can either be text, binary, or json.")
+flags.mark_flag_as_required("input_form")
+
 flags.DEFINE_bool("output_binary", False,
                   "If true outputs the results in binary proto format.")
+
+flags.DEFINE_string("default_font_id", None,
+                    "Font name to use for test data that doesn't have an associated font.")
 
 flags.DEFINE_integer("parallelism", 12,
                      "Number of processes to use for the simulation.")
@@ -54,6 +61,7 @@ flags.DEFINE_list("filter_languages", None,
                   "List of language tags to filter the input data by.")
 
 PFE_METHODS = [
+    range_request_pfe_method,
     optimal_pfe_method,
     unicode_range_pfe_method,
     whole_font_pfe_method,
@@ -187,6 +195,24 @@ def read_text_input(input_data_path):
     text_format.Merge(input_data_file.read(), data_set)
   return data_set
 
+def read_json_input(input_data_path):
+  with open(input_data_path, 'r') as input_json_file:
+    data = input_json_file.read()
+  corpus = json.loads(data)
+  result = page_view_sequence_pb2.DataSetProto()
+  for item in corpus:
+    page_content_proto = page_view_sequence_pb2.PageContentProto()
+    codepoints = set()
+    for code_point in item["Contents"]:
+      codepoints.add(ord(code_point))
+    for code_point in codepoints:
+      page_content_proto.codepoints.append(code_point)
+    page_view_proto = page_view_sequence_pb2.PageViewProto()
+    page_view_proto.contents.append(page_content_proto)
+    page_view_sequence = page_view_sequence_pb2.PageViewSequenceProto()
+    page_view_sequence.page_views.append(page_view_proto)
+    result.sequences.append(page_view_sequence)
+  return result
 
 def segment_sequences(sequences, segments):
   segment_size = max(int(len(sequences) / segments), 1)
@@ -200,12 +226,16 @@ def do_analysis(serialized_sequences):
   """Given a list of sequences (serialized to binary) run the simulation on them.
 
   Takes the sequences serialized, so that they may be passed down to another process."""
+  for method in PFE_METHODS:
+    if hasattr(method, "initialize") and callable(method.initialize):
+      method.initialize()
+
   sequences = [
       page_view_sequence_pb2.PageViewSequenceProto.FromString(s).page_views
       for s in serialized_sequences
   ]
   return simulation.simulate_all(sequences, PFE_METHODS, NETWORK_MODELS,
-                                 FLAGS.font_directory)
+                                 FLAGS.font_directory, FLAGS.default_font_id)
 
 
 def merge_results(segmented_results):
@@ -224,11 +254,19 @@ def main(argv):
   del argv  # Unused.
   input_data_path = FLAGS.input_data
 
+  for method in PFE_METHODS:
+    if hasattr(method, "initialize") and callable(method.initialize):
+      method.initialize()
+
   LOG.info("Reading input data.")
-  if FLAGS.input_binary:
+  if FLAGS.input_form == "binary":
     data_set = read_binary_input(input_data_path)
-  else:
+  elif FLAGS.input_form == "text":
     data_set = read_text_input(input_data_path)
+  elif FLAGS.input_form == "json":
+    data_set = read_json_input(input_data_path)
+  else:
+    LOG.error("Unknown input_form. Needs to be 'binary', 'text', or 'json'.")
 
   if data_set.logged_method_name:
     PFE_METHODS.append(logged_pfe_method.for_name(data_set.logged_method_name))
