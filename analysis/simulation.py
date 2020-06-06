@@ -28,13 +28,13 @@ def network_time_for(requests, network_model):
   return time
 
 
-def simulate_all(sequences, pfe_methods, network_models, font_directory):
+def simulate_all(sequences, pfe_methods, network_models, font_directory, default_font_id=None):
   """Simulate the matrix of {sequences} x {pfe_methods} x {network_models}.
 
   For each element compute a set of summary metrics, total time, total
   request bytes sent, and total response bytes sent.
   """
-  a_font_loader = font_loader.FontLoader(font_directory)
+  a_font_loader = font_loader.FontLoader(font_directory, default_font_id)
   result = dict()
   for sequence, method in itertools.product(sequences, pfe_methods):
 

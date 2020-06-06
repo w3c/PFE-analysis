@@ -17,19 +17,19 @@ def name():
   return "WholeFont"
 
 
-def start_session(font_loader):  # pylint: disable=unused-argument
+def start_session(font_loader):
   return WholeFontPfeSession(font_loader)
 
 
 class WholeFontPfeSession:
-  """Fake progressive font enrichment session."""
+  """Progressive font enrichment session."""
 
   def __init__(self, font_loader):
     self.font_loader = font_loader
     self.request_graphs = []
     self.loaded_fonts = set()
 
-  def page_view(self, codepoints_by_font):  # pylint: disable=no-self-use,unused-argument
+  def page_view(self, codepoints_by_font):
     """Processes a page view.
 
     For each font referenced in the page view record a request to
