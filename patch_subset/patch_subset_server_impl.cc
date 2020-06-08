@@ -60,7 +60,7 @@ StatusCode PatchSubsetServerImpl::Handle(const std::string& font_id,
   CheckOriginalFingerprint(request.original_font_fingerprint(), &state);
 
   if (codepoint_mapper_) {
-    if (!Check(ComputeCodepointRemapping(&state))) {
+    if (!Check(result = ComputeCodepointRemapping(&state))) {
       return result;
     }
   }
