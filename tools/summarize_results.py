@@ -20,8 +20,8 @@ Available modes:
   cost_summary - print out the total cost for each method and network model.
   request_bytes_per_page_view <method> - print out the distribution of request bytes sent per page view.
   response_bytes_per_page_view <method> - print out the distribution of response bytes sent per page view.
-  latency_distriubtion <method> <network> - print out the distribution of the time waiting for fonts to load per page view.
-  cost_distriubtion <method> <network> - print out the distribution of costs per page view.
+  wait_per_page_view <method> <network> - print out the distribution of the time waiting for fonts to load per page view.
+  cost_per_page_view <method> <network> - print out the distribution of costs per page view.
 """
 
 FLAGS = flags.FLAGS
@@ -165,8 +165,8 @@ def print_summary_report(result_proto):
 
   method name, network model name, total cost
   """
-  print("Method, Network, Cost, Number of Requests, Request Bytes, "
-        "Response Bytes, Bytes, Bytes Transferred Efficiency")
+  print("Method, Network, Cost, Wait (ms), Number of Requests, Request Bytes, "
+        "Response Bytes, Bytes, % of Optimal Bytes")
   optimal_bytes = None
   for method_proto in result_proto.results:
     if method_proto.method_name == "Optimal":
@@ -177,15 +177,16 @@ def print_summary_report(result_proto):
     for net_proto in method_proto.results_by_network:
       total_bytes = (method_proto.total_request_bytes +
                      method_proto.total_response_bytes)
-      print("{}, {}, {:.1f}, {}, {}, {}, {}, {:.2f}".format(
+      print("{}, {}, {:.0f}, {:.0f}, {}, {}, {}, {}, {:.2f}".format(
           method_proto.method_name,
           net_proto.network_model_name,
           net_proto.total_cost,
+          net_proto.total_wait_time_ms,
           method_proto.total_request_count,
           method_proto.total_request_bytes,
           method_proto.total_response_bytes,
           total_bytes,
-          optimal_bytes / total_bytes if optimal_bytes else 0,
+          total_bytes / optimal_bytes if optimal_bytes else 0,
       ))
 
 
