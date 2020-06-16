@@ -8,7 +8,8 @@ message SlicingStrategy {
 
 message Subset {
   // Set of unique codepoints.
-  repeated int32 codepoints = 1;
+  reserved 1;
+  reserved "codepoints";
   repeated Codepoint codepoint_frequencies = 2;
 }
 

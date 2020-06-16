@@ -57,7 +57,7 @@ def load_slicing_strategy(strategy_name):
 
 
 def subset_to_set(subset_proto):
-  return set(cp for cp in subset_proto.codepoints)
+  return set(cp.codepoint for cp in subset_proto.codepoint_frequencies)
 
 
 def codepoints_in_font(font_bytes):  # pylint: disable=unused-argument
