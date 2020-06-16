@@ -17,6 +17,7 @@ cc_library(
     srcs = [
         "codepoint_mapping_checksum_impl.cc",
         "harfbuzz_subsetter.cc",
+        "noop_codepoint_predictor.h",
         "patch_subset_server_impl.cc",
         "simple_codepoint_mapper.cc",
     ],
@@ -24,6 +25,7 @@ cc_library(
         "codepoint_mapper.h",
         "codepoint_mapping_checksum.h",
         "codepoint_mapping_checksum_impl.h",
+        "codepoint_predictor.h",
         "harfbuzz_subsetter.h",
         "patch_subset_server_impl.h",
         "simple_codepoint_mapper.h",
@@ -128,6 +130,7 @@ cc_test(
         "mock_binary_diff.h",
         "mock_binary_patch.h",
         "mock_codepoint_mapping_checksum.h",
+        "mock_codepoint_predictor.h",
         "mock_font_provider.h",
         "mock_hasher.h",
         "mock_patch_subset_server.h",

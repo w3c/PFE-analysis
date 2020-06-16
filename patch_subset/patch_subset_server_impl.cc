@@ -65,6 +65,9 @@ StatusCode PatchSubsetServerImpl::Handle(const std::string& font_id,
     }
   }
 
+  // TODO(garretrieger): Add additional codepoints to the requested subset if
+  // desired.
+
   if (state.IsReindex()) {
     ConstructResponse(state, response);
     return StatusCode::kOk;

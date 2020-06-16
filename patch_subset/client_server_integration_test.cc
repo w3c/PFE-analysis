@@ -9,6 +9,7 @@
 #include "patch_subset/file_font_provider.h"
 #include "patch_subset/harfbuzz_subsetter.h"
 #include "patch_subset/hb_set_unique_ptr.h"
+#include "patch_subset/noop_codepoint_predictor.h"
 #include "patch_subset/null_request_logger.h"
 #include "patch_subset/patch_subset.pb.h"
 #include "patch_subset/patch_subset_client.h"
@@ -32,7 +33,8 @@ class PatchSubsetClientServerIntegrationTest : public ::testing::Test {
             std::unique_ptr<BinaryDiff>(new BrotliBinaryDiff()),
             std::unique_ptr<Hasher>(new FarmHasher()),
             std::unique_ptr<CodepointMapper>(nullptr),
-            std::unique_ptr<CodepointMappingChecksum>(nullptr)),
+            std::unique_ptr<CodepointMappingChecksum>(nullptr),
+            std::unique_ptr<CodepointPredictor>(new NoopCodepointPredictor())),
         client_(&server_, &request_logger_,
                 std::unique_ptr<BinaryPatch>(new BrotliBinaryPatch()),
                 std::unique_ptr<Hasher>(new FarmHasher())),
@@ -44,7 +46,8 @@ class PatchSubsetClientServerIntegrationTest : public ::testing::Test {
             std::unique_ptr<Hasher>(new FarmHasher()),
             std::unique_ptr<CodepointMapper>(new SimpleCodepointMapper()),
             std::unique_ptr<CodepointMappingChecksum>(
-                new CodepointMappingChecksumImpl(hasher_.get()))),
+                new CodepointMappingChecksumImpl(hasher_.get())),
+            std::unique_ptr<CodepointPredictor>(new NoopCodepointPredictor())),
         client_with_mapping_(
             &server_with_mapping_, &request_logger_,
             std::unique_ptr<BinaryPatch>(new BrotliBinaryPatch()),

@@ -14,6 +14,7 @@
 #include "patch_subset/hb_set_unique_ptr.h"
 #include "patch_subset/mock_binary_diff.h"
 #include "patch_subset/mock_codepoint_mapping_checksum.h"
+#include "patch_subset/mock_codepoint_predictor.h"
 #include "patch_subset/mock_font_provider.h"
 #include "patch_subset/mock_hasher.h"
 #include "patch_subset/simple_codepoint_mapper.h"
@@ -56,6 +57,7 @@ class PatchSubsetServerImplTestBase : public ::testing::Test {
       : font_provider_(new MockFontProvider()),
         binary_diff_(new MockBinaryDiff()),
         hasher_(new MockHasher()),
+        codepoint_predictor_(new MockCodepointPredictor()),
         set_abcd_(make_hb_set_from_ranges(1, 0x61, 0x64)),
         set_ab_(make_hb_set_from_ranges(1, 0x61, 0x62)) {}
 
@@ -78,6 +80,7 @@ class PatchSubsetServerImplTestBase : public ::testing::Test {
   MockFontProvider* font_provider_;
   MockBinaryDiff* binary_diff_;
   MockHasher* hasher_;
+  MockCodepointPredictor* codepoint_predictor_;
   hb_set_unique_ptr set_abcd_;
   hb_set_unique_ptr set_ab_;
 };
@@ -90,7 +93,8 @@ class PatchSubsetServerImplTest : public PatchSubsetServerImplTestBase {
                 std::unique_ptr<BinaryDiff>(binary_diff_),
                 std::unique_ptr<Hasher>(hasher_),
                 std::unique_ptr<CodepointMapper>(nullptr),
-                std::unique_ptr<CodepointMappingChecksum>(nullptr)) {}
+                std::unique_ptr<CodepointMappingChecksum>(nullptr),
+                std::unique_ptr<CodepointPredictor>(codepoint_predictor_)) {}
 
   PatchSubsetServerImpl server_;
 };
@@ -106,7 +110,8 @@ class PatchSubsetServerImplWithCodepointRemappingTest
                 std::unique_ptr<Hasher>(hasher_),
                 std::unique_ptr<CodepointMapper>(new SimpleCodepointMapper()),
                 std::unique_ptr<CodepointMappingChecksum>(
-                    codepoint_mapping_checksum_)),
+                    codepoint_mapping_checksum_),
+                std::unique_ptr<CodepointPredictor>(codepoint_predictor_)),
         set_abcd_encoded_(make_hb_set_from_ranges(1, 0, 3)),
         set_ab_encoded_(make_hb_set_from_ranges(1, 0, 1)) {}
 

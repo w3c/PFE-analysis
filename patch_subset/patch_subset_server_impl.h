@@ -10,11 +10,13 @@
 #include "patch_subset/codepoint_mapper.h"
 #include "patch_subset/codepoint_mapping_checksum.h"
 #include "patch_subset/codepoint_mapping_checksum_impl.h"
+#include "patch_subset/codepoint_predictor.h"
 #include "patch_subset/farm_hasher.h"
 #include "patch_subset/file_font_provider.h"
 #include "patch_subset/font_provider.h"
 #include "patch_subset/harfbuzz_subsetter.h"
 #include "patch_subset/hasher.h"
+#include "patch_subset/noop_codepoint_predictor.h"
 #include "patch_subset/patch_subset.pb.h"
 #include "patch_subset/patch_subset_server.h"
 #include "patch_subset/simple_codepoint_mapper.h"
@@ -40,7 +42,8 @@ class PatchSubsetServerImpl : public PatchSubsetServer {
         std::unique_ptr<BinaryDiff>(new BrotliBinaryDiff()),
         std::unique_ptr<Hasher>(hasher),
         std::unique_ptr<CodepointMapper>(codepoint_mapper),
-        std::unique_ptr<CodepointMappingChecksum>(mapping_checksum)));
+        std::unique_ptr<CodepointMappingChecksum>(mapping_checksum),
+        std::unique_ptr<CodepointPredictor>(new NoopCodepointPredictor())));
   }
 
   // Takes ownership of font_provider, subsetter, and binary_diff.
@@ -49,13 +52,15 @@ class PatchSubsetServerImpl : public PatchSubsetServer {
       std::unique_ptr<Subsetter> subsetter,
       std::unique_ptr<BinaryDiff> binary_diff, std::unique_ptr<Hasher> hasher,
       std::unique_ptr<CodepointMapper> codepoint_mapper,
-      std::unique_ptr<CodepointMappingChecksum> codepoint_mapping_checksum)
+      std::unique_ptr<CodepointMappingChecksum> codepoint_mapping_checksum,
+      std::unique_ptr<CodepointPredictor> codepoint_predictor)
       : font_provider_(std::move(font_provider)),
         subsetter_(std::move(subsetter)),
         binary_diff_(std::move(binary_diff)),
         hasher_(std::move(hasher)),
         codepoint_mapper_(std::move(codepoint_mapper)),
-        codepoint_mapping_checksum_(std::move(codepoint_mapping_checksum)) {}
+        codepoint_mapping_checksum_(std::move(codepoint_mapping_checksum)),
+        codepoint_predictor_(std::move(codepoint_predictor)) {}
 
   // Handle a patch request from a client. Writes the resulting response
   // into response.
@@ -101,6 +106,7 @@ class PatchSubsetServerImpl : public PatchSubsetServer {
   std::unique_ptr<Hasher> hasher_;
   std::unique_ptr<CodepointMapper> codepoint_mapper_;
   std::unique_ptr<CodepointMappingChecksum> codepoint_mapping_checksum_;
+  std::unique_ptr<CodepointPredictor> codepoint_predictor_;
 };
 
 }  // namespace patch_subset
