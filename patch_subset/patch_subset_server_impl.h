@@ -80,6 +80,8 @@ class PatchSubsetServerImpl : public PatchSubsetServer {
   void AddCodepointRemapping(const RequestState& state,
                              CodepointRemappingProto* response) const;
 
+  void AddPredictedCodepoints(RequestState* state) const;
+
   StatusCode ComputeSubsets(const std::string& font_id,
                             RequestState* state) const;
 
