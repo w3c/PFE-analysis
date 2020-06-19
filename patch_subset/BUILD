@@ -16,6 +16,7 @@ cc_library(
     name = "server",
     srcs = [
         "codepoint_mapping_checksum_impl.cc",
+        "frequency_codepoint_predictor.cc",
         "harfbuzz_subsetter.cc",
         "noop_codepoint_predictor.h",
         "patch_subset_server_impl.cc",
@@ -26,10 +27,17 @@ cc_library(
         "codepoint_mapping_checksum.h",
         "codepoint_mapping_checksum_impl.h",
         "codepoint_predictor.h",
+        "frequency_codepoint_predictor.h",
         "harfbuzz_subsetter.h",
         "patch_subset_server_impl.h",
         "simple_codepoint_mapper.h",
         "subsetter.h",
+    ],
+    data = [
+        "//analysis/pfe_methods/unicode_range_data:slicing_strategies",
+    ],
+    linkopts = [
+        "-lstdc++fs",
     ],
     visibility = [
         "//patch_subset/py:__pkg__",
@@ -37,6 +45,7 @@ cc_library(
     deps = [
         ":common",
         ":patch_subset_cc_proto",
+        "//analysis/pfe_methods/unicode_range_data:slicing_strategy_cc_proto",
         "//common",
         "@brotli//:brotlienc",
         "@com_google_absl//absl/strings",
