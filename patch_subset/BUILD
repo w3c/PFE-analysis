@@ -36,9 +36,6 @@ cc_library(
     data = [
         "//analysis/pfe_methods/unicode_range_data:slicing_strategies",
     ],
-    linkopts = [
-        "-lstdc++fs",
-    ],
     visibility = [
         "//patch_subset/py:__pkg__",
     ],

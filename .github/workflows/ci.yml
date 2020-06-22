@@ -23,6 +23,8 @@ jobs:
       - name: Test
         run: |
           "${GITHUB_WORKSPACE}/bin/bazel" test //... --test_output=all
+        env:
+          CC: gcc-8
 
   check_tests_osx:
     name: Check Tests (Mac OS)
