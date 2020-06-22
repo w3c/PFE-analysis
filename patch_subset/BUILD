@@ -45,6 +45,7 @@ cc_library(
         "//analysis/pfe_methods/unicode_range_data:slicing_strategy_cc_proto",
         "//common",
         "@brotli//:brotlienc",
+        "@com_google_absl//absl/container:btree",
         "@com_google_absl//absl/strings",
         "@harfbuzz",
     ],
