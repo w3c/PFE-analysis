@@ -31,7 +31,11 @@ class FrequencyCodepointPredictor : public CodepointPredictor {
       const analysis::pfe_methods::unicode_range_data::Subset& subset,
       const hb_set_t* requested_codepoints) const;
 
-  const analysis::pfe_methods::unicode_range_data::SlicingStrategy&
+  int IntersectionSize(
+      const analysis::pfe_methods::unicode_range_data::SlicingStrategy& subset,
+      const hb_set_t* requested_codepoints) const;
+
+  const analysis::pfe_methods::unicode_range_data::SlicingStrategy*
   BestStrategyFor(const hb_set_t* codepoints) const;
 
   std::vector<analysis::pfe_methods::unicode_range_data::SlicingStrategy>

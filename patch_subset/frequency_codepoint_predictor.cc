@@ -7,11 +7,14 @@
 #include <iterator>
 #include <vector>
 
+#include "absl/container/btree_map.h"
 #include "absl/container/btree_set.h"
 #include "analysis/pfe_methods/unicode_range_data/slicing_strategy.pb.h"
 #include "common/logging.h"
 #include "common/status.h"
+#include "patch_subset/hb_set_unique_ptr.h"
 
+using absl::btree_map;
 using absl::btree_set;
 using analysis::pfe_methods::unicode_range_data::Codepoint;
 using analysis::pfe_methods::unicode_range_data::SlicingStrategy;
@@ -87,10 +90,14 @@ FrequencyCodepointPredictor::FrequencyCodepointPredictor(
 void FrequencyCodepointPredictor::Predict(
     const hb_set_t* font_codepoints, const hb_set_t* requested_codepoints,
     unsigned max, hb_set_t* predicted_codepoints /* OUT */) const {
-  const SlicingStrategy& best_strategy = BestStrategyFor(font_codepoints);
+  const SlicingStrategy* best_strategy = BestStrategyFor(font_codepoints);
+  if (!best_strategy) {
+    LOG(WARNING) << "No strategies are available for prediction.";
+    return;
+  }
 
   btree_set<Codepoint, CodepointFreqCompare> additional_codepoints;
-  for (auto subset : best_strategy.subsets()) {
+  for (auto subset : best_strategy->subsets()) {
     if (!Intersects(subset, requested_codepoints)) {
       continue;
     }
@@ -113,13 +120,41 @@ void FrequencyCodepointPredictor::Predict(
 
 bool FrequencyCodepointPredictor::Intersects(
     const Subset& subset, const hb_set_t* requested_codepoints) const {
-  // TODO(garretrieger): Implement me!
-  return true;
+  for (auto cp : subset.codepoint_frequencies()) {
+    if (hb_set_has (requested_codepoints, cp.codepoint())) {
+      return true;
+    }
+  }
+  return false;
 }
 
-const SlicingStrategy& FrequencyCodepointPredictor::BestStrategyFor(
+int FrequencyCodepointPredictor::IntersectionSize(
+    const SlicingStrategy& strategy, const hb_set_t* codepoints) const {
+  hb_set_unique_ptr unique_codepoints = make_hb_set();
+  for (auto subset : strategy.subsets()) {
+    for (auto cp : subset.codepoint_frequencies()) {
+      hb_set_add(unique_codepoints.get(), cp.codepoint());
+    }
+  }
+
+  hb_set_intersect(unique_codepoints.get(), codepoints);
+  return hb_set_get_population(unique_codepoints.get());
+}
+
+const SlicingStrategy* FrequencyCodepointPredictor::BestStrategyFor(
     const hb_set_t* codepoints) const {
-  // TODO(garretrieger): Implement me!
+  btree_map<int, const SlicingStrategy*> strategies;
+  for (const auto strategy : strategies_) {
+    // TODO(garretrieger): should factor in the frequencies of codepoints in the
+    //   intersection. For example the various CJK strategies share many of the same
+    //   codepoints so we may mismatch the strategy using intersection count alone.
+    strategies[IntersectionSize(strategy, codepoints)] = &strategy;
+  }
+
+  if (strategies.empty()) {
+    return nullptr;
+  }
+  return (--strategies.end())->second;
 }
 
 }  // namespace patch_subset
