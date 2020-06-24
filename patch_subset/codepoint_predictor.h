@@ -15,7 +15,9 @@ class CodepointPredictor {
   virtual ~CodepointPredictor() = default;
 
   virtual void Predict(const hb_set_t* font_codepoints,
-                       const hb_set_t* requested_codepoints, unsigned max,
+                       const hb_set_t* have_codepoints,
+                       const hb_set_t* requested_codepoints,
+                       unsigned max,
                        hb_set_t* predicted_codepoints /* OUT */) const = 0;
 };
 

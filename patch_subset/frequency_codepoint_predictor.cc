@@ -96,7 +96,9 @@ FrequencyCodepointPredictor::FrequencyCodepointPredictor(
     : strategies_(std::move(strategies)) {}
 
 void FrequencyCodepointPredictor::Predict(
-    const hb_set_t* font_codepoints, const hb_set_t* requested_codepoints,
+    const hb_set_t* font_codepoints,
+    const hb_set_t* have_codepoints,
+    const hb_set_t* requested_codepoints,
     unsigned max, hb_set_t* predicted_codepoints /* OUT */) const {
   const SlicingStrategy* best_strategy = BestStrategyFor(font_codepoints);
   if (!best_strategy) {
@@ -112,6 +114,9 @@ void FrequencyCodepointPredictor::Predict(
 
     for (const auto& codepoint : subset.codepoint_frequencies()) {
       if (hb_set_has(requested_codepoints, codepoint.codepoint())) {
+        continue;
+      }
+      if (hb_set_has(have_codepoints, codepoint.codepoint())) {
         continue;
       }
 

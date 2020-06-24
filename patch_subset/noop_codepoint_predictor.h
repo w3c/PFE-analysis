@@ -11,6 +11,7 @@ namespace patch_subset {
 class NoopCodepointPredictor : public CodepointPredictor {
  public:
   inline void Predict(const hb_set_t* font_codepoints,
+                      const hb_set_t* have_codepoints,
                       const hb_set_t* requested_codepoints, unsigned count,
                       hb_set_t* predicted_codepoints /* OUT */) const override {
     // Do nothing.

@@ -80,10 +80,12 @@ class PatchSubsetServerImplTestBase : public ::testing::Test {
   }
 
   void AddPredictedCodepoints(const hb_set_t* font_codepoints,
+                              const hb_set_t* have_codepoints,
                               const hb_set_t* requested_codepoints,
                               const hb_set_t* codepoints_to_add) {
     EXPECT_CALL(*codepoint_predictor_,
                 Predict(EqualsSet(font_codepoints),
+                        EqualsSet(have_codepoints),
                         EqualsSet(requested_codepoints), 50, _))
         .Times(1)
         .WillRepeatedly(Invoke(AddCodepoints(codepoints_to_add)));
@@ -232,9 +234,12 @@ TEST_F(PatchSubsetServerImplTest, PatchRequestWithCodepointPrediction) {
   ExpectChecksum("Roboto-Regular.ttf:abcde", 44);
 
   hb_set_unique_ptr font_codepoints = make_hb_set_from_ranges(1, 0x61, 0x66);
+  hb_set_unique_ptr have_codepoints = make_hb_set(2, 0x61, 0x62);
   hb_set_unique_ptr requested_codepoints = make_hb_set(2, 0x63, 0x64);
   hb_set_unique_ptr codepoints_to_add = make_hb_set(1, 'e');
-  AddPredictedCodepoints(font_codepoints.get(), requested_codepoints.get(),
+  AddPredictedCodepoints(font_codepoints.get(),
+                         have_codepoints.get(),
+                         requested_codepoints.get(),
                          codepoints_to_add.get());
 
   PatchRequestProto request;
