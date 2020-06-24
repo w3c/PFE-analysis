@@ -3,6 +3,7 @@
 
 #include <string>
 
+#include "common/logging.h"
 #include "common/status.h"
 #include "hb.h"
 #include "patch_subset/binary_diff.h"
@@ -14,6 +15,7 @@
 #include "patch_subset/farm_hasher.h"
 #include "patch_subset/file_font_provider.h"
 #include "patch_subset/font_provider.h"
+#include "patch_subset/frequency_codepoint_predictor.h"
 #include "patch_subset/harfbuzz_subsetter.h"
 #include "patch_subset/hasher.h"
 #include "patch_subset/noop_codepoint_predictor.h"
@@ -29,13 +31,26 @@ struct RequestState;
 class PatchSubsetServerImpl : public PatchSubsetServer {
  public:
   static std::unique_ptr<PatchSubsetServer> CreateServer(
-      const std::string& font_directory, bool with_codepoint_remapping) {
+      const std::string& font_directory, bool with_codepoint_remapping,
+      bool with_codepoint_prediction) {
     Hasher* hasher = new FarmHasher();
     CodepointMapper* codepoint_mapper =
         with_codepoint_remapping ? new SimpleCodepointMapper() : nullptr;
     CodepointMappingChecksum* mapping_checksum =
         with_codepoint_remapping ? new CodepointMappingChecksumImpl(hasher)
                                  : nullptr;
+
+    CodepointPredictor* predictor =
+        with_codepoint_prediction ? reinterpret_cast<CodepointPredictor*>(
+                                        FrequencyCodepointPredictor::Create())
+                                  : reinterpret_cast<CodepointPredictor*>(
+                                        new NoopCodepointPredictor());
+    if (!predictor) {
+      LOG(WARNING) << "Failed to create codepoint predictor, using noop "
+                      "predictor instead.";
+      predictor = new NoopCodepointPredictor();
+    }
+
     return std::unique_ptr<PatchSubsetServer>(new PatchSubsetServerImpl(
         std::unique_ptr<FontProvider>(new FileFontProvider(font_directory)),
         std::unique_ptr<Subsetter>(new HarfbuzzSubsetter()),
@@ -43,7 +58,7 @@ class PatchSubsetServerImpl : public PatchSubsetServer {
         std::unique_ptr<Hasher>(hasher),
         std::unique_ptr<CodepointMapper>(codepoint_mapper),
         std::unique_ptr<CodepointMappingChecksum>(mapping_checksum),
-        std::unique_ptr<CodepointPredictor>(new NoopCodepointPredictor())));
+        std::unique_ptr<CodepointPredictor>(predictor)));
   }
 
   // Takes ownership of font_provider, subsetter, and binary_diff.

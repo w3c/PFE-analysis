@@ -38,12 +38,14 @@ using ::patch_subset::Subsetter;
 class PatchSubsetSession {
  public:
   PatchSubsetSession(const std::string& font_directory,
-                     const std::string& font_id, bool with_codepoint_remapping)
+                     const std::string& font_id, bool with_codepoint_remapping,
+                     bool with_codepoint_prediction)
       : font_provider_(new FileFontProvider(font_directory)),
         binary_patch_(new BrotliBinaryPatch()),
         brotli_request_logger_(&request_logger_),
         server_(std::move(PatchSubsetServerImpl::CreateServer(
-            font_directory, with_codepoint_remapping))),
+            font_directory, with_codepoint_remapping,
+            with_codepoint_prediction))),
         client_(server_.get(), &brotli_request_logger_,
                 std::unique_ptr<BinaryPatch>(binary_patch_),
                 std::unique_ptr<Hasher>(new FarmHasher())) {
@@ -75,11 +77,13 @@ extern "C" {
 
 PatchSubsetSession* PatchSubsetSession_new(const char* font_directory,
                                            const char* font_id,
-                                           bool with_codepoint_remapping) {
+                                           bool with_codepoint_remapping,
+                                           bool with_codepoint_prediction) {
   std::string font_directory_string(font_directory);
   std::string font_id_string(font_id);
   return new PatchSubsetSession(font_directory_string, font_id,
-                                with_codepoint_remapping);
+                                with_codepoint_remapping,
+                                with_codepoint_prediction);
 }
 
 void PatchSubsetSession_delete(PatchSubsetSession* session) { delete session; }
