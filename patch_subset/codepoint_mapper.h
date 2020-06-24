@@ -18,7 +18,7 @@ class CodepointMapper {
   //
   // To interpret the mapping vector: codepoint value 'mapping[i]'
   // is mapped to value 'i'.
-  virtual void ComputeMapping(const hb_set_t& codepoints,
+  virtual void ComputeMapping(const hb_set_t* codepoints,
                               CodepointMap* mapping) const = 0;
 };
 

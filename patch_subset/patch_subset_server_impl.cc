@@ -117,9 +117,9 @@ void PatchSubsetServerImpl::CheckOriginalFingerprint(
 
 StatusCode PatchSubsetServerImpl::ComputeCodepointRemapping(
     RequestState* state) const {
-  hb_set_t* codepoints = hb_set_create();
-  subsetter_->CodepointsInFont(state->font_data, codepoints);
-  codepoint_mapper_->ComputeMapping(*codepoints, &state->mapping);
+  hb_set_unique_ptr codepoints = make_hb_set();
+  subsetter_->CodepointsInFont(state->font_data, codepoints.get());
+  codepoint_mapper_->ComputeMapping(codepoints.get(), &state->mapping);
 
   if (state->IsRebase()) {
     // Don't remap input codepoints for a rebase request (client isn't
