@@ -133,6 +133,7 @@ cc_test(
         "compressed_set_test.cc",
         "fake_subsetter.h",
         "file_font_provider_test.cc",
+        "frequency_codepoint_predictor_test.cc",
         "harfbuzz_subsetter_test.cc",
         "mock_binary_diff.h",
         "mock_binary_patch.h",
@@ -166,7 +167,7 @@ cc_test(
 
 filegroup(
     name = "testdata",
-    srcs = glob(["testdata/*"]),
+    srcs = glob(["testdata/**"]),
     visibility = [
         "//analysis/pfe_methods:__pkg__",
         "//analysis/pfe_methods/unicode_range_data:__pkg__",

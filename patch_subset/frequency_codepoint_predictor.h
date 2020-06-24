@@ -1,6 +1,7 @@
 #ifndef PATCH_SUBSET_FREQUENCY_CODEPOINT_PREDICTOR_H_
 #define PATCH_SUBSET_FREQUENCY_CODEPOINT_PREDICTOR_H_
 
+#include <string>
 #include <vector>
 
 #include "analysis/pfe_methods/unicode_range_data/slicing_strategy.pb.h"
@@ -17,6 +18,8 @@ namespace patch_subset {
 class FrequencyCodepointPredictor : public CodepointPredictor {
  public:
   static FrequencyCodepointPredictor* Create();
+
+  static FrequencyCodepointPredictor* Create(const std::string& directory);
 
   void Predict(const hb_set_t* font_codepoints,
                const hb_set_t* requested_codepoints, unsigned max,

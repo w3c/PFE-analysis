@@ -27,8 +27,8 @@ static const char* kSlicingStrategyDataDirectory =
     "analysis/pfe_methods/unicode_range_data/";
 
 struct CodepointFreqCompare {
-  bool operator()(const Codepoint& lhs, const Codepoint& rhs) const {
-    return lhs.count() > rhs.count();
+  bool operator()(const Codepoint* lhs, const Codepoint* rhs) const {
+    return lhs->count() > rhs->count();
   }
 };
 
@@ -55,9 +55,9 @@ StatusCode LoadStrategy(const std::string& path, SlicingStrategy* out) {
   return StatusCode::kOk;
 }
 
-StatusCode LoadAllStrategies(std::vector<SlicingStrategy>* strategies) {
-  for (const auto& entry :
-       std::filesystem::directory_iterator(kSlicingStrategyDataDirectory)) {
+StatusCode LoadAllStrategies(const std::string& directory,
+                             std::vector<SlicingStrategy>* strategies) {
+  for (const auto& entry : std::filesystem::directory_iterator(directory)) {
     if (entry.path().extension() != std::filesystem::path(".textproto")) {
       continue;
     }
@@ -74,8 +74,13 @@ StatusCode LoadAllStrategies(std::vector<SlicingStrategy>* strategies) {
 }
 
 FrequencyCodepointPredictor* FrequencyCodepointPredictor::Create() {
+  return Create(kSlicingStrategyDataDirectory);
+}
+
+FrequencyCodepointPredictor* FrequencyCodepointPredictor::Create(
+    const std::string& directory) {
   std::vector<SlicingStrategy> strategies;
-  StatusCode result = LoadAllStrategies(&strategies);
+  StatusCode result = LoadAllStrategies(directory, &strategies);
   if (result != StatusCode::kOk) {
     return nullptr;
   }
@@ -96,32 +101,36 @@ void FrequencyCodepointPredictor::Predict(
     return;
   }
 
-  btree_set<Codepoint, CodepointFreqCompare> additional_codepoints;
-  for (auto subset : best_strategy->subsets()) {
+  btree_set<const Codepoint*, CodepointFreqCompare> additional_codepoints;
+  for (const auto& subset : best_strategy->subsets()) {
     if (!Intersects(subset, requested_codepoints)) {
       continue;
     }
 
-    for (auto codepoint : subset.codepoint_frequencies()) {
-      additional_codepoints.insert(codepoint);
+    for (const auto& codepoint : subset.codepoint_frequencies()) {
+      if (hb_set_has(requested_codepoints, codepoint.codepoint())) {
+        continue;
+      }
+
+      additional_codepoints.insert(&codepoint);
 
       if (additional_codepoints.size() > max) {
         // We only keep at most 'max' codepoints so remove the lowest frequency
         // one.
-        additional_codepoints.erase(additional_codepoints.end());
+        additional_codepoints.erase(--additional_codepoints.end());
       }
     }
   }
 
   for (auto codepoint : additional_codepoints) {
-    hb_set_add(predicted_codepoints, codepoint.codepoint());
+    hb_set_add(predicted_codepoints, codepoint->codepoint());
   }
 }
 
 bool FrequencyCodepointPredictor::Intersects(
     const Subset& subset, const hb_set_t* requested_codepoints) const {
   for (auto cp : subset.codepoint_frequencies()) {
-    if (hb_set_has (requested_codepoints, cp.codepoint())) {
+    if (hb_set_has(requested_codepoints, cp.codepoint())) {
       return true;
     }
   }
@@ -144,10 +153,11 @@ int FrequencyCodepointPredictor::IntersectionSize(
 const SlicingStrategy* FrequencyCodepointPredictor::BestStrategyFor(
     const hb_set_t* codepoints) const {
   btree_map<int, const SlicingStrategy*> strategies;
-  for (const auto strategy : strategies_) {
+  for (const auto& strategy : strategies_) {
     // TODO(garretrieger): should factor in the frequencies of codepoints in the
-    //   intersection. For example the various CJK strategies share many of the same
-    //   codepoints so we may mismatch the strategy using intersection count alone.
+    //   intersection. For example the various CJK strategies share many of the
+    //   same codepoints so we may mismatch the strategy using intersection
+    //   count alone.
     strategies[IntersectionSize(strategy, codepoints)] = &strategy;
   }
 
