@@ -28,6 +28,9 @@ static const char* kSlicingStrategyDataDirectory =
 
 struct CodepointFreqCompare {
   bool operator()(const Codepoint* lhs, const Codepoint* rhs) const {
+    if (lhs->count() == rhs->count()) {
+      return lhs->codepoint() < rhs->codepoint();
+    }
     return lhs->count() > rhs->count();
   }
 };

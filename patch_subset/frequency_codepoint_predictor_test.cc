@@ -34,6 +34,18 @@ TEST_F(FrequencyCodepointPredictorTest, Predict) {
   EXPECT_TRUE(hb_set_is_equal(result.get(), expected.get()));
 }
 
+TEST_F(FrequencyCodepointPredictorTest, PredictDuplicateCounts) {
+  hb_set_unique_ptr font_codepoints = make_hb_set_from_ranges(1, 95, 99);
+  hb_set_unique_ptr requested_codepoints = make_hb_set(1, 95);
+  hb_set_unique_ptr result = make_hb_set();
+
+  predictor_->Predict(font_codepoints.get(), requested_codepoints.get(), 3,
+                      result.get());
+
+  hb_set_unique_ptr expected = make_hb_set(3, 96, 97, 98);
+  EXPECT_TRUE(hb_set_is_equal(result.get(), expected.get()));
+}
+
 TEST_F(FrequencyCodepointPredictorTest, PredictMultipleSubsets) {
   hb_set_unique_ptr font_codepoints = make_hb_set_from_ranges(1, 65, 75);
   hb_set_unique_ptr requested_codepoints =
