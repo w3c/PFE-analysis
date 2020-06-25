@@ -79,7 +79,6 @@ class PatchSubsetMethodTest(unittest.TestCase):
     self.assertTrue(0x63 in codepoints)
     self.assertTrue(0x64 in codepoints)
 
-
   def test_multi_font_session(self):
     self.session.page_view({"Roboto-Regular.ttf": [0x61, 0x62]})
     self.session.page_view({

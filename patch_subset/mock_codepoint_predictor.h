@@ -12,8 +12,7 @@ namespace patch_subset {
 class MockCodepointPredictor : public CodepointPredictor {
  public:
   MOCK_METHOD(void, Predict,
-              (const hb_set_t* font_codepoints,
-               const hb_set_t* have_codepoints,
+              (const hb_set_t* font_codepoints, const hb_set_t* have_codepoints,
                const hb_set_t* requested_codepoints, unsigned count,
                hb_set_t* predicted_codepoints /* OUT */),
               (const override));

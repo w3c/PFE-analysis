@@ -40,5 +40,6 @@ py_test(
     ],
     deps = [
         ":py",
+        "@fonttools",
     ],
 )

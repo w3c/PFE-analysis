@@ -168,10 +168,9 @@ void PatchSubsetServerImpl::AddPredictedCodepoints(RequestState* state) const {
   hb_set_unique_ptr additional_codepoints = make_hb_set();
 
   codepoint_predictor_->Predict(
-      codepoints_in_font.get(),
-      state->codepoints_have.get(),
-      codepoints_being_added.get(),
-      kMaxPredictedCodepoints, additional_codepoints.get());
+      codepoints_in_font.get(), state->codepoints_have.get(),
+      codepoints_being_added.get(), kMaxPredictedCodepoints,
+      additional_codepoints.get());
 
   hb_set_union(state->codepoints_needed.get(), additional_codepoints.get());
 }
