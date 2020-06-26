@@ -16,6 +16,9 @@ proto_library(
 py_proto_library(
     name = "slicing_strategy_proto_py",
     srcs = ["slicing_strategy.proto"],
+    visibility = [
+        "//tools:__pkg__",
+    ],
 )
 
 cc_proto_library(
