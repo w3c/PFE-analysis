@@ -64,6 +64,7 @@ class PatchSubsetMethod:
     self.with_codepoint_prediction = with_codepoint_prediction
 
   def name(self):  # pylint: disable=no-self-use
+    """Returns the name for this method."""
     modifiers = ""
     if self.with_codepoint_remapping:
       modifiers += "_Remapping"
@@ -90,7 +91,7 @@ class FontSession:
   """
 
   def __init__(self, font_loader, font_id, page_view_count,
-               with_codepoint_remapping, with_codepoint_prediction):
+               with_codepoint_remapping, with_codepoint_prediction):  # pylint: disable=too-many-arguments
     font_directory_c = c_char_p(font_loader.directory().encode("utf-8"))
     font_id_c = c_char_p(font_id.encode("utf-8"))
     self.session = c_void_p(
