@@ -37,7 +37,7 @@ def write_textproto(path, proto):
 
 
 def main(argv):
-  """Run the merge tool.""
+  """Run the merge tool."""
   del argv  # Unused.
   strategy_proto = read_textproto_input(FLAGS.strategy_file)
   freq_map = read_freq_map(FLAGS.freq_file)
