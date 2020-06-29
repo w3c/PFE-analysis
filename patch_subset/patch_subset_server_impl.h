@@ -41,10 +41,11 @@ class PatchSubsetServerImpl : public PatchSubsetServer {
                                  : nullptr;
 
     CodepointPredictor* predictor =
-        with_codepoint_prediction ? reinterpret_cast<CodepointPredictor*>(
-                                        FrequencyCodepointPredictor::Create())
-                                  : reinterpret_cast<CodepointPredictor*>(
-                                        new NoopCodepointPredictor());
+        with_codepoint_prediction
+            ? reinterpret_cast<CodepointPredictor*>(
+                  FrequencyCodepointPredictor::Create(0.0f))
+            : reinterpret_cast<CodepointPredictor*>(
+                  new NoopCodepointPredictor());
     if (!predictor) {
       LOG(WARNING) << "Failed to create codepoint predictor, using noop "
                       "predictor instead.";

@@ -76,24 +76,27 @@ StatusCode LoadAllStrategies(const std::string& directory,
   return StatusCode::kOk;
 }
 
-FrequencyCodepointPredictor* FrequencyCodepointPredictor::Create() {
-  return Create(kSlicingStrategyDataDirectory);
+FrequencyCodepointPredictor* FrequencyCodepointPredictor::Create(
+    float minimum_frequency) {
+  return Create(minimum_frequency, kSlicingStrategyDataDirectory);
 }
 
 FrequencyCodepointPredictor* FrequencyCodepointPredictor::Create(
-    const std::string& directory) {
+    float minimum_frequency, const std::string& directory) {
   std::vector<SlicingStrategy> strategies;
   StatusCode result = LoadAllStrategies(directory, &strategies);
   if (result != StatusCode::kOk) {
     return nullptr;
   }
 
-  return new FrequencyCodepointPredictor(std::move(strategies));
+  return new FrequencyCodepointPredictor(minimum_frequency,
+                                         std::move(strategies));
 }
 
 FrequencyCodepointPredictor::FrequencyCodepointPredictor(
-    std::vector<SlicingStrategy> strategies)
-    : strategies_(std::move(strategies)) {}
+    float minimum_frequency, std::vector<SlicingStrategy> strategies)
+    : minimum_frequency_(minimum_frequency),
+      strategies_(std::move(strategies)) {}
 
 void FrequencyCodepointPredictor::Predict(
     const hb_set_t* font_codepoints, const hb_set_t* have_codepoints,
@@ -105,6 +108,8 @@ void FrequencyCodepointPredictor::Predict(
     return;
   }
 
+  int highest_count = HighestFrequencyCount(best_strategy, font_codepoints,
+                                            requested_codepoints);
   btree_set<const Codepoint*, CodepointFreqCompare> additional_codepoints;
   for (const auto& subset : best_strategy->subsets()) {
     if (!Intersects(subset, requested_codepoints)) {
@@ -116,6 +121,12 @@ void FrequencyCodepointPredictor::Predict(
         continue;
       }
       if (hb_set_has(have_codepoints, codepoint.codepoint())) {
+        continue;
+      }
+
+      if (static_cast<float>(codepoint.count()) /
+              static_cast<float>(highest_count) <
+          minimum_frequency_) {
         continue;
       }
 
@@ -132,6 +143,26 @@ void FrequencyCodepointPredictor::Predict(
   for (auto codepoint : additional_codepoints) {
     hb_set_add(predicted_codepoints, codepoint->codepoint());
   }
+}
+
+int FrequencyCodepointPredictor::HighestFrequencyCount(
+    const analysis::pfe_methods::unicode_range_data::SlicingStrategy* strategy,
+    const hb_set_t* font_codepoints,
+    const hb_set_t* requested_codepoints) const {
+  int max = 1;  // Always return at least one so no division by zero.
+  for (const auto& subset : strategy->subsets()) {
+    if (!Intersects(subset, font_codepoints) &&
+        !Intersects(subset, requested_codepoints)) {
+      continue;
+    }
+
+    for (const auto& cp : subset.codepoint_frequencies()) {
+      if (cp.count() > max) {
+        max = cp.count();
+      }
+    }
+  }
+  return max;
 }
 
 bool FrequencyCodepointPredictor::Intersects(

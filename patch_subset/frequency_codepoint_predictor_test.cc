@@ -17,9 +17,12 @@ class FrequencyCodepointPredictorTest : public ::testing::Test {
  protected:
   FrequencyCodepointPredictorTest()
       : predictor_(FrequencyCodepointPredictor::Create(
-            "patch_subset/testdata/strategies/")) {}
+            0.0f, "patch_subset/testdata/strategies/")),
+        predictor_with_threshold_(FrequencyCodepointPredictor::Create(
+            0.5f, "patch_subset/testdata/strategies/")) {}
 
   std::unique_ptr<CodepointPredictor> predictor_;
+  std::unique_ptr<CodepointPredictor> predictor_with_threshold_;
 };
 
 TEST_F(FrequencyCodepointPredictorTest, Predict) {
@@ -32,6 +35,21 @@ TEST_F(FrequencyCodepointPredictorTest, Predict) {
                       requested_codepoints.get(), 2, result.get());
 
   hb_set_unique_ptr expected = make_hb_set(2, 65, 67);
+  EXPECT_TRUE(hb_set_is_equal(result.get(), expected.get()));
+}
+
+TEST_F(FrequencyCodepointPredictorTest, PredictWithThreshold) {
+  hb_set_unique_ptr font_codepoints = make_hb_set_from_ranges(1, 65, 75);
+  hb_set_unique_ptr have_codepoints = make_hb_set();
+  hb_set_unique_ptr requested_codepoints = make_hb_set(2, 65, 75);
+  hb_set_unique_ptr result = make_hb_set();
+
+  predictor_with_threshold_->Predict(
+      font_codepoints.get(), have_codepoints.get(), requested_codepoints.get(),
+      10, result.get());
+
+  hb_set_unique_ptr expected = make_hb_set_from_ranges(2, 67, 69, 77, 79);
+
   EXPECT_TRUE(hb_set_is_equal(result.get(), expected.get()));
 }
 
