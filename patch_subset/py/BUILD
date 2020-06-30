@@ -13,6 +13,25 @@ cc_binary(
     ],
 )
 
+cc_test(
+    name = "patch_subset_session_test",
+    srcs = [
+        "patch_subset_session.cc",
+        "patch_subset_session.h",
+        "patch_subset_session_test.cc",
+    ],
+    data = [
+        "//patch_subset:testdata",
+    ],
+    deps = [
+        "//common",
+        "//patch_subset:client",
+        "//patch_subset:common",
+        "//patch_subset:server",
+        "@gtest//:gtest_main",
+    ],
+)
+
 py_library(
     name = "py",
     srcs = [

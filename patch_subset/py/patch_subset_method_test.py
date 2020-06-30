@@ -16,7 +16,8 @@ class PatchSubsetMethodTest(unittest.TestCase):
     self.session_with_remapping = patch_subset_method.create_with_codepoint_remapping(
     ).start_session(font_loader.FontLoader("./patch_subset/testdata/"))
     self.session_with_prediction = patch_subset_method.create_with_codepoint_prediction(
-    ).start_session(font_loader.FontLoader("./patch_subset/testdata/"))
+        50,
+        0.0).start_session(font_loader.FontLoader("./patch_subset/testdata/"))
 
   def test_font_not_found(self):
     with self.assertRaises(patch_subset_method.PatchSubsetError):
@@ -55,6 +56,16 @@ class PatchSubsetMethodTest(unittest.TestCase):
       roboto_subset_bytes = roboto_subset.read()
       self.assertEqual(session.get_font_bytes("Roboto-Regular.ttf"),
                        roboto_subset_bytes)
+
+  def test_name_for_remapping(self):
+    self.assertEqual(
+        "PatchSubset_PFE_Remapping",
+        patch_subset_method.create_with_codepoint_remapping().name())
+
+  def test_name_for_prediction(self):
+    self.assertEqual(
+        "PatchSubset_PFE_Remapping_Prediction(50,0.5)",
+        patch_subset_method.create_with_codepoint_prediction(50, 0.5).name())
 
   def test_session_with_prediction(self):
     session = self.session_with_prediction

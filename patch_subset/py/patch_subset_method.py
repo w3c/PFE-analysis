@@ -11,6 +11,8 @@ import collections
 from ctypes import byref
 from ctypes import c_bool
 from ctypes import c_char_p
+from ctypes import c_int32
+from ctypes import c_float
 from ctypes import c_uint32
 from ctypes import c_ubyte
 from ctypes import c_void_p
@@ -39,44 +41,46 @@ get_requests = patch_subset.PatchSubsetSession_get_requests  # pylint: disable=i
 get_requests.restype = POINTER(RECORD)
 
 Record = collections.namedtuple("Record", ["request_size", "response_size"])
+Config = collections.namedtuple("Config", [
+    "remap_codepoints", "max_predicted_codepoints",
+    "prediction_frequency_threshold"
+])
 
 
 def create_with_codepoint_remapping():
-  return PatchSubsetMethod(True, False)
+  return PatchSubsetMethod(Config(True, 0, 0.0))
 
 
-def create_with_codepoint_prediction():
-  return PatchSubsetMethod(True, True)
+def create_with_codepoint_prediction(max_predicted, threshold):
+  return PatchSubsetMethod(Config(True, max_predicted, threshold))
 
 
 def create_without_codepoint_remapping():
-  return PatchSubsetMethod(False, False)
+  return PatchSubsetMethod(Config(False, 0, 0.0))
 
 
 class PatchSubsetMethod:
   """Patch and subset PFE method."""
 
-  def __init__(self, with_codepoint_remapping, with_codepoint_prediction):
-    """If with_codepoint_remapping is set then the underlying
-    client/server will use codepoint remapping when talking
-    to each other."""
-    self.with_codepoint_remapping = with_codepoint_remapping
-    self.with_codepoint_prediction = with_codepoint_prediction
+  def __init__(self, config):
+    """config is used to configured the underlying client/server."""
+    self.config = config
 
   def name(self):  # pylint: disable=no-self-use
     """Returns the name for this method."""
     modifiers = ""
-    if self.with_codepoint_remapping:
+    if self.config.remap_codepoints:
       modifiers += "_Remapping"
-    if self.with_codepoint_prediction:
-      modifiers += "_Prediction"
+    if self.config.max_predicted_codepoints:
+      modifiers += ("_Prediction(%s,%s)" %
+                    (self.config.max_predicted_codepoints,
+                     self.config.prediction_frequency_threshold))
 
     return "PatchSubset_PFE%s" % modifiers
 
   def start_session(self, font_loader):
     """Starts a new PFE session for this method."""
-    return PatchSubsetPfeSession(font_loader, self.with_codepoint_remapping,
-                                 self.with_codepoint_prediction)
+    return PatchSubsetPfeSession(font_loader, self.config)
 
 
 class PatchSubsetError(Exception):
@@ -91,14 +95,15 @@ class FontSession:
   """
 
   def __init__(  # pylint: disable=too-many-arguments
-      self, font_loader, font_id, page_view_count, with_codepoint_remapping,
-      with_codepoint_prediction):
+      self, font_loader, font_id, page_view_count, config):
     font_directory_c = c_char_p(font_loader.directory().encode("utf-8"))
     font_id_c = c_char_p(font_id.encode("utf-8"))
+    print("Creating a session")
     self.session = c_void_p(
         new_session(font_directory_c, font_id_c,
-                    c_bool(with_codepoint_remapping),
-                    c_bool(with_codepoint_prediction)))
+                    c_bool(config.remap_codepoints),
+                    c_int32(config.max_predicted_codepoints),
+                    c_float(config.prediction_frequency_threshold)))
     self.delete_session = patch_subset.PatchSubsetSession_delete
     self.records_by_view = [[]] * page_view_count
     self.last_record_index = None
@@ -173,13 +178,11 @@ def to_request_graph(records):
 class PatchSubsetPfeSession:
   """Fake progressive font enrichment session."""
 
-  def __init__(self, font_loader, with_codepoint_remapping,
-               with_codepoint_prediction):
+  def __init__(self, font_loader, config):
     self.sessions_by_font = dict()
     self.page_view_count = 0
     self.font_loader = font_loader
-    self.with_codepoint_remapping = with_codepoint_remapping
-    self.with_codepoint_prediction = with_codepoint_prediction
+    self.config = config
 
   def page_view(self, codepoints_by_font):  # pylint: disable=no-self-use,unused-argument
     """Processes a page view.
@@ -193,9 +196,9 @@ class PatchSubsetPfeSession:
 
     for font_id, codepoints in codepoints_by_font.items():
       if font_id not in self.sessions_by_font:
-        self.sessions_by_font[font_id] = FontSession(
-            self.font_loader, font_id, self.page_view_count,
-            self.with_codepoint_remapping, self.with_codepoint_prediction)
+        self.sessions_by_font[font_id] = FontSession(self.font_loader, font_id,
+                                                     self.page_view_count,
+                                                     self.config)
 
       self.sessions_by_font[font_id].extend(codepoints)
 

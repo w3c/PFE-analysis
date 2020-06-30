@@ -32,20 +32,16 @@ using ::patch_subset::MemoryRequestLogger;
 using ::patch_subset::PatchSubsetClient;
 using ::patch_subset::PatchSubsetServer;
 using ::patch_subset::PatchSubsetServerImpl;
+using ::patch_subset::ServerConfig;
 using ::patch_subset::StatusCode;
 using ::patch_subset::Subsetter;
 
 class PatchSubsetSession {
  public:
-  PatchSubsetSession(const std::string& font_directory,
-                     const std::string& font_id, bool with_codepoint_remapping,
-                     bool with_codepoint_prediction)
-      : font_provider_(new FileFontProvider(font_directory)),
-        binary_patch_(new BrotliBinaryPatch()),
+  PatchSubsetSession(const ServerConfig& config, const std::string& font_id)
+      : binary_patch_(new BrotliBinaryPatch()),
         brotli_request_logger_(&request_logger_),
-        server_(std::move(PatchSubsetServerImpl::CreateServer(
-            font_directory, with_codepoint_remapping,
-            with_codepoint_prediction))),
+        server_(std::move(PatchSubsetServerImpl::CreateServer(config))),
         client_(server_.get(), &brotli_request_logger_,
                 std::unique_ptr<BinaryPatch>(binary_patch_),
                 std::unique_ptr<Hasher>(new FarmHasher())) {
@@ -64,7 +60,6 @@ class PatchSubsetSession {
     return request_logger_.Records();
   }
 
-  FontProvider* font_provider_;
   BinaryPatch* binary_patch_;
   MemoryRequestLogger request_logger_;
   BrotliRequestLogger brotli_request_logger_;
@@ -75,15 +70,20 @@ class PatchSubsetSession {
 
 extern "C" {
 
-PatchSubsetSession* PatchSubsetSession_new(const char* font_directory,
-                                           const char* font_id,
-                                           bool with_codepoint_remapping,
-                                           bool with_codepoint_prediction) {
+PatchSubsetSession* PatchSubsetSession_new(
+    const char* font_directory, const char* font_id,
+    bool with_codepoint_remapping, int32_t max_predicted_codepoints,
+    float prediction_frequency_threshold) {
   std::string font_directory_string(font_directory);
   std::string font_id_string(font_id);
-  return new PatchSubsetSession(font_directory_string, font_id,
-                                with_codepoint_remapping,
-                                with_codepoint_prediction);
+
+  ServerConfig config;
+  config.font_directory = font_directory_string;
+  config.remap_codepoints = with_codepoint_remapping;
+  config.max_predicted_codepoints = max_predicted_codepoints;
+  config.prediction_frequency_threshold = prediction_frequency_threshold;
+
+  return new PatchSubsetSession(config, font_id);
 }
 
 void PatchSubsetSession_delete(PatchSubsetSession* session) { delete session; }
