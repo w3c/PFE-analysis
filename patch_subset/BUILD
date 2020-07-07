@@ -46,6 +46,7 @@ cc_library(
         "//common",
         "@brotli//:brotlienc",
         "@com_google_absl//absl/container:btree",
+        "@com_google_absl//absl/container:flat_hash_map",
         "@com_google_absl//absl/strings",
         "@harfbuzz",
     ],
