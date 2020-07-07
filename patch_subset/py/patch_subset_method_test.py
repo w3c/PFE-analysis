@@ -71,7 +71,7 @@ class PatchSubsetMethodTest(unittest.TestCase):
     session = self.session_with_prediction
 
     session.page_view({"Roboto-Regular.ttf": [0x61, 0x62]})
-    session.page_view({"Roboto-Regular.ttf": [0x61, 0x62, 0x63, 0x64]})
+    session.page_view({"Roboto-Regular.ttf": [0x61, 0x62, 0xA3]})
     session.page_view({"Roboto-Regular.ttf": [0xAFFF]})
 
     self.assertEqual(len(session.get_request_graphs()), 3)
