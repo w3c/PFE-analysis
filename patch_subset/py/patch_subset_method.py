@@ -98,7 +98,6 @@ class FontSession:
       self, font_loader, font_id, page_view_count, config):
     font_directory_c = c_char_p(font_loader.directory().encode("utf-8"))
     font_id_c = c_char_p(font_id.encode("utf-8"))
-    print("Creating a session")
     self.session = c_void_p(
         new_session(font_directory_c, font_id_c,
                     c_bool(config.remap_codepoints),
