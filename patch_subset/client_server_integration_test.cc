@@ -28,6 +28,7 @@ class PatchSubsetClientServerIntegrationTest : public ::testing::Test {
       : hasher_(new FarmHasher()),
 
         server_(
+            0,
             std::unique_ptr<FontProvider>(new FileFontProvider(kTestDataDir)),
             std::unique_ptr<Subsetter>(new HarfbuzzSubsetter()),
             std::unique_ptr<BinaryDiff>(new BrotliBinaryDiff()),
@@ -40,6 +41,7 @@ class PatchSubsetClientServerIntegrationTest : public ::testing::Test {
                 std::unique_ptr<Hasher>(new FarmHasher())),
 
         server_with_mapping_(
+            0,
             std::unique_ptr<FontProvider>(new FileFontProvider(kTestDataDir)),
             std::unique_ptr<Subsetter>(new HarfbuzzSubsetter()),
             std::unique_ptr<BinaryDiff>(new BrotliBinaryDiff()),

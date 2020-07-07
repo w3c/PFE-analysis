@@ -16,8 +16,6 @@ using ::absl::string_view;
 
 namespace patch_subset {
 
-static const int kMaxPredictedCodepoints = 50;
-
 // Helper object, which holds all of the relevant state for
 // handling a single request.
 struct RequestState {
@@ -169,7 +167,7 @@ void PatchSubsetServerImpl::AddPredictedCodepoints(RequestState* state) const {
 
   codepoint_predictor_->Predict(
       codepoints_in_font.get(), state->codepoints_have.get(),
-      codepoints_being_added.get(), kMaxPredictedCodepoints,
+      codepoints_being_added.get(), max_predicted_codepoints_,
       additional_codepoints.get());
 
   hb_set_union(state->codepoints_needed.get(), additional_codepoints.get());

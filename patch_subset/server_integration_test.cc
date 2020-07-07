@@ -21,7 +21,7 @@ class PatchSubsetServerIntegrationTest : public ::testing::Test {
       : font_provider_(new FileFontProvider("patch_subset/testdata/")),
         binary_diff_(new BrotliBinaryDiff()),
         server_(
-            std::unique_ptr<FontProvider>(font_provider_),
+            0, std::unique_ptr<FontProvider>(font_provider_),
             std::unique_ptr<Subsetter>(new HarfbuzzSubsetter()),
             std::unique_ptr<BinaryDiff>(binary_diff_),
             std::unique_ptr<Hasher>(new FarmHasher()),

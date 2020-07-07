@@ -64,7 +64,7 @@ class PatchSubsetMethodTest(unittest.TestCase):
 
   def test_name_for_prediction(self):
     self.assertEqual(
-        "PatchSubset_PFE_Remapping_Prediction(50,0.5)",
+        "PatchSubset_PFE_Remapping_Prediction(50|0.5)",
         patch_subset_method.create_with_codepoint_prediction(50, 0.5).name())
 
   def test_session_with_prediction(self):

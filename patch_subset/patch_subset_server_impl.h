@@ -83,6 +83,7 @@ class PatchSubsetServerImpl : public PatchSubsetServer {
       const ServerConfig& config) {
     Hasher* hasher = new FarmHasher();
     return std::unique_ptr<PatchSubsetServer>(new PatchSubsetServerImpl(
+        config.max_predicted_codepoints,
         std::unique_ptr<FontProvider>(
             new FileFontProvider(config.font_directory)),
         std::unique_ptr<Subsetter>(new HarfbuzzSubsetter()),
@@ -97,13 +98,14 @@ class PatchSubsetServerImpl : public PatchSubsetServer {
 
   // Takes ownership of font_provider, subsetter, and binary_diff.
   PatchSubsetServerImpl(
-      std::unique_ptr<FontProvider> font_provider,
+      int max_predicted_codepoints, std::unique_ptr<FontProvider> font_provider,
       std::unique_ptr<Subsetter> subsetter,
       std::unique_ptr<BinaryDiff> binary_diff, std::unique_ptr<Hasher> hasher,
       std::unique_ptr<CodepointMapper> codepoint_mapper,
       std::unique_ptr<CodepointMappingChecksum> codepoint_mapping_checksum,
       std::unique_ptr<CodepointPredictor> codepoint_predictor)
-      : font_provider_(std::move(font_provider)),
+      : max_predicted_codepoints_(max_predicted_codepoints),
+        font_provider_(std::move(font_provider)),
         subsetter_(std::move(subsetter)),
         binary_diff_(std::move(binary_diff)),
         hasher_(std::move(hasher)),
@@ -151,6 +153,7 @@ class PatchSubsetServerImpl : public PatchSubsetServer {
   bool Check(StatusCode result) const;
   bool Check(StatusCode result, const std::string& message) const;
 
+  int max_predicted_codepoints_;
   std::unique_ptr<FontProvider> font_provider_;
   std::unique_ptr<Subsetter> subsetter_;
   std::unique_ptr<BinaryDiff> binary_diff_;

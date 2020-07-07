@@ -101,7 +101,7 @@ class PatchSubsetServerImplTestBase : public ::testing::Test {
 class PatchSubsetServerImplTest : public PatchSubsetServerImplTestBase {
  protected:
   PatchSubsetServerImplTest()
-      : server_(std::unique_ptr<FontProvider>(font_provider_),
+      : server_(50, std::unique_ptr<FontProvider>(font_provider_),
                 std::unique_ptr<Subsetter>(new FakeSubsetter()),
                 std::unique_ptr<BinaryDiff>(binary_diff_),
                 std::unique_ptr<Hasher>(hasher_),
@@ -117,7 +117,7 @@ class PatchSubsetServerImplWithCodepointRemappingTest
  protected:
   PatchSubsetServerImplWithCodepointRemappingTest()
       : codepoint_mapping_checksum_(new MockCodepointMappingChecksum()),
-        server_(std::unique_ptr<FontProvider>(font_provider_),
+        server_(50, std::unique_ptr<FontProvider>(font_provider_),
                 std::unique_ptr<Subsetter>(new FakeSubsetter()),
                 std::unique_ptr<BinaryDiff>(binary_diff_),
                 std::unique_ptr<Hasher>(hasher_),

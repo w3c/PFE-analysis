@@ -72,7 +72,7 @@ class PatchSubsetMethod:
     if self.config.remap_codepoints:
       modifiers += "_Remapping"
     if self.config.max_predicted_codepoints:
-      modifiers += ("_Prediction(%s,%s)" %
+      modifiers += ("_Prediction(%s|%s)" %
                     (self.config.max_predicted_codepoints,
                      self.config.prediction_frequency_threshold))
 
