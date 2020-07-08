@@ -221,9 +221,8 @@ def merge_results(segmented_results):
   return merged
 
 
-def main(argv):
-  """Runs the analysis."""
-  del argv  # Unused.
+def start_analysis():
+  """Read input data and start up the analysis."""
   input_data_path = FLAGS.input_data
 
   LOG.info("Reading input data.")
@@ -254,6 +253,15 @@ def main(argv):
   results_proto = result_pb2.AnalysisResultProto()
   for method_result in results:
     results_proto.results.append(method_result)
+
+  return results_proto
+
+
+def main(argv):
+  """Runs the analysis."""
+  del argv  # Unused.
+
+  results_proto = start_analysis()
 
   if FLAGS.output_binary:
     sys.stdout.buffer.write(results_proto.SerializeToString())

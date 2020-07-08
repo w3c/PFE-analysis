@@ -51,6 +51,27 @@ py_binary(
     ],
 )
 
+py_binary(
+    name = "analyzer_codepoint_prediction",
+    srcs = [
+        "analyzer.py",
+        "analyzer_codepoint_prediction.py",
+    ],
+    main = "analyzer_codepoint_prediction.py",
+    srcs_version = "PY3",
+    deps = [
+        ":common",
+        ":fake_pfe",
+        ":page_view_sequence_proto_py",
+        ":result_proto_py",
+        ":simulation",
+        "//analysis/pfe_methods",
+        "//patch_subset/py",
+        "@io_abseil_py//absl:app",
+        "@io_abseil_py//absl/flags",
+    ],
+)
+
 py_library(
     name = "simulation",
     srcs = [
