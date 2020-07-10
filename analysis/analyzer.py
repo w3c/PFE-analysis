@@ -25,6 +25,7 @@ from analysis import page_view_sequence_pb2
 from analysis import result_pb2
 from analysis import simulation
 from analysis.pfe_methods import logged_pfe_method
+from analysis.pfe_methods import optimal_one_font_method
 from analysis.pfe_methods import optimal_pfe_method
 from analysis.pfe_methods import unicode_range_pfe_method
 from analysis.pfe_methods import whole_font_pfe_method
@@ -55,6 +56,7 @@ flags.DEFINE_list("filter_languages", None,
 
 PFE_METHODS = [
     optimal_pfe_method,
+    optimal_one_font_method,
     unicode_range_pfe_method,
     whole_font_pfe_method,
     patch_subset_method.create_with_codepoint_remapping(),
