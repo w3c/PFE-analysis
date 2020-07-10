@@ -196,6 +196,10 @@ def read_text_input(input_data_path):
   return data_set
 
 def read_json_input(input_data_path):
+  """Reads json data with this format:
+
+  [{"URL": "http://example.com/path.html", "Contents": "Text content of webpage here"},
+   {"URL": "http://example.com/path.html", "Contents": "Text content of webpage here"}]"""
   with open(input_data_path, 'r') as input_json_file:
     data = input_json_file.read()
   corpus = json.loads(data)

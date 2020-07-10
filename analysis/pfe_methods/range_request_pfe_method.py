@@ -52,11 +52,13 @@ class RangeRequestPfeSession:
     if "glyf" in font:
       glyf = font["glyf"]
       glyph_data = []
-      for glyphName in font.glyphOrder:
-        glyph = glyf[glyphName]
+      for glyph in glyf.glyphs.values():
         if glyph.isComposite():
           raise RangeRequestError("Optimized fonts should not contain any composite glyphs.")
-        glyph_data.append(glyph.compile(glyf, recalcBBoxes=False))
+        if hasattr(glyph, "data"):
+          glyph_data.append(glyph.data)
+        else:
+          glyph_data.append("")
     elif "CFF " in font:
       cff = font["CFF "]
       font_name = cff.cff.fontNames[0]
