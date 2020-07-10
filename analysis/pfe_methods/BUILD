@@ -2,6 +2,7 @@ py_library(
     name = "pfe_methods",
     srcs = [
         "logged_pfe_method.py",
+        "optimal_one_font_method.py",
         "optimal_pfe_method.py",
         "subset_sizer.py",
         "unicode_range_pfe_method.py",
@@ -48,6 +49,19 @@ py_test(
     name = "optimal_pfe_method_test",
     srcs = [
         "optimal_pfe_method_test.py",
+    ],
+    data = [
+        "//patch_subset:testdata",
+    ],
+    deps = [
+        ":pfe_methods",
+    ],
+)
+
+py_test(
+    name = "optimal_one_font_method_test",
+    srcs = [
+        "optimal_one_font_method_test.py",
     ],
     data = [
         "//patch_subset:testdata",
