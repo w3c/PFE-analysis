@@ -230,10 +230,6 @@ def do_analysis(serialized_sequences):
   """Given a list of sequences (serialized to binary) run the simulation on them.
 
   Takes the sequences serialized, so that they may be passed down to another process."""
-  for method in PFE_METHODS:
-    if hasattr(method, "initialize") and callable(method.initialize):
-      method.initialize()
-
   sequences = [
       page_view_sequence_pb2.PageViewSequenceProto.FromString(s).page_views
       for s in serialized_sequences
@@ -257,10 +253,6 @@ def main(argv):
   """Runs the analysis."""
   del argv  # Unused.
   input_data_path = FLAGS.input_data
-
-  for method in PFE_METHODS:
-    if hasattr(method, "initialize") and callable(method.initialize):
-      method.initialize()
 
   LOG.info("Reading input data.")
   if FLAGS.input_form == "binary":

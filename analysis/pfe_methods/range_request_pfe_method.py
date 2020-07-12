@@ -47,8 +47,6 @@ class RangeRequestPfeSession:
     font = ttLib.TTFont(bytes)
     font.recalcBBoxes = False
 
-    fontSize = sum([len(font[table].compile(font)) for table in font.keys() if table != "GlyphOrder"])
-
     if "glyf" in font:
       glyf = font["glyf"]
       glyph_data = []
@@ -58,7 +56,7 @@ class RangeRequestPfeSession:
         if hasattr(glyph, "data"):
           glyph_data.append(glyph.data)
         else:
-          glyph_data.append("")
+          glyph_data.append(b"")
     elif "CFF " in font:
       cff = font["CFF "]
       font_name = cff.cff.fontNames[0]
@@ -66,13 +64,11 @@ class RangeRequestPfeSession:
       glyph_data = []
       for glyph_id in range(len(font.getGlyphOrder())):
         char_string = top_dict.CharStrings.charStringsIndex[glyph_id]
-        index = 0
-        while True:
-          token, is_operator, index = char_string.getToken(index)
-          if token is None:
-            break
-          if is_operator and token in ('callsubr', 'callgsubr'):
+        char_string.decompile()
+        for item in char_string.program:
+          if item in ('callsubr', 'callgsubr'):
             raise RangeRequestError("Optimized fonts should not contain any subroutine calls.")
+        char_string.compile()
         glyph_data.append(char_string.bytecode)
     else:
       raise RangeRequestError("Could not determine data for each glyph.")
@@ -201,7 +197,7 @@ class RangeRequestPfeSession:
 
         # Assume the font has been optimized correctly, and glyph data is placed at the end
         base_size = len(font_data) - sum([len(data) for data in glyph_data])
-        payload = font_data[: base_size] + "".encode().join(glyph_data[payload_start : payload_end])
+        payload = font_data[: base_size] + b"".join(glyph_data[payload_start : payload_end])
 
         compressed_payload = zlib.compress(payload)
         self.loaded_glyphs[font_id].update(range(extra_start, extra_end))
@@ -214,7 +210,7 @@ class RangeRequestPfeSession:
       for i in range(starting_index, len(necessary_glyph_ranges)):
         if necessary_glyph_ranges[i].byte_length == 0:
           continue
-        payload = "".encode().join(glyph_data[necessary_glyph_ranges[i].begin_glyph : necessary_glyph_ranges[i].end_glyph])
+        payload = b"".join(glyph_data[necessary_glyph_ranges[i].begin_glyph : necessary_glyph_ranges[i].end_glyph])
         compressed_payload = zlib.compress(payload)
         request = request_graph.Request(network_models.ESTIMATED_HTTP_REQUEST_HEADER_SIZE, network_models.ESTIMATED_HTTP_RESPONSE_HEADER_SIZE + len(compressed_payload), happens_after=happens_after)
         requests.add(request)
