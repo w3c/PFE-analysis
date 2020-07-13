@@ -20,3 +20,15 @@ py_binary(
         "@io_abseil_py//absl/flags",
     ],
 )
+
+py_binary(
+    name = "filter_data_set",
+    srcs = [
+        "filter_data_set.py",
+    ],
+    deps = [
+        "//analysis:page_view_sequence_proto_py",
+        "@io_abseil_py//absl:app",
+        "@io_abseil_py//absl/flags",
+    ],
+)
