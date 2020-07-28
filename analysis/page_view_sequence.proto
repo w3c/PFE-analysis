@@ -6,6 +6,7 @@ package analysis;
 message PageContentProto {
   string font_name = 1;
   repeated uint32 codepoints = 2;
+  repeated uint32 glyph_ids = 4;
 
   // This is used to add data from logs of existing PFE method(s).
   // Records the resulting request/response sizes incurred by that
@@ -23,6 +24,7 @@ message PfeRequest {
 
 message PageViewProto {
   repeated PageContentProto contents = 1;
+  reserved 2;  // Was language
 }
 
 message PageViewSequenceProto {
