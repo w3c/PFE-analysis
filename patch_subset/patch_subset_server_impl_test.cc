@@ -14,6 +14,7 @@
 #include "patch_subset/hb_set_unique_ptr.h"
 #include "patch_subset/mock_binary_diff.h"
 #include "patch_subset/mock_codepoint_mapping_checksum.h"
+#include "patch_subset/mock_codepoint_predictor.h"
 #include "patch_subset/mock_font_provider.h"
 #include "patch_subset/mock_hasher.h"
 #include "patch_subset/simple_codepoint_mapper.h"
@@ -30,6 +31,8 @@ namespace patch_subset {
 MATCHER_P(EqualsProto, other, "") {
   return MessageDifferencer::Equals(arg, other);
 }
+
+MATCHER_P(EqualsSet, other, "") { return hb_set_is_equal(arg, other); }
 
 StatusCode returnFontId(const std::string& id, FontData* out) {
   out->copy(id.c_str(), id.size());
@@ -56,6 +59,7 @@ class PatchSubsetServerImplTestBase : public ::testing::Test {
       : font_provider_(new MockFontProvider()),
         binary_diff_(new MockBinaryDiff()),
         hasher_(new MockHasher()),
+        codepoint_predictor_(new MockCodepointPredictor()),
         set_abcd_(make_hb_set_from_ranges(1, 0x61, 0x64)),
         set_ab_(make_hb_set_from_ranges(1, 0x61, 0x62)) {}
 
@@ -75,9 +79,21 @@ class PatchSubsetServerImplTestBase : public ::testing::Test {
     EXPECT_CALL(*hasher_, Checksum(value)).WillRepeatedly(Return(checksum));
   }
 
+  void AddPredictedCodepoints(const hb_set_t* font_codepoints,
+                              const hb_set_t* have_codepoints,
+                              const hb_set_t* requested_codepoints,
+                              const hb_set_t* codepoints_to_add) {
+    EXPECT_CALL(*codepoint_predictor_,
+                Predict(EqualsSet(font_codepoints), EqualsSet(have_codepoints),
+                        EqualsSet(requested_codepoints), 50, _))
+        .Times(1)
+        .WillRepeatedly(Invoke(AddCodepoints(codepoints_to_add)));
+  }
+
   MockFontProvider* font_provider_;
   MockBinaryDiff* binary_diff_;
   MockHasher* hasher_;
+  MockCodepointPredictor* codepoint_predictor_;
   hb_set_unique_ptr set_abcd_;
   hb_set_unique_ptr set_ab_;
 };
@@ -85,12 +101,13 @@ class PatchSubsetServerImplTestBase : public ::testing::Test {
 class PatchSubsetServerImplTest : public PatchSubsetServerImplTestBase {
  protected:
   PatchSubsetServerImplTest()
-      : server_(std::unique_ptr<FontProvider>(font_provider_),
+      : server_(50, std::unique_ptr<FontProvider>(font_provider_),
                 std::unique_ptr<Subsetter>(new FakeSubsetter()),
                 std::unique_ptr<BinaryDiff>(binary_diff_),
                 std::unique_ptr<Hasher>(hasher_),
                 std::unique_ptr<CodepointMapper>(nullptr),
-                std::unique_ptr<CodepointMappingChecksum>(nullptr)) {}
+                std::unique_ptr<CodepointMappingChecksum>(nullptr),
+                std::unique_ptr<CodepointPredictor>(codepoint_predictor_)) {}
 
   PatchSubsetServerImpl server_;
 };
@@ -100,13 +117,14 @@ class PatchSubsetServerImplWithCodepointRemappingTest
  protected:
   PatchSubsetServerImplWithCodepointRemappingTest()
       : codepoint_mapping_checksum_(new MockCodepointMappingChecksum()),
-        server_(std::unique_ptr<FontProvider>(font_provider_),
+        server_(50, std::unique_ptr<FontProvider>(font_provider_),
                 std::unique_ptr<Subsetter>(new FakeSubsetter()),
                 std::unique_ptr<BinaryDiff>(binary_diff_),
                 std::unique_ptr<Hasher>(hasher_),
                 std::unique_ptr<CodepointMapper>(new SimpleCodepointMapper()),
                 std::unique_ptr<CodepointMappingChecksum>(
-                    codepoint_mapping_checksum_)),
+                    codepoint_mapping_checksum_),
+                std::unique_ptr<CodepointPredictor>(codepoint_predictor_)),
         set_abcd_encoded_(make_hb_set_from_ranges(1, 0, 3)),
         set_ab_encoded_(make_hb_set_from_ranges(1, 0, 1)) {}
 
@@ -201,6 +219,39 @@ TEST_F(PatchSubsetServerImplTest, PatchRequest) {
   EXPECT_EQ(response.type(), ResponseType::PATCH);
   EXPECT_EQ(response.patch().patch(),
             "Roboto-Regular.ttf:abcd - Roboto-Regular.ttf:ab");
+  EXPECT_EQ(response.patch().patched_fingerprint(), 44);
+  EXPECT_EQ(response.patch().format(), PatchFormat::BROTLI_SHARED_DICT);
+
+  EXPECT_FALSE(response.has_codepoint_remapping());
+}
+
+TEST_F(PatchSubsetServerImplTest, PatchRequestWithCodepointPrediction) {
+  ExpectRoboto();
+  ExpectDiff();
+  ExpectChecksum("Roboto-Regular.ttf", 42);
+  ExpectChecksum("Roboto-Regular.ttf:ab", 43);
+  ExpectChecksum("Roboto-Regular.ttf:abcde", 44);
+
+  hb_set_unique_ptr font_codepoints = make_hb_set_from_ranges(1, 0x61, 0x66);
+  hb_set_unique_ptr have_codepoints = make_hb_set(2, 0x61, 0x62);
+  hb_set_unique_ptr requested_codepoints = make_hb_set(2, 0x63, 0x64);
+  hb_set_unique_ptr codepoints_to_add = make_hb_set(1, 'e');
+  AddPredictedCodepoints(font_codepoints.get(), have_codepoints.get(),
+                         requested_codepoints.get(), codepoints_to_add.get());
+
+  PatchRequestProto request;
+  PatchResponseProto response;
+  CompressedSet::Encode(*set_ab_, request.mutable_codepoints_have());
+  CompressedSet::Encode(*set_abcd_, request.mutable_codepoints_needed());
+  request.set_original_font_fingerprint(42);
+  request.set_base_fingerprint(43);
+
+  EXPECT_EQ(server_.Handle("Roboto-Regular.ttf", request, &response),
+            StatusCode::kOk);
+  EXPECT_EQ(response.original_font_fingerprint(), 42);
+  EXPECT_EQ(response.type(), ResponseType::PATCH);
+  EXPECT_EQ(response.patch().patch(),
+            "Roboto-Regular.ttf:abcde - Roboto-Regular.ttf:ab");
   EXPECT_EQ(response.patch().patched_fingerprint(), 44);
   EXPECT_EQ(response.patch().format(), PatchFormat::BROTLI_SHARED_DICT);
 

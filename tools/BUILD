@@ -32,3 +32,15 @@ py_binary(
         "@io_abseil_py//absl/flags",
     ],
 )
+
+py_binary(
+    name = "merge_frequencies",
+    srcs = [
+        "merge_frequencies.py",
+    ],
+    deps = [
+        "//analysis/pfe_methods/unicode_range_data:slicing_strategy_proto_py",
+        "@io_abseil_py//absl:app",
+        "@io_abseil_py//absl/flags",
+    ],
+)

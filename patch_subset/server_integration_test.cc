@@ -8,6 +8,7 @@
 #include "patch_subset/file_font_provider.h"
 #include "patch_subset/harfbuzz_subsetter.h"
 #include "patch_subset/hb_set_unique_ptr.h"
+#include "patch_subset/noop_codepoint_predictor.h"
 #include "patch_subset/patch_subset_server_impl.h"
 
 using ::absl::string_view;
@@ -19,12 +20,14 @@ class PatchSubsetServerIntegrationTest : public ::testing::Test {
   PatchSubsetServerIntegrationTest()
       : font_provider_(new FileFontProvider("patch_subset/testdata/")),
         binary_diff_(new BrotliBinaryDiff()),
-        server_(std::unique_ptr<FontProvider>(font_provider_),
-                std::unique_ptr<Subsetter>(new HarfbuzzSubsetter()),
-                std::unique_ptr<BinaryDiff>(binary_diff_),
-                std::unique_ptr<Hasher>(new FarmHasher()),
-                std::unique_ptr<CodepointMapper>(nullptr),
-                std::unique_ptr<CodepointMappingChecksum>(nullptr)) {
+        server_(
+            0, std::unique_ptr<FontProvider>(font_provider_),
+            std::unique_ptr<Subsetter>(new HarfbuzzSubsetter()),
+            std::unique_ptr<BinaryDiff>(binary_diff_),
+            std::unique_ptr<Hasher>(new FarmHasher()),
+            std::unique_ptr<CodepointMapper>(nullptr),
+            std::unique_ptr<CodepointMappingChecksum>(nullptr),
+            std::unique_ptr<CodepointPredictor>(new NoopCodepointPredictor())) {
     font_provider_->GetFont("Roboto-Regular.abcd.ttf", &roboto_abcd_);
     font_provider_->GetFont("Roboto-Regular.ab.ttf", &roboto_ab_);
 

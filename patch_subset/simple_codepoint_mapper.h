@@ -16,7 +16,7 @@ class SimpleCodepointMapper : public CodepointMapper {
  public:
   SimpleCodepointMapper() {}
 
-  void ComputeMapping(const hb_set_t& codepoints,
+  void ComputeMapping(const hb_set_t* codepoints,
                       CodepointMap* mapping) const override;
 
  private:

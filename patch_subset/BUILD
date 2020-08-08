@@ -16,7 +16,9 @@ cc_library(
     name = "server",
     srcs = [
         "codepoint_mapping_checksum_impl.cc",
+        "frequency_codepoint_predictor.cc",
         "harfbuzz_subsetter.cc",
+        "noop_codepoint_predictor.h",
         "patch_subset_server_impl.cc",
         "simple_codepoint_mapper.cc",
     ],
@@ -24,10 +26,15 @@ cc_library(
         "codepoint_mapper.h",
         "codepoint_mapping_checksum.h",
         "codepoint_mapping_checksum_impl.h",
+        "codepoint_predictor.h",
+        "frequency_codepoint_predictor.h",
         "harfbuzz_subsetter.h",
         "patch_subset_server_impl.h",
         "simple_codepoint_mapper.h",
         "subsetter.h",
+    ],
+    data = [
+        "//analysis/pfe_methods/unicode_range_data:slicing_strategies",
     ],
     visibility = [
         "//patch_subset/py:__pkg__",
@@ -35,8 +42,11 @@ cc_library(
     deps = [
         ":common",
         ":patch_subset_cc_proto",
+        "//analysis/pfe_methods/unicode_range_data:slicing_strategy_cc_proto",
         "//common",
         "@brotli//:brotlienc",
+        "@com_google_absl//absl/container:btree",
+        "@com_google_absl//absl/container:flat_hash_map",
         "@com_google_absl//absl/strings",
         "@harfbuzz",
     ],
@@ -124,10 +134,12 @@ cc_test(
         "compressed_set_test.cc",
         "fake_subsetter.h",
         "file_font_provider_test.cc",
+        "frequency_codepoint_predictor_test.cc",
         "harfbuzz_subsetter_test.cc",
         "mock_binary_diff.h",
         "mock_binary_patch.h",
         "mock_codepoint_mapping_checksum.h",
+        "mock_codepoint_predictor.h",
         "mock_font_provider.h",
         "mock_hasher.h",
         "mock_patch_subset_server.h",
@@ -156,7 +168,7 @@ cc_test(
 
 filegroup(
     name = "testdata",
-    srcs = glob(["testdata/*"]),
+    srcs = glob(["testdata/**"]),
     visibility = [
         "//analysis/pfe_methods:__pkg__",
         "//analysis/pfe_methods/unicode_range_data:__pkg__",

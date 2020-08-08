@@ -3,6 +3,7 @@
 
 #include <string>
 
+#include "common/logging.h"
 #include "common/status.h"
 #include "hb.h"
 #include "patch_subset/binary_diff.h"
@@ -10,11 +11,14 @@
 #include "patch_subset/codepoint_mapper.h"
 #include "patch_subset/codepoint_mapping_checksum.h"
 #include "patch_subset/codepoint_mapping_checksum_impl.h"
+#include "patch_subset/codepoint_predictor.h"
 #include "patch_subset/farm_hasher.h"
 #include "patch_subset/file_font_provider.h"
 #include "patch_subset/font_provider.h"
+#include "patch_subset/frequency_codepoint_predictor.h"
 #include "patch_subset/harfbuzz_subsetter.h"
 #include "patch_subset/hasher.h"
+#include "patch_subset/noop_codepoint_predictor.h"
 #include "patch_subset/patch_subset.pb.h"
 #include "patch_subset/patch_subset_server.h"
 #include "patch_subset/simple_codepoint_mapper.h"
@@ -24,38 +28,90 @@ namespace patch_subset {
 
 struct RequestState;
 
+class ServerConfig {
+ public:
+  ServerConfig() {}
+
+  // Location of the font library.
+  std::string font_directory = "";
+
+  // Maximum number of predicted codepoints to add to each request.
+  int max_predicted_codepoints = 0;
+
+  // Only add codepoints above this threshold [0.0 - 1.0]
+  float prediction_frequency_threshold = 0.0f;
+
+  // remap codepoints
+  bool remap_codepoints = false;
+
+  CodepointMapper* CreateCodepointMapper() const {
+    if (remap_codepoints) {
+      return new SimpleCodepointMapper();
+    }
+    return nullptr;
+  }
+
+  CodepointMappingChecksum* CreateMappingChecksum(Hasher* hasher) const {
+    if (remap_codepoints) {
+      return new CodepointMappingChecksumImpl(hasher);
+    }
+    return nullptr;
+  }
+
+  CodepointPredictor* CreateCodepointPredictor() const {
+    if (!max_predicted_codepoints) {
+      return reinterpret_cast<CodepointPredictor*>(
+          new NoopCodepointPredictor());
+    }
+
+    CodepointPredictor* predictor = reinterpret_cast<CodepointPredictor*>(
+        FrequencyCodepointPredictor::Create(prediction_frequency_threshold));
+
+    if (predictor) {
+      return predictor;
+    }
+
+    LOG(WARNING) << "Failed to create codepoint predictor, using noop "
+                    "predictor instead.";
+    return new NoopCodepointPredictor();
+  }
+};
+
 class PatchSubsetServerImpl : public PatchSubsetServer {
  public:
   static std::unique_ptr<PatchSubsetServer> CreateServer(
-      const std::string& font_directory, bool with_codepoint_remapping) {
+      const ServerConfig& config) {
     Hasher* hasher = new FarmHasher();
-    CodepointMapper* codepoint_mapper =
-        with_codepoint_remapping ? new SimpleCodepointMapper() : nullptr;
-    CodepointMappingChecksum* mapping_checksum =
-        with_codepoint_remapping ? new CodepointMappingChecksumImpl(hasher)
-                                 : nullptr;
     return std::unique_ptr<PatchSubsetServer>(new PatchSubsetServerImpl(
-        std::unique_ptr<FontProvider>(new FileFontProvider(font_directory)),
+        config.max_predicted_codepoints,
+        std::unique_ptr<FontProvider>(
+            new FileFontProvider(config.font_directory)),
         std::unique_ptr<Subsetter>(new HarfbuzzSubsetter()),
         std::unique_ptr<BinaryDiff>(new BrotliBinaryDiff()),
         std::unique_ptr<Hasher>(hasher),
-        std::unique_ptr<CodepointMapper>(codepoint_mapper),
-        std::unique_ptr<CodepointMappingChecksum>(mapping_checksum)));
+        std::unique_ptr<CodepointMapper>(config.CreateCodepointMapper()),
+        std::unique_ptr<CodepointMappingChecksum>(
+            config.CreateMappingChecksum(hasher)),
+        std::unique_ptr<CodepointPredictor>(
+            config.CreateCodepointPredictor())));
   }
 
   // Takes ownership of font_provider, subsetter, and binary_diff.
   PatchSubsetServerImpl(
-      std::unique_ptr<FontProvider> font_provider,
+      int max_predicted_codepoints, std::unique_ptr<FontProvider> font_provider,
       std::unique_ptr<Subsetter> subsetter,
       std::unique_ptr<BinaryDiff> binary_diff, std::unique_ptr<Hasher> hasher,
       std::unique_ptr<CodepointMapper> codepoint_mapper,
-      std::unique_ptr<CodepointMappingChecksum> codepoint_mapping_checksum)
-      : font_provider_(std::move(font_provider)),
+      std::unique_ptr<CodepointMappingChecksum> codepoint_mapping_checksum,
+      std::unique_ptr<CodepointPredictor> codepoint_predictor)
+      : max_predicted_codepoints_(max_predicted_codepoints),
+        font_provider_(std::move(font_provider)),
         subsetter_(std::move(subsetter)),
         binary_diff_(std::move(binary_diff)),
         hasher_(std::move(hasher)),
         codepoint_mapper_(std::move(codepoint_mapper)),
-        codepoint_mapping_checksum_(std::move(codepoint_mapping_checksum)) {}
+        codepoint_mapping_checksum_(std::move(codepoint_mapping_checksum)),
+        codepoint_predictor_(std::move(codepoint_predictor)) {}
 
   // Handle a patch request from a client. Writes the resulting response
   // into response.
@@ -74,6 +130,8 @@ class PatchSubsetServerImpl : public PatchSubsetServer {
 
   void AddCodepointRemapping(const RequestState& state,
                              CodepointRemappingProto* response) const;
+
+  void AddPredictedCodepoints(RequestState* state) const;
 
   StatusCode ComputeSubsets(const std::string& font_id,
                             RequestState* state) const;
@@ -95,12 +153,14 @@ class PatchSubsetServerImpl : public PatchSubsetServer {
   bool Check(StatusCode result) const;
   bool Check(StatusCode result, const std::string& message) const;
 
+  int max_predicted_codepoints_;
   std::unique_ptr<FontProvider> font_provider_;
   std::unique_ptr<Subsetter> subsetter_;
   std::unique_ptr<BinaryDiff> binary_diff_;
   std::unique_ptr<Hasher> hasher_;
   std::unique_ptr<CodepointMapper> codepoint_mapper_;
   std::unique_ptr<CodepointMappingChecksum> codepoint_mapping_checksum_;
+  std::unique_ptr<CodepointPredictor> codepoint_predictor_;
 };
 
 }  // namespace patch_subset

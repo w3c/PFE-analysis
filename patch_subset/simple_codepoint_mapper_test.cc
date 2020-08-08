@@ -24,7 +24,7 @@ TEST_F(SimpleCodepointMapperTest, MapCodepoints) {
   hb_set_unique_ptr codepoints = make_hb_set(4, 1, 7, 8, 11);
 
   CodepointMap mapping;
-  codepoint_mapper_.ComputeMapping(*codepoints, &mapping);
+  codepoint_mapper_.ComputeMapping(codepoints.get(), &mapping);
 
   CheckMapping(mapping, 1, 0);
   CheckMapping(mapping, 7, 1);

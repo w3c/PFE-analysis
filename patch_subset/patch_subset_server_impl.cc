@@ -65,6 +65,8 @@ StatusCode PatchSubsetServerImpl::Handle(const std::string& font_id,
     }
   }
 
+  AddPredictedCodepoints(&state);
+
   if (state.IsReindex()) {
     ConstructResponse(state, response);
     return StatusCode::kOk;
@@ -113,9 +115,9 @@ void PatchSubsetServerImpl::CheckOriginalFingerprint(
 
 StatusCode PatchSubsetServerImpl::ComputeCodepointRemapping(
     RequestState* state) const {
-  hb_set_t* codepoints = hb_set_create();
-  subsetter_->CodepointsInFont(state->font_data, codepoints);
-  codepoint_mapper_->ComputeMapping(*codepoints, &state->mapping);
+  hb_set_unique_ptr codepoints = make_hb_set();
+  subsetter_->CodepointsInFont(state->font_data, codepoints.get());
+  codepoint_mapper_->ComputeMapping(codepoints.get(), &state->mapping);
 
   if (state->IsRebase()) {
     // Don't remap input codepoints for a rebase request (client isn't
@@ -151,6 +153,24 @@ void PatchSubsetServerImpl::AddCodepointRemapping(
     const RequestState& state, CodepointRemappingProto* response) const {
   state.mapping.ToProto(response);
   response->set_fingerprint(codepoint_mapping_checksum_->Checksum(*response));
+}
+
+void PatchSubsetServerImpl::AddPredictedCodepoints(RequestState* state) const {
+  hb_set_unique_ptr codepoints_in_font = make_hb_set();
+  hb_set_unique_ptr codepoints_being_added = make_hb_set();
+
+  subsetter_->CodepointsInFont(state->font_data, codepoints_in_font.get());
+
+  hb_set_union(codepoints_being_added.get(), state->codepoints_needed.get());
+  hb_set_subtract(codepoints_being_added.get(), state->codepoints_have.get());
+  hb_set_unique_ptr additional_codepoints = make_hb_set();
+
+  codepoint_predictor_->Predict(
+      codepoints_in_font.get(), state->codepoints_have.get(),
+      codepoints_being_added.get(), max_predicted_codepoints_,
+      additional_codepoints.get());
+
+  hb_set_union(state->codepoints_needed.get(), additional_codepoints.get());
 }
 
 StatusCode PatchSubsetServerImpl::ComputeSubsets(const std::string& font_id,
