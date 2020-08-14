@@ -1,6 +1,7 @@
 """Functions for simulating various PFE methods across a data set."""
 
 import collections
+from collections import namedtuple
 import itertools
 
 from analysis import font_loader
@@ -74,7 +75,7 @@ def simulate_sequence(sequence, pfe_method, a_font_loader):
     if dont_convert_proto:
       session.page_view_proto(page_view)
     else:
-      session.page_view(codepoints_by_font(page_view))
+      session.page_view(usage_by_font(page_view))
 
   return session.get_request_graphs()
 
@@ -95,11 +96,14 @@ def total_time_for_request_graph(graph, network_model):
   return total_time
 
 
-def codepoints_by_font(page_view):
-  """For a page view computes a map from font name => codepoints."""
+def usage_by_font(page_view):
+  """For a page view computes a map from font name => (codepoints, glyphs)."""
   result = dict()
+  usage = namedtuple("Usage", ["codepoints", "glyph_ids"])
   for content in page_view.contents:
     codepoint_set = result.get(content.font_name, set())
     codepoint_set.update(content.codepoints)
-    result[content.font_name] = codepoint_set
+    glyph_set = result.get(content.font_name, set())
+    glyph_set.update(content.glyph_ids)
+    result[content.font_name] = usage(codepoint_set, glyph_set)
   return result

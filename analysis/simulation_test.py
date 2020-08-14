@@ -6,6 +6,7 @@ from analysis import font_loader
 from analysis import page_view_sequence_pb2
 from analysis import request_graph
 from analysis import simulation
+from collections import namedtuple
 
 
 class MockPfeMethod:  # pylint: disable=missing-class-docstring
@@ -16,7 +17,7 @@ class MockPfeMethod:  # pylint: disable=missing-class-docstring
 
 class MockPfeSession:  # pylint: disable=missing-class-docstring
 
-  def page_view(self, codepoints_by_font):
+  def page_view(self, usage_by_font):
     pass
 
   def get_request_graphs(self):
@@ -130,15 +131,16 @@ class SimulationTest(unittest.TestCase):
                                      self.mock_pfe_method, a_font_loader),
         [self.graph_1])
     self.mock_pfe_method.start_session.assert_called_once_with(a_font_loader)
+    usage = namedtuple("Usage", ["codepoints", "glyph_ids"])
     self.mock_pfe_session.page_view.assert_has_calls([
         mock.call({
-            "roboto": {1, 2, 3},
-            "open_sans": {4, 5, 6},
+            "roboto": usage({1, 2, 3}, set()),
+            "open_sans": usage({4, 5, 6}, set()),
         }),
         mock.call({
-            "roboto": {7, 8, 9},
+            "roboto": usage({7, 8, 9}, set()),
         }),
-        mock.call({"open_sans": {10, 11, 12}})
+        mock.call({"open_sans": usage({10, 11, 12}, set())})
     ])
     self.mock_pfe_session.get_request_graphs.assert_called_once_with()
 

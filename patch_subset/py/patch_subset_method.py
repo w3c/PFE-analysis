@@ -185,23 +185,23 @@ class PatchSubsetPfeSession:
     self.font_loader = font_loader
     self.config = config
 
-  def page_view(self, codepoints_by_font):  # pylint: disable=no-self-use,unused-argument
+  def page_view(self, usage_by_font):  # pylint: disable=no-self-use,unused-argument
     """Processes a page view.
 
     Where one or more fonts are used to render a set of codepoints.
-    codepoints_by_font is a map from font name => a list of codepoints.
+    usage_by_font is a map from font name => a list of codepoints.
     """
     self.page_view_count += 1
     for session in self.sessions_by_font.values():
       session.page_viewed()
 
-    for font_id, codepoints in codepoints_by_font.items():
+    for font_id, usage in usage_by_font.items():
       if font_id not in self.sessions_by_font:
         self.sessions_by_font[font_id] = FontSession(self.font_loader, font_id,
                                                      self.page_view_count,
                                                      self.config)
 
-      self.sessions_by_font[font_id].extend(codepoints)
+      self.sessions_by_font[font_id].extend(usage.codepoints)
 
   def get_request_graphs(self):
     """Returns a graph of requests that would have resulted from the page views.

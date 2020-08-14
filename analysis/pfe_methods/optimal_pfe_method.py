@@ -35,11 +35,11 @@ class OptimalPfeSession:
     self.codepoints_by_font = dict()
     self.subset_size_by_font = dict()
 
-  def page_view(self, codepoints_by_font):
+  def page_view(self, usage_by_font):
     """Processes a page view."""
     requests = set()
-    for font_id, codepoints in codepoints_by_font.items():
-      requests.update(self.page_view_for_font(font_id, codepoints))
+    for font_id, usage in usage_by_font.items():
+      requests.update(self.page_view_for_font(font_id, usage.codepoints))
 
     self.request_graphs.append(request_graph.RequestGraph(requests))
 

@@ -29,15 +29,15 @@ class WholeFontPfeSession:
     self.request_graphs = []
     self.loaded_fonts = set()
 
-  def page_view(self, codepoints_by_font):
+  def page_view(self, usage_by_font):
     """Processes a page view.
 
     For each font referenced in the page view record a request to
     load it if it has not been encountered yet.
     """
     requests = set()
-    for font_id, codepoints in codepoints_by_font.items():
-      if font_id in self.loaded_fonts or not codepoints:
+    for font_id, usage in usage_by_font.items():
+      if font_id in self.loaded_fonts or not usage or not usage.codepoints:
         continue
 
       self.loaded_fonts.add(font_id)

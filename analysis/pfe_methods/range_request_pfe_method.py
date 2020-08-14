@@ -166,17 +166,17 @@ class RangeRequestPfeSession:
     starting_index = 0
     return payload_start, payload_end, extra_start, extra_end, starting_index
 
-  def page_view(self, codepoints_by_font):
+  def page_view(self, usage_by_font):
     requests = set()
     base_requests = dict()
     necessary_glyphs = defaultdict(set)
-    for font_id, codepoints in codepoints_by_font.items():
+    for font_id, usage in usage_by_font.items():
       if font_id not in GLYPH_DATA_CACHE:
         GLYPH_DATA_CACHE[font_id] = self.compute_glyph_data(font_id)
       font_data, glyph_data = GLYPH_DATA_CACHE[font_id]
 
       needs_base_request = font_id not in self.loaded_glyphs
-      glyphs = codepoints_to_glyphs(self.font_loader.load_font(font_id), codepoints)
+      glyphs = codepoints_to_glyphs(self.font_loader.load_font(font_id), usage.codepoints)
       present_glyphs = self.loaded_glyphs[font_id]
       glyphs_to_download = set([glyph for glyph in glyphs if glyph not in present_glyphs])
 

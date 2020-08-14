@@ -4,8 +4,14 @@ import unittest
 from analysis import font_loader
 from analysis import request_graph
 from analysis.pfe_methods import range_request_pfe_method
+from collections import namedtuple
+
 
 GlyphRange = range_request_pfe_method.RangeRequestPfeSession.GlyphRange
+
+def u(codepoints):
+  usage = namedtuple("Usage", ["codepoints", "glyph_ids"])
+  return usage(codepoints, None)
 
 class RangeRequestPfeMethodTest(unittest.TestCase):
 
@@ -15,7 +21,7 @@ class RangeRequestPfeMethodTest(unittest.TestCase):
 
   def test_font_not_found(self):
     with self.assertRaises(IOError):
-      self.session.page_view({"Roboto-Bold.ttf": [0x61, 0x62]})
+      self.session.page_view({"Roboto-Bold.ttf": u([0x61, 0x62])})
 
   def test_compute_glyph_sizes(self):
     font_data, glyph_data = self.session.compute_glyph_data("Ahem.optimized.ttf")
@@ -222,7 +228,7 @@ class RangeRequestPfeMethodTest(unittest.TestCase):
     self.assertTrue(starting_index == 0 or starting_index == 1)
 
   def test_page_view_adjacent(self):
-    self.session.page_view({"Ahem.optimized.ttf": [0x37, 0x38]}) # These glyphs just happen to be next to each other
+    self.session.page_view({"Ahem.optimized.ttf": u([0x37, 0x38])}) # These glyphs just happen to be next to each other
     graphs = self.session.get_request_graphs()
     self.assertEqual(len(graphs), 1)
     self.assertEqual(len(graphs[0].requests), 2)
@@ -233,7 +239,7 @@ class RangeRequestPfeMethodTest(unittest.TestCase):
     self.assertTrue(len(requests[0].happens_after) == 1 or len(requests[1].happens_after) == 1)
 
   def test_page_view_disparate(self):
-    self.session.page_view({"Ahem.optimized.ttf": [0x61, 0x7A]})
+    self.session.page_view({"Ahem.optimized.ttf": u([0x61, 0x7A])})
     graphs = self.session.get_request_graphs()
     self.assertEqual(len(graphs), 1)
     self.assertEqual(len(graphs[0].requests), 3)
@@ -250,8 +256,8 @@ class RangeRequestPfeMethodTest(unittest.TestCase):
     self.assertEqual(happens_after_count, 2)
 
   def test_page_view_multiple(self):
-    self.session.page_view({"Ahem.optimized.ttf": [0x61]})
-    self.session.page_view({"Ahem.optimized.ttf": [0x7A]})
+    self.session.page_view({"Ahem.optimized.ttf": u([0x61])})
+    self.session.page_view({"Ahem.optimized.ttf": u([0x7A])})
     graphs = self.session.get_request_graphs()
     self.assertEqual(len(graphs), 2)
     self.assertEqual(len(graphs[0].requests), 2)
@@ -271,15 +277,15 @@ class RangeRequestPfeMethodTest(unittest.TestCase):
     self.assertEqual(happens_after_count, 1)
 
   def test_page_view_duplicate(self):
-    self.session.page_view({"Ahem.optimized.ttf": [0x61]})
-    self.session.page_view({"Ahem.optimized.ttf": [0x61]})
+    self.session.page_view({"Ahem.optimized.ttf": u([0x61])})
+    self.session.page_view({"Ahem.optimized.ttf": u([0x61])})
     graphs = self.session.get_request_graphs()
     self.assertEqual(len(graphs), 2)
     self.assertEqual(len(graphs[0].requests), 2)
     self.assertEqual(len(graphs[1].requests), 0)
 
   def test_page_view_not_present(self):
-    self.session.page_view({"Ahem.optimized.ttf": [0x623]})
+    self.session.page_view({"Ahem.optimized.ttf": u([0x623])})
     graphs = self.session.get_request_graphs()
     self.assertEqual(len(graphs), 1)
     self.assertEqual(len(graphs[0].requests), 0)
