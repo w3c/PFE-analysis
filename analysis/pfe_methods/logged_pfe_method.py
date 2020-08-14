@@ -18,7 +18,7 @@ class LoggedPfeMethod:
   def name(self):
     return self.log_source
 
-  def start_session(self, font_loader):  # pylint: disable=unused-argument,no-self-use
+  def start_session(self, network_model, font_loader):  # pylint: disable=unused-argument,no-self-use
     return LoggedPfeSession()
 
 

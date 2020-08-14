@@ -19,7 +19,7 @@ def name():
   return "Optimal"
 
 
-def start_session(font_loader, a_subset_sizer=None):
+def start_session(network_model, font_loader, a_subset_sizer=None):
   return OptimalPfeSession(font_loader, a_subset_sizer)
 
 

@@ -17,12 +17,12 @@ class PatchSubsetMethodTest(unittest.TestCase):
 
   def setUp(self):
     self.session = patch_subset_method.create_without_codepoint_remapping(
-    ).start_session(font_loader.FontLoader("./patch_subset/testdata/"))
+    ).start_session(None, font_loader.FontLoader("./patch_subset/testdata/"))
     self.session_with_remapping = patch_subset_method.create_with_codepoint_remapping(
-    ).start_session(font_loader.FontLoader("./patch_subset/testdata/"))
+    ).start_session(None, font_loader.FontLoader("./patch_subset/testdata/"))
     self.session_with_prediction = patch_subset_method.create_with_codepoint_prediction(
         50,
-        0.0).start_session(font_loader.FontLoader("./patch_subset/testdata/"))
+        0.0).start_session(None, font_loader.FontLoader("./patch_subset/testdata/"))
 
   def test_font_not_found(self):
     with self.assertRaises(patch_subset_method.PatchSubsetError):

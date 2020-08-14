@@ -11,7 +11,7 @@ from collections import namedtuple
 
 class MockPfeMethod:  # pylint: disable=missing-class-docstring
 
-  def start_session(self, a_font_loader):
+  def start_session(self, network_model, a_font_loader):
     pass
 
 
@@ -128,9 +128,9 @@ class SimulationTest(unittest.TestCase):
     a_font_loader = font_loader.FontLoader("fonts/are/here")
     self.assertEqual(
         simulation.simulate_sequence(self.page_view_sequence,
-                                     self.mock_pfe_method, a_font_loader),
+                                     self.mock_pfe_method, simulation.NetworkModel("slow", 0, 10, 10), a_font_loader),
         [self.graph_1])
-    self.mock_pfe_method.start_session.assert_called_once_with(a_font_loader)
+    self.mock_pfe_method.start_session.assert_called_once_with(simulation.NetworkModel("slow", 0, 10, 10), a_font_loader)
     usage = namedtuple("Usage", ["codepoints", "glyph_ids"])
     self.mock_pfe_session.page_view.assert_has_calls([
         mock.call({
@@ -148,10 +148,10 @@ class SimulationTest(unittest.TestCase):
     a_font_loader = font_loader.FontLoader("fonts/are/here")
     self.assertEqual(
         simulation.simulate_sequence(self.page_view_sequence,
-                                     self.mock_logged_pfe_method,
+                                     self.mock_logged_pfe_method, simulation.NetworkModel("slow", 0, 10, 10),
                                      a_font_loader), [self.graph_1])
     self.mock_logged_pfe_method.start_session.assert_called_once_with(
-        a_font_loader)
+        simulation.NetworkModel("slow", 0, 10, 10), a_font_loader)
     self.mock_logged_pfe_session.page_view_proto.assert_has_calls(
         [mock.call(page_view) for page_view in self.page_view_sequence])
     self.mock_logged_pfe_session.get_request_graphs.assert_called_once_with()
@@ -171,7 +171,8 @@ class SimulationTest(unittest.TestCase):
         }]),
     ]
 
-    graph = simulation.GraphTotals({"fast": 100, "slow": 200}, 1000, 1000, 1)
+    graph = simulation.GraphTotal(100.0, 1000, 1000, 1)
+    graph2 = simulation.GraphTotal(200.0, 1000, 1000, 1)
     self.assertEqual(
         simulation.simulate_all(
             sequences,
@@ -185,8 +186,8 @@ class SimulationTest(unittest.TestCase):
             ],
             "fonts/are/here",
         ), {
-            "Mock_PFE_1": [graph] * 2,
-            "Mock_PFE_2": [graph] * 4,
+            "Mock_PFE_1": {"slow": [graph2] * 2, "fast": [graph] * 2},
+            "Mock_PFE_2": {"slow": [graph2] * 4, "fast": [graph] * 4},
         })
 
 

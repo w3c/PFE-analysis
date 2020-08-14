@@ -23,8 +23,8 @@ def name():
 # network_model.rtt * network_model.bandwidth_down
 # network_models.ESTIMATED_HTTP_REQUEST_HEADER_SIZE + network_models.ESTIMATED_HTTP_RESPONSE_HEADER_SIZE
 # Whatever it has to be such that (network_model.rtt * network_model.bandwidth_down) / len(requests) == network_startup_cost_in_bytes
-def start_session(font_loader, network_startup_cost_in_bytes=network_models.ESTIMATED_HTTP_REQUEST_HEADER_SIZE + network_models.ESTIMATED_HTTP_RESPONSE_HEADER_SIZE):
-  return RangeRequestPfeSession(font_loader, network_startup_cost_in_bytes)
+def start_session(network_model, font_loader, network_startup_cost_in_bytes=network_models.ESTIMATED_HTTP_REQUEST_HEADER_SIZE + network_models.ESTIMATED_HTTP_RESPONSE_HEADER_SIZE):
+  return RangeRequestPfeSession(network_model, font_loader, network_startup_cost_in_bytes)
 
 def codepoints_to_glyphs(font_bytes, codepoints):
   font = ttLib.TTFont(io.BytesIO(font_bytes))
@@ -36,8 +36,9 @@ class RangeRequestError(Exception):
 
 class RangeRequestPfeSession:
 
-  def __init__(self, font_loader, network_startup_cost_in_bytes):
+  def __init__(self, network_model, font_loader, network_startup_cost_in_bytes):
     # FIXME: network_startup_cost_in_bytes should be gathered from the actual network models.
+    self.network_model = network_model
     self.font_loader = font_loader
     self.network_startup_cost_in_bytes = network_startup_cost_in_bytes
     self.request_graphs = []

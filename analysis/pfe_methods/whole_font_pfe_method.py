@@ -17,7 +17,7 @@ def name():
   return "WholeFont"
 
 
-def start_session(font_loader):
+def start_session(network_model, font_loader):
   return WholeFontPfeSession(font_loader)
 
 

@@ -54,10 +54,10 @@ MODE_FUNCTIONS = {
         (lambda argv, result_proto: print_network_distribution(
             argv, result_proto, "cost_per_page_view")),
     "request_bytes_per_page_view":
-        (lambda argv, result_proto: print_method_distribution(
+        (lambda argv, result_proto: print_network_distribution(
             argv, result_proto, "request_bytes_per_page_view")),
     "response_bytes_per_page_view":
-        (lambda argv, result_proto: print_method_distribution(
+        (lambda argv, result_proto: print_network_distribution(
             argv, result_proto, "response_bytes_per_page_view")),
 }
 
@@ -80,18 +80,6 @@ def main(argv):  # pylint: disable=missing-function-docstring
     return print_usage()
 
   return MODE_FUNCTIONS[mode](argv, result_proto)
-
-
-def print_method_distribution(argv, result_proto, property_name):
-  """Find and print a distribution found on a MethodResultProto."""
-  if len(argv) < 1:
-    print_usage()
-    return
-
-  method = argv[0]
-  method_proto = find_method_result(method, result_proto)
-  dist_proto = getattr(method_proto, property_name)
-  print_distribution(dist_proto)
 
 
 def print_network_distribution(argv, result_proto, property_name):
@@ -165,26 +153,27 @@ def print_summary_report(result_proto):
 
   method name, network model name, total cost
   """
+  print(result_proto.results[0].method_name)
   print("Method, Network, Cost, Wait (ms), Number of Requests, Request Bytes, "
         "Response Bytes, Bytes, % of Optimal Bytes")
   optimal_bytes = None
   for method_proto in result_proto.results:
     if method_proto.method_name == "Optimal":
-      optimal_bytes = (method_proto.total_request_bytes +
-                       method_proto.total_response_bytes)
+      optimal_bytes = (method_proto.results_by_network[0].total_request_bytes +
+                       method_proto.results_by_network[0].total_response_bytes)
 
   for method_proto in result_proto.results:
     for net_proto in method_proto.results_by_network:
-      total_bytes = (method_proto.total_request_bytes +
-                     method_proto.total_response_bytes)
+      total_bytes = (net_proto.total_request_bytes +
+                     net_proto.total_response_bytes)
       print("{}, {}, {:.0f}, {:.0f}, {}, {}, {}, {}, {:.2f}".format(
           method_proto.method_name,
           net_proto.network_model_name,
           net_proto.total_cost,
           net_proto.total_wait_time_ms,
-          method_proto.total_request_count,
-          method_proto.total_request_bytes,
-          method_proto.total_response_bytes,
+          net_proto.total_request_count,
+          net_proto.total_request_bytes,
+          net_proto.total_response_bytes,
           total_bytes,
           total_bytes / optimal_bytes if optimal_bytes else 0,
       ))
