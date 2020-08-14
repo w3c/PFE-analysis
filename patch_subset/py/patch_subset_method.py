@@ -78,7 +78,7 @@ class PatchSubsetMethod:
 
     return "PatchSubset_PFE%s" % modifiers
 
-  def start_session(self, font_loader):
+  def start_session(self, network_model, font_loader):
     """Starts a new PFE session for this method."""
     return PatchSubsetPfeSession(font_loader, self.config)
 

@@ -17,7 +17,7 @@ def name():
   return "OptimalOneFont"
 
 
-def start_session(font_loader, a_subset_sizer=None):
+def start_session(network_model, font_loader, a_subset_sizer=None):
   return OptimalOneFontSession(font_loader, a_subset_sizer)
 
 

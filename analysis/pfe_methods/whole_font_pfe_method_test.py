@@ -17,7 +17,7 @@ def u(codepoints):
 class WholeFontPfeMethodTest(unittest.TestCase):
 
   def setUp(self):
-    self.session = whole_font_pfe_method.start_session(
+    self.session = whole_font_pfe_method.start_session(None,
         font_loader.FontLoader("./patch_subset/testdata/"))
 
   def test_font_not_found(self):
@@ -35,10 +35,10 @@ class WholeFontPfeMethodTest(unittest.TestCase):
         ]))
 
   def test_cached_file_load(self):
-    session = whole_font_pfe_method.start_session(
+    session = whole_font_pfe_method.start_session(None,
         font_loader.FontLoader("./patch_subset/testdata/"))
     session.page_view({"Roboto-Regular.ttf": u([0x61, 0x62])})
-    session = whole_font_pfe_method.start_session(
+    session = whole_font_pfe_method.start_session(None,
         font_loader.FontLoader("./patch_subset/testdata/"))
     session.page_view({"Roboto-Regular.ttf": u([0x63, 0x64])})
 
