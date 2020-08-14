@@ -177,7 +177,7 @@ def print_summary_report(result_proto):
     for net_proto in method_proto.results_by_network:
       total_bytes = (method_proto.total_request_bytes +
                      method_proto.total_response_bytes)
-      print("{}, {}, {:.0f}, {:.0f}, {}, {}, {}, {}, {:.2f}".format(
+      print("{}, {}, {:.0f}, {:.0f}, {}, {}, {}, {}, {:.2f}, {:.2f}".format(
           method_proto.method_name,
           net_proto.network_model_name,
           net_proto.total_cost,
@@ -187,6 +187,7 @@ def print_summary_report(result_proto):
           method_proto.total_response_bytes,
           total_bytes,
           total_bytes / optimal_bytes if optimal_bytes else 0,
+          net_proto.total_wait_time_ms,
       ))
 
 
