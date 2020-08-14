@@ -5,6 +5,7 @@ from analysis import font_loader
 from analysis import request_graph
 from analysis.pfe_methods import range_request_pfe_method
 from collections import namedtuple
+from analysis.simulation import NetworkModel
 
 
 GlyphRange = range_request_pfe_method.RangeRequestPfeSession.GlyphRange
@@ -16,7 +17,8 @@ def u(codepoints):
 class RangeRequestPfeMethodTest(unittest.TestCase):
 
   def setUp(self):
-    self.session = range_request_pfe_method.start_session(None,
+    self.session = range_request_pfe_method.start_session(
+        NetworkModel("DummyNetworkModel", 0, 0, 0),
         font_loader.FontLoader("./patch_subset/testdata/"), 10)
 
   def test_font_not_found(self):
@@ -280,15 +282,48 @@ class RangeRequestPfeMethodTest(unittest.TestCase):
     self.session.page_view({"Ahem.optimized.ttf": u([0x61])})
     self.session.page_view({"Ahem.optimized.ttf": u([0x61])})
     graphs = self.session.get_request_graphs()
-    self.assertEqual(len(graphs), 2)
+    self.assertEqual(len(graphs), 1)
     self.assertEqual(len(graphs[0].requests), 2)
-    self.assertEqual(len(graphs[1].requests), 0)
 
   def test_page_view_not_present(self):
     self.session.page_view({"Ahem.optimized.ttf": u([0x623])})
     graphs = self.session.get_request_graphs()
+    self.assertEqual(len(graphs), 0)
+
+  def test_small_font(self):
+    session = range_request_pfe_method.start_session(
+        NetworkModel("DummyNetworkModel", 1000000000, 1000000000, 1000000000),
+        font_loader.FontLoader("./patch_subset/testdata/"), 10)
+    session.page_view({"Ahem.optimized.ttf": u([0x61])})
+    graphs = session.get_request_graphs()
     self.assertEqual(len(graphs), 1)
-    self.assertEqual(len(graphs[0].requests), 0)
+    self.assertEqual(len(graphs[0].requests), 1)
+
+  def test_medium_font(self):
+    session = range_request_pfe_method.start_session(
+        NetworkModel("DummyNetworkModel", 5000, 1, 1),
+        font_loader.FontLoader("./patch_subset/testdata/"), 10)
+    session.page_view({"Ahem.optimized.ttf": u([0x61])})
+    graphs = session.get_request_graphs()
+    self.assertEqual(len(graphs), 1)
+    self.assertEqual(len(graphs[0].requests), 1)
+
+  def test_small_font_no_reload(self):
+    session = range_request_pfe_method.start_session(
+        NetworkModel("DummyNetworkModel", 1000000000, 1000000000, 1000000000),
+        font_loader.FontLoader("./patch_subset/testdata/"), 10)
+    session.page_view({"Ahem.optimized.ttf": u([0x61])})
+    session.page_view({"Ahem.optimized.ttf": u([0x7A])})
+    graphs = session.get_request_graphs()
+    self.assertEqual(len(graphs), 1)
+    self.assertEqual(len(graphs[0].requests), 1)
+
+  def test_page_view_glyphs(self):
+    usage = namedtuple("Usage", ["codepoints", "glyph_ids"])
+    self.session.page_view({"Ahem.optimized.ttf": usage(None, [20])})
+    graphs = self.session.get_request_graphs()
+    self.assertEqual(len(graphs), 1)
+    self.assertEqual(len(graphs[0].requests), 2)
 
 if __name__ == '__main__':
   unittest.main()

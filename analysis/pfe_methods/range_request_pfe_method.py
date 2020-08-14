@@ -19,12 +19,11 @@ GLYPH_DATA_CACHE = dict()
 def name():
   return "RangeRequest"
 
-# Possible ideas for network_startup_cost_in_bytes:
-# network_model.rtt * network_model.bandwidth_down
-# network_models.ESTIMATED_HTTP_REQUEST_HEADER_SIZE + network_models.ESTIMATED_HTTP_RESPONSE_HEADER_SIZE
-# Whatever it has to be such that (network_model.rtt * network_model.bandwidth_down) / len(requests) == network_startup_cost_in_bytes
-def start_session(network_model, font_loader, network_startup_cost_in_bytes=network_models.ESTIMATED_HTTP_REQUEST_HEADER_SIZE + network_models.ESTIMATED_HTTP_RESPONSE_HEADER_SIZE):
-  return RangeRequestPfeSession(network_model, font_loader, network_startup_cost_in_bytes)
+def start_session(network_model, font_loader, secondary_threshold=None):
+  return RangeRequestPfeSession(network_model, font_loader, secondary_threshold)
+
+def network_sensitive():
+  return True
 
 def codepoints_to_glyphs(font_bytes, codepoints):
   font = ttLib.TTFont(io.BytesIO(font_bytes))
@@ -36,11 +35,10 @@ class RangeRequestError(Exception):
 
 class RangeRequestPfeSession:
 
-  def __init__(self, network_model, font_loader, network_startup_cost_in_bytes):
-    # FIXME: network_startup_cost_in_bytes should be gathered from the actual network models.
-    self.network_model = network_model
+  def __init__(self, network_model, font_loader, secondary_threshold):
+    self.primary_threshold = network_model.rtt * network_model.bandwidth_down
+    self.secondary_threshold = secondary_threshold or network_models.ESTIMATED_HTTP_REQUEST_HEADER_SIZE + network_models.ESTIMATED_HTTP_RESPONSE_HEADER_SIZE
     self.font_loader = font_loader
-    self.network_startup_cost_in_bytes = network_startup_cost_in_bytes
     self.request_graphs = []
     self.loaded_glyphs = defaultdict(set)
 
@@ -128,7 +126,7 @@ class RangeRequestPfeSession:
     extra_glyphs_to_download = set()
     i = 0
     while i < len(unnecessary_glyph_ranges):
-      if unnecessary_glyph_ranges[i].byte_length < self.network_startup_cost_in_bytes and i + 1 < len(necessary_glyph_ranges):
+      if unnecessary_glyph_ranges[i].byte_length < self.secondary_threshold and i + 1 < len(necessary_glyph_ranges):
         # It's cheaper to merge these two requests
         extra_glyphs_to_download.update(range(unnecessary_glyph_ranges[i].begin_glyph, unnecessary_glyph_ranges[i].end_glyph))
         necessary_glyph_ranges[i].byte_length += unnecessary_glyph_ranges[i].byte_length + necessary_glyph_ranges[i + 1].byte_length
@@ -153,7 +151,7 @@ class RangeRequestPfeSession:
       extra_end = 0
       starting_index = 1
       return payload_start, payload_end, extra_start, extra_end, starting_index
-    elif len(unnecessary_glyph_ranges) > 1 and unnecessary_glyph_ranges[0].byte_length < self.network_startup_cost_in_bytes:
+    elif len(unnecessary_glyph_ranges) > 1 and unnecessary_glyph_ranges[0].byte_length < self.secondary_threshold:
       payload_start = necessary_glyph_ranges[0].begin_glyph
       payload_end = necessary_glyph_ranges[1].end_glyph
       extra_start = unnecessary_glyph_ranges[0].begin_glyph
@@ -177,7 +175,7 @@ class RangeRequestPfeSession:
       font_data, glyph_data = GLYPH_DATA_CACHE[font_id]
 
       needs_base_request = font_id not in self.loaded_glyphs
-      glyphs = codepoints_to_glyphs(self.font_loader.load_font(font_id), usage.codepoints)
+      glyphs = usage.glyph_ids or codepoints_to_glyphs(self.font_loader.load_font(font_id), usage.codepoints)
       present_glyphs = self.loaded_glyphs[font_id]
       glyphs_to_download = set([glyph for glyph in glyphs if glyph not in present_glyphs])
 
@@ -190,19 +188,27 @@ class RangeRequestPfeSession:
       extra_glyphs_to_download = self.coalesce_runs(necessary_glyph_ranges, unnecessary_glyph_ranges)
       self.loaded_glyphs[font_id].update(extra_glyphs_to_download)
 
-      # FIXME: Figure out if it's cheaper to just download the base and all the necessary glyphs in a single range request
-      # This will improve performance on small fonts.
-
       starting_index = 0
       if needs_base_request:
-        payload_start, payload_end, extra_start, extra_end, starting_index = self.compute_initial_state(necessary_glyph_ranges, unnecessary_glyph_ranges)
-
         # Assume the font has been optimized correctly, and glyph data is placed at the end
-        base_size = len(font_data) - sum([len(data) for data in glyph_data])
-        payload = font_data[: base_size] + b"".join(glyph_data[payload_start : payload_end])
+        if sum([len(data) for data in glyph_data]) < self.primary_threshold:
+          # The font is small enough that we should just download the whole thing
+          payload = font_data
+          self.loaded_glyphs[font_id].update(range(len(glyph_data)))
+          starting_index = len(necessary_glyph_ranges)
+        else:
+          base_size = len(font_data) - sum([len(data) for data in glyph_data])
+          if necessary_glyph_ranges and sum([len(data) for data in glyph_data[: necessary_glyph_ranges[-1].end_glyph]]) < self.primary_threshold:
+            # We can't afford to download the whole thing, but we at least can skip the second frontier for this page load.
+            payload = font_data[: base_size] + b"".join(glyph_data[: necessary_glyph_ranges[-1].end_glyph])
+            self.loaded_glyphs[font_id].update(range(necessary_glyph_ranges[-1].end_glyph))
+            starting_index = len(necessary_glyph_ranges)
+          else:
+            payload_start, payload_end, extra_start, extra_end, starting_index = self.compute_initial_state(necessary_glyph_ranges, unnecessary_glyph_ranges)
+            payload = font_data[: base_size] + b"".join(glyph_data[payload_start : payload_end])
+            self.loaded_glyphs[font_id].update(range(extra_start, extra_end))
 
         compressed_payload = zlib.compress(payload)
-        self.loaded_glyphs[font_id].update(range(extra_start, extra_end))
         base_request = request_graph.Request(network_models.ESTIMATED_HTTP_REQUEST_HEADER_SIZE, network_models.ESTIMATED_HTTP_RESPONSE_HEADER_SIZE + len(compressed_payload))
         requests.add(base_request)
 
@@ -217,8 +223,9 @@ class RangeRequestPfeSession:
         request = request_graph.Request(network_models.ESTIMATED_HTTP_REQUEST_HEADER_SIZE, network_models.ESTIMATED_HTTP_RESPONSE_HEADER_SIZE + len(compressed_payload), happens_after=happens_after)
         requests.add(request)
 
-    graph = request_graph.RequestGraph(requests)
-    self.request_graphs.append(graph)
+    if requests:
+      graph = request_graph.RequestGraph(requests)
+      self.request_graphs.append(graph)
 
   def get_request_graphs(self):
     return self.request_graphs
