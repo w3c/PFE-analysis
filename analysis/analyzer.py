@@ -62,7 +62,7 @@ flags.DEFINE_list("filter_languages", None,
                   "List of language tags to filter the input data by.")
 
 PFE_METHODS = [
-    #range_request_pfe_method,
+    range_request_pfe_method,
     optimal_pfe_method,
     optimal_one_font_method,
     unicode_range_pfe_method,
