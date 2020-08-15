@@ -4,7 +4,12 @@ import unittest
 from analysis.pfe_methods import optimal_pfe_method
 from analysis import font_loader
 from analysis import request_graph
+from collections import namedtuple
 
+
+def u(codepoints):
+  usage = namedtuple("Usage", ["codepoints", "glyph_ids"])
+  return usage(codepoints, None)
 
 class MockSubsetSizer:
 
@@ -26,17 +31,17 @@ class OptimalPfeMethodTest(unittest.TestCase):
 
   def test_font_not_found(self):
     with self.assertRaises(IOError):
-      self.session.page_view({"Roboto-Bold.ttf": [0x61, 0x62]})
+      self.session.page_view({"Roboto-Bold.ttf": u([0x61, 0x62])})
 
   def test_no_codepoints(self):
-    self.session.page_view({"Roboto-Regular.ttf": []})
+    self.session.page_view({"Roboto-Regular.ttf": u([])})
 
     graphs = self.session.get_request_graphs()
     self.assertEqual(len(graphs), 1)
     self.assertTrue(request_graph.graph_has_independent_requests(graphs[0], []))
 
   def test_one_page_view(self):
-    self.session.page_view({"Roboto-Regular.ttf": [1, 2, 3]})
+    self.session.page_view({"Roboto-Regular.ttf": u([1, 2, 3])})
 
     graphs = self.session.get_request_graphs()
     self.assertEqual(len(graphs), 1)
@@ -46,10 +51,10 @@ class OptimalPfeMethodTest(unittest.TestCase):
         ]))
 
   def test_multiple_pageviews(self):
-    self.session.page_view({"Roboto-Regular.ttf": [1, 2, 3]})
-    self.session.page_view({"Roboto-Regular.ttf": [4, 5]})
-    self.session.page_view({"Roboto-Regular.ttf": [1, 2, 3]})
-    self.session.page_view({"Roboto-Regular.ttf": [1, 8]})
+    self.session.page_view({"Roboto-Regular.ttf": u([1, 2, 3])})
+    self.session.page_view({"Roboto-Regular.ttf": u([4, 5])})
+    self.session.page_view({"Roboto-Regular.ttf": u([1, 2, 3])})
+    self.session.page_view({"Roboto-Regular.ttf": u([1, 8])})
 
     graphs = self.session.get_request_graphs()
     self.assertEqual(len(graphs), 4)
@@ -71,8 +76,8 @@ class OptimalPfeMethodTest(unittest.TestCase):
     session = optimal_pfe_method.start_session(
         font_loader.FontLoader("./patch_subset/testdata/"),
         InverseMockSubsetSizer())
-    session.page_view({"Roboto-Regular.ttf": [1, 2, 3]})
-    session.page_view({"Roboto-Regular.ttf": [4, 5]})
+    session.page_view({"Roboto-Regular.ttf": u([1, 2, 3])})
+    session.page_view({"Roboto-Regular.ttf": u([4, 5])})
 
     graphs = session.get_request_graphs()
     self.assertEqual(len(graphs), 2)
@@ -84,14 +89,14 @@ class OptimalPfeMethodTest(unittest.TestCase):
 
   def test_multiple_fonts(self):
     self.session.page_view({
-        "Roboto-Regular.ttf": [1, 2, 3],
-        "NotoSansJP-Regular.otf": [3, 4],
+        "Roboto-Regular.ttf": u([1, 2, 3]),
+        "NotoSansJP-Regular.otf": u([3, 4]),
     })
     self.session.page_view({
-        "Roboto-Regular.ttf": [3, 4, 5],
+        "Roboto-Regular.ttf": u([3, 4, 5]),
     })
     self.session.page_view({
-        "NotoSansJP-Regular.otf": [1],
+        "NotoSansJP-Regular.otf": u([1]),
     })
 
     graphs = self.session.get_request_graphs()

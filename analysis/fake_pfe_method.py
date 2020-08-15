@@ -37,7 +37,7 @@ class FakePfeSession:
   def __init__(self):
     self.page_view_count = 0
 
-  def page_view(self, codepoints_by_font):  # pylint: disable=no-self-use,unused-argument
+  def page_view(self, usage_by_font):  # pylint: disable=no-self-use,unused-argument
     """Processes a page view.
 
     Where one or more fonts are used to render a set of codepoints.

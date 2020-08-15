@@ -32,13 +32,13 @@ class OptimalOneFontSession:
     self.codepoints_by_font = dict()
     self.page_view_count = 0
 
-  def page_view(self, codepoints_by_font):
+  def page_view(self, usage_by_font):
     """Processes a page view."""
     self.page_view_count += 1
-    for font_id, codepoints in codepoints_by_font.items():
+    for font_id, usage in usage_by_font.items():
       # Load the font so an exception will be raised if it doesn't exist.
       self.font_loader.load_font(font_id)
-      self.page_view_for_font(font_id, codepoints)
+      self.page_view_for_font(font_id, usage.codepoints)
 
   def page_view_for_font(self, font_id, codepoints):
     """Processes a page for for a single font."""
