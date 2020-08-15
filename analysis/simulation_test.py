@@ -158,24 +158,22 @@ class SimulationTest(unittest.TestCase):
 
   def test_simulate_all(self):
     self.maxDiff = None  # pylint: disable=invalid-name
-    sequences = [
-        sequence([{
-            "roboto": [1]
-        }, {
-            "roboto": [2]
-        }]),
-        sequence([{
-            "roboto": [1]
-        }, {
-            "roboto": [2]
-        }]),
-    ]
-
     graph = simulation.GraphTotal(100.0, 1000, 1000, 1)
     graph2 = simulation.GraphTotal(200.0, 1000, 1000, 1)
     self.assertEqual(
         simulation.simulate_all(
-            sequences,
+            [
+                sequence([{
+                    "roboto": [1]
+                }, {
+                    "roboto": [2]
+                }]),
+                sequence([{
+                    "roboto": [1]
+                }, {
+                    "roboto": [2]
+                }]),
+            ],
             [
                 self.mock_pfe_method,
                 self.mock_pfe_method_2,

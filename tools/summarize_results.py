@@ -153,7 +153,6 @@ def print_summary_report(result_proto):
 
   method name, network model name, total cost
   """
-  print(result_proto.results[0].method_name)
   print("Method, Network, Cost, Wait (ms), Number of Requests, Request Bytes, "
         "Response Bytes, Bytes, % of Optimal Bytes")
   optimal_bytes = None

@@ -13,11 +13,8 @@ message MethodResultProto {
 
   repeated NetworkResultProto results_by_network = 2;
 
-  reserved 3;
-  reserved 4;
-  reserved 5;
-  reserved 6;
-  reserved 7;
+  reserved 3 to 7;
+  reserved "request_bytes_per_page_view", "response_bytes_per_page_view", "total_request_count", "total_request_bytes", "total_response_bytes";
 }
 
 message NetworkResultProto {

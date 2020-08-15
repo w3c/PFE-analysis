@@ -39,12 +39,23 @@ def simulate_all(sequences, pfe_methods, network_models, font_directory, default
   result = dict()
   for method in pfe_methods:
     model_totals = dict()
-    for network_model in network_models:
-      totals = []
+    if hasattr(method, "network_sensitive") and callable(method.network_sensitive) and method.network_sensitive():
+      for network_model in network_models:
+        totals = []
+        for sequence in sequences:
+          graphs = simulate_sequence(sequence, method, network_model, a_font_loader)
+          totals.extend(totals_for_network(graphs, network_model))
+        model_totals[network_model.name] = totals
+    else:
+      graph_collection = []
       for sequence in sequences:
-        graphs = simulate_sequence(sequence, method, network_model, a_font_loader)
-        totals.extend(totals_for_network(graphs, network_model))
-      model_totals[network_model.name] = totals
+        graphs = simulate_sequence(sequence, method, None, a_font_loader)
+        graph_collection.append(graphs)
+      for network_model in network_models:
+        totals = []
+        for graphs in graph_collection:
+          totals.extend(totals_for_network(graphs, network_model))
+        model_totals[network_model.name] = totals
     result[method.name()] = model_totals
   return result
 
