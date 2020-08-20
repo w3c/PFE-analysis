@@ -1,13 +1,14 @@
 py_library(
     name = "pfe_methods",
     srcs = [
+        "combined_patch_subset_method.py",
         "logged_pfe_method.py",
         "optimal_one_font_method.py",
         "optimal_pfe_method.py",
+        "range_request_pfe_method.py",
         "subset_sizer.py",
         "unicode_range_pfe_method.py",
         "whole_font_pfe_method.py",
-        "range_request_pfe_method.py",
     ],
     visibility = [
         "//analysis:__pkg__",
@@ -16,7 +17,22 @@ py_library(
         "//analysis:common",
         "//analysis:simulation",
         "//analysis/pfe_methods/unicode_range_data:slicing_strategy_loader",
+        "//patch_subset/py",
         "//woff2_py",
+    ],
+)
+
+py_test(
+    name = "combined_patch_subset_method_test",
+    srcs = [
+        "combined_patch_subset_method_test.py",
+    ],
+    data = [
+        "//patch_subset:testdata",
+    ],
+    deps = [
+        ":pfe_methods",
+        "//analysis:common",
     ],
 )
 

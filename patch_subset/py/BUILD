@@ -41,7 +41,7 @@ py_library(
         ":patch_subset_session.so",
     ],
     visibility = [
-        "//analysis:__pkg__",
+        "//analysis:__subpackages__",
     ],
     deps = [
         "//analysis:common",
