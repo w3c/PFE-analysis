@@ -25,6 +25,7 @@ from analysis import network_models
 from analysis import page_view_sequence_pb2
 from analysis import result_pb2
 from analysis import simulation
+from analysis.pfe_methods import combined_patch_subset_method
 from analysis.pfe_methods import logged_pfe_method
 from analysis.pfe_methods import optimal_one_font_method
 from analysis.pfe_methods import optimal_pfe_method
@@ -32,7 +33,6 @@ from analysis.pfe_methods import range_request_pfe_method
 from analysis.pfe_methods import unicode_range_pfe_method
 from analysis.pfe_methods import whole_font_pfe_method
 from google.protobuf import text_format
-from patch_subset.py import patch_subset_method
 
 LOG = logging.getLogger("analyzer")
 
@@ -61,15 +61,22 @@ flags.DEFINE_integer("parallelism", 12,
 flags.DEFINE_list("filter_languages", None,
                   "List of language tags to filter the input data by.")
 
-PFE_METHODS = [
-    range_request_pfe_method,
-    optimal_pfe_method,
-    optimal_one_font_method,
-    unicode_range_pfe_method,
-    whole_font_pfe_method,
-    patch_subset_method.create_with_codepoint_remapping(),
-    patch_subset_method.create_without_codepoint_remapping(),
-]
+flags.DEFINE_string(
+    "script_category", None, "One of 'latin', 'cjk', or 'arabic_indic'. "
+    "Automatically configures filter_languages to "
+    "the set of language tags for that script category.")
+
+SCRIPT_CATEGORIES = {
+    "latin": {
+        "en", "vi", "tr", "es", "pl", "fr", "id", "th", "ru", "pt-PT", "it",
+        "de", "cs", "ro", "el", "sr", "nl", "sk", "hu", "fi", "ms", "bg", "hr",
+        "sv", "fil", "da", "az", "ka", "no"
+    },
+    "arabic_indic": {"ar", "hi", "my", "mr", "fa", "ta", "bn"},
+    "cjk": {"ja", "zh", "ko", "zh-Hant"},
+}
+
+PFE_METHODS = []  # Populated by 'main' method since it depends on flags.
 
 NETWORK_MODELS = [
     network_models.MOBILE_2G_SLOWEST,
@@ -240,6 +247,23 @@ def merge_results(segmented_results):
   return merged
 
 
+def language_filter():
+  """Returns the set of languages to filter sequences against.
+
+  The filter set is based on the 'script_category' and 'filter_languages'
+  flags. If 'script_category' is set it takes precendent.
+  """
+  if FLAGS.script_category:
+    if FLAGS.script_category in SCRIPT_CATEGORIES:
+      return SCRIPT_CATEGORIES
+    return set()
+
+  if FLAGS.filter_languages:
+    return set(FLAGS.filter_languages)
+
+  return set()
+
+
 def start_analysis():
   """Read input data and start up the analysis."""
   input_data_path = FLAGS.input_data
@@ -260,9 +284,11 @@ def start_analysis():
   LOG.info("Preparing input data.")
   # the sequence proto's need to be serialized since they are being
   # sent to another process.
+  filter_languages = language_filter()
   sequences = [
-      sequence.SerializeToString() for sequence in data_set.sequences if
-      not FLAGS.filter_languages or sequence.language in FLAGS.filter_languages
+      sequence.SerializeToString()
+      for sequence in data_set.sequences
+      if not filter_languages or sequence.language in filter_languages
   ]
   segmented_sequences = segment_sequences(sequences, FLAGS.parallelism * 2)
 
@@ -283,6 +309,16 @@ def start_analysis():
 def main(argv):
   """Runs the analysis."""
   del argv  # Unused.
+
+  PFE_METHODS.extend([
+      range_request_pfe_method,
+      optimal_pfe_method,
+      optimal_one_font_method,
+      unicode_range_pfe_method,
+      whole_font_pfe_method,
+      combined_patch_subset_method.CombinedPatchSubsetMethod(
+          FLAGS.script_category),
+  ])
 
   results_proto = start_analysis()
 
