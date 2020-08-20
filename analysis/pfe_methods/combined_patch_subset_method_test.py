@@ -5,6 +5,7 @@ import unittest
 from analysis import font_loader
 from analysis import network_models
 from analysis.pfe_methods import combined_patch_subset_method
+from patch_subset.py import patch_subset_method
 
 
 def u(codepoints):  # pylint: disable=invalid-name
@@ -24,6 +25,31 @@ class CombinedPatchSubsetMethodTest(unittest.TestCase):
     self.unknown_method = combined_patch_subset_method.CombinedPatchSubsetMethod(
         "invalid")
     self.font_loader = font_loader.FontLoader("./patch_subset/testdata/")
+
+  def test_invalid_script(self):
+    session = combined_patch_subset_method.CombinedPatchSubsetMethod(
+        "invalid").start_session(network_models.MOBILE_2G_SLOWEST,
+                                 self.font_loader)
+    no_prediction_session = patch_subset_method.create_with_codepoint_remapping(
+    ).start_session(network_models.MOBILE_2G_SLOWEST, self.font_loader)
+    usage = {"NotoSansJP-Regular.otf": u([0x61])}
+    session.page_view(usage)
+    no_prediction_session.page_view(usage)
+    self.assertEqual(
+        session.get_request_graphs()[0].total_response_bytes(),
+        no_prediction_session.get_request_graphs()[0].total_response_bytes())
+
+  def test_none_script(self):
+    session = combined_patch_subset_method.CombinedPatchSubsetMethod(
+        None).start_session(network_models.MOBILE_2G_SLOWEST, self.font_loader)
+    no_prediction_session = patch_subset_method.create_with_codepoint_remapping(
+    ).start_session(network_models.MOBILE_2G_SLOWEST, self.font_loader)
+    usage = {"NotoSansJP-Regular.otf": u([0x61])}
+    session.page_view(usage)
+    no_prediction_session.page_view(usage)
+    self.assertEqual(
+        session.get_request_graphs()[0].total_response_bytes(),
+        no_prediction_session.get_request_graphs()[0].total_response_bytes())
 
   def test_differs_by_script(self):
     latin_session = self.latin_method.start_session(
