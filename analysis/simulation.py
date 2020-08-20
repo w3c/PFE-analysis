@@ -2,7 +2,6 @@
 
 import collections
 from collections import namedtuple
-import itertools
 
 from analysis import font_loader
 
@@ -29,7 +28,11 @@ def network_time_for(requests, network_model):
   return time
 
 
-def simulate_all(sequences, pfe_methods, network_models, font_directory, default_font_id=None):
+def simulate_all(sequences,
+                 pfe_methods,
+                 network_models,
+                 font_directory,
+                 default_font_id=None):
   """Simulate the matrix of {sequences} x {pfe_methods} x {network_models}.
 
   For each element compute a set of summary metrics, total time, total
@@ -39,11 +42,13 @@ def simulate_all(sequences, pfe_methods, network_models, font_directory, default
   result = dict()
   for method in pfe_methods:
     model_totals = dict()
-    if hasattr(method, "network_sensitive") and callable(method.network_sensitive) and method.network_sensitive():
+    if hasattr(method, "network_sensitive") and callable(
+        method.network_sensitive) and method.network_sensitive():
       for network_model in network_models:
         totals = []
         for sequence in sequences:
-          graphs = simulate_sequence(sequence, method, network_model, a_font_loader)
+          graphs = simulate_sequence(sequence, method, network_model,
+                                     a_font_loader)
           totals.extend(totals_for_network(graphs, network_model))
         model_totals[network_model.name] = totals
     else:
@@ -62,10 +67,11 @@ def simulate_all(sequences, pfe_methods, network_models, font_directory, default
 
 def totals_for_network(graphs, network_model):
   """For a set of graphs computes the network time required for each network model."""
-  return [GraphTotal(total_time_for_request_graph(graph, network_model),
-                     graph.total_request_bytes(),
-                     graph.total_response_bytes(), graph.length())
-              for graph in graphs]
+  return [
+      GraphTotal(total_time_for_request_graph(graph, network_model),
+                 graph.total_request_bytes(), graph.total_response_bytes(),
+                 graph.length()) for graph in graphs
+  ]
 
 
 def simulate_sequence(sequence, pfe_method, network_model, a_font_loader):

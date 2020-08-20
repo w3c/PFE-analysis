@@ -54,10 +54,14 @@ class AnalyzerTest(unittest.TestCase):
         analyzer.to_protos(
             {
                 "Fake_PFE": {
-                    "slow": [simulation.GraphTotal(2100, 1000, 2000, 5),
-                        simulation.GraphTotal(2100, 1000, 2000, 7)],
-                    "fast": [simulation.GraphTotal(200, 1000, 2000, 5),
-                        simulation.GraphTotal(200, 1000, 2000, 7)]
+                    "slow": [
+                        simulation.GraphTotal(2100, 1000, 2000, 5),
+                        simulation.GraphTotal(2100, 1000, 2000, 7)
+                    ],
+                    "fast": [
+                        simulation.GraphTotal(200, 1000, 2000, 5),
+                        simulation.GraphTotal(200, 1000, 2000, 7)
+                    ]
                 }
             }, mock_cost), [method_proto])
 
@@ -77,64 +81,108 @@ class AnalyzerTest(unittest.TestCase):
 
   def test_merge_results(self):
     self.assertEqual(analyzer.merge_results([]), dict())
-    self.assertEqual(analyzer.merge_results([{"abc": {"def": [1]}}]), {"abc": {"def": [1]}})
+    self.assertEqual(analyzer.merge_results([{
+        "abc": {
+            "def": [1]
+        }
+    }]), {"abc": {
+        "def": [1]
+    }})
 
     self.assertEqual(analyzer.merge_results([
         {
-            "abc": {"def": [1]}
+            "abc": {
+                "def": [1]
+            }
         },
         {},
-    ]), {"abc": {"def": [1]}})
-
-    self.assertEqual(analyzer.merge_results([
-        {
-            "abc": {"jkl": [1]}
-        },
-        {
-            "def": {"ghi": [2]}
-        },
-    ]), {
-        "abc": {"jkl": [1]},
-        "def": {"ghi": [2]}
-    })
-
-    self.assertEqual(analyzer.merge_results([
-        {
-            "abc": {"jkl": [1]}
-        },
-        {
-            "abc": {"jkl": [2]}
-        },
-    ]), {
-        "abc": {"jkl": [1, 2]},
-    })
+    ]), {"abc": {
+        "def": [1]
+    }})
 
     self.assertEqual(
         analyzer.merge_results([
-        {
-            "abc": {"jkl": [1]}
-        },
-        {
-            "abc": {"jkl": [2]}
-        },
-        {
-            "mno": {"jkl": [3]}
-        },
-    ]), {
-        "abc": {"jkl": [1, 2]},
-        "mno": {"jkl": [3]},
-    })
+            {
+                "abc": {
+                    "jkl": [1]
+                }
+            },
+            {
+                "def": {
+                    "ghi": [2]
+                }
+            },
+        ]), {
+            "abc": {
+                "jkl": [1]
+            },
+            "def": {
+                "ghi": [2]
+            }
+        })
 
-    self.assertEqual(analyzer.merge_results([
-        {
-            "abc": {"jkl": [1]}
-        },
-        {
-            "abc": {"mno": [2]}
-        },
-    ]), {
-        "abc": {"jkl": [1], "mno": [2]},
-    })
+    self.assertEqual(
+        analyzer.merge_results([
+            {
+                "abc": {
+                    "jkl": [1]
+                }
+            },
+            {
+                "abc": {
+                    "jkl": [2]
+                }
+            },
+        ]), {
+            "abc": {
+                "jkl": [1, 2]
+            },
+        })
+
+    self.assertEqual(
+        analyzer.merge_results([
+            {
+                "abc": {
+                    "jkl": [1]
+                }
+            },
+            {
+                "abc": {
+                    "jkl": [2]
+                }
+            },
+            {
+                "mno": {
+                    "jkl": [3]
+                }
+            },
+        ]), {
+            "abc": {
+                "jkl": [1, 2]
+            },
+            "mno": {
+                "jkl": [3]
+            },
+        })
+
+    self.assertEqual(
+        analyzer.merge_results([
+            {
+                "abc": {
+                    "jkl": [1]
+                }
+            },
+            {
+                "abc": {
+                    "mno": [2]
+                }
+            },
+        ]), {
+            "abc": {
+                "jkl": [1],
+                "mno": [2]
+            },
+        })
 
 
 if __name__ == '__main__':

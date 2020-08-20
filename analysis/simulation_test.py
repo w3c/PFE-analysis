@@ -1,12 +1,13 @@
 """Unit tests for the simulation module."""
 
 import unittest
+from collections import namedtuple
+
 from unittest import mock
 from analysis import font_loader
 from analysis import page_view_sequence_pb2
 from analysis import request_graph
 from analysis import simulation
-from collections import namedtuple
 
 
 class MockPfeMethod:  # pylint: disable=missing-class-docstring
@@ -128,9 +129,11 @@ class SimulationTest(unittest.TestCase):
     a_font_loader = font_loader.FontLoader("fonts/are/here")
     self.assertEqual(
         simulation.simulate_sequence(self.page_view_sequence,
-                                     self.mock_pfe_method, simulation.NetworkModel("slow", 0, 10, 10), a_font_loader),
-        [self.graph_1])
-    self.mock_pfe_method.start_session.assert_called_once_with(simulation.NetworkModel("slow", 0, 10, 10), a_font_loader)
+                                     self.mock_pfe_method,
+                                     simulation.NetworkModel("slow", 0, 10, 10),
+                                     a_font_loader), [self.graph_1])
+    self.mock_pfe_method.start_session.assert_called_once_with(
+        simulation.NetworkModel("slow", 0, 10, 10), a_font_loader)
     usage = namedtuple("Usage", ["codepoints", "glyph_ids"])
     self.mock_pfe_session.page_view.assert_has_calls([
         mock.call({
@@ -148,7 +151,8 @@ class SimulationTest(unittest.TestCase):
     a_font_loader = font_loader.FontLoader("fonts/are/here")
     self.assertEqual(
         simulation.simulate_sequence(self.page_view_sequence,
-                                     self.mock_logged_pfe_method, simulation.NetworkModel("slow", 0, 10, 10),
+                                     self.mock_logged_pfe_method,
+                                     simulation.NetworkModel("slow", 0, 10, 10),
                                      a_font_loader), [self.graph_1])
     self.mock_logged_pfe_method.start_session.assert_called_once_with(
         simulation.NetworkModel("slow", 0, 10, 10), a_font_loader)
@@ -184,8 +188,14 @@ class SimulationTest(unittest.TestCase):
             ],
             "fonts/are/here",
         ), {
-            "Mock_PFE_1": {"slow": [graph2] * 2, "fast": [graph] * 2},
-            "Mock_PFE_2": {"slow": [graph2] * 4, "fast": [graph] * 4},
+            "Mock_PFE_1": {
+                "slow": [graph2] * 2,
+                "fast": [graph] * 2
+            },
+            "Mock_PFE_2": {
+                "slow": [graph2] * 4,
+                "fast": [graph] * 4
+            },
         })
 
 

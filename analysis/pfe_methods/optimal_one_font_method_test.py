@@ -1,15 +1,17 @@
 """Unit tests for the optipmal_pfe_method module."""
 
 import unittest
+from collections import namedtuple
+
 from analysis.pfe_methods import optimal_one_font_method
 from analysis import font_loader
 from analysis import request_graph
-from collections import namedtuple
 
 
-def u(codepoints):
+def u(codepoints):  # pylint: disable=invalid-name
   usage = namedtuple("Usage", ["codepoints", "glyph_ids"])
   return usage(codepoints, None)
+
 
 class MockSubsetSizer:
 
@@ -20,8 +22,9 @@ class MockSubsetSizer:
 class OptimalOneFontMethodTest(unittest.TestCase):
 
   def setUp(self):
-    self.session = optimal_one_font_method.start_session(None,
-        font_loader.FontLoader("./patch_subset/testdata/"), MockSubsetSizer())
+    self.session = optimal_one_font_method.start_session(
+        None, font_loader.FontLoader("./patch_subset/testdata/"),
+        MockSubsetSizer())
 
   def test_font_not_found(self):
     with self.assertRaises(IOError):

@@ -1,15 +1,17 @@
 """Unit tests for the optipmal_pfe_method module."""
 
 import unittest
+from collections import namedtuple
+
 from analysis.pfe_methods import optimal_pfe_method
 from analysis import font_loader
 from analysis import request_graph
-from collections import namedtuple
 
 
-def u(codepoints):
+def u(codepoints):  # pylint: disable=invalid-name
   usage = namedtuple("Usage", ["codepoints", "glyph_ids"])
   return usage(codepoints, None)
+
 
 class MockSubsetSizer:
 
@@ -26,8 +28,9 @@ class InverseMockSubsetSizer:
 class OptimalPfeMethodTest(unittest.TestCase):
 
   def setUp(self):
-    self.session = optimal_pfe_method.start_session(None,
-        font_loader.FontLoader("./patch_subset/testdata/"), MockSubsetSizer())
+    self.session = optimal_pfe_method.start_session(
+        None, font_loader.FontLoader("./patch_subset/testdata/"),
+        MockSubsetSizer())
 
   def test_font_not_found(self):
     with self.assertRaises(IOError):
@@ -73,8 +76,8 @@ class OptimalPfeMethodTest(unittest.TestCase):
         ]))
 
   def test_subsequent_subset_smaller(self):
-    session = optimal_pfe_method.start_session(None,
-        font_loader.FontLoader("./patch_subset/testdata/"),
+    session = optimal_pfe_method.start_session(
+        None, font_loader.FontLoader("./patch_subset/testdata/"),
         InverseMockSubsetSizer())
     session.page_view({"Roboto-Regular.ttf": u([1, 2, 3])})
     session.page_view({"Roboto-Regular.ttf": u([4, 5])})
