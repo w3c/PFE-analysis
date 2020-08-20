@@ -2,16 +2,17 @@
 
 import io
 import unittest
+from collections import namedtuple
 
 from analysis import font_loader
 from fontTools import ttLib
 from patch_subset.py import patch_subset_method
-from collections import namedtuple
 
 
-def u(codepoints):
+def u(codepoints):  # pylint: disable=invalid-name
   usage = namedtuple("Usage", ["codepoints", "glyph_ids"])
   return usage(codepoints, None)
+
 
 class PatchSubsetMethodTest(unittest.TestCase):
 
@@ -22,7 +23,8 @@ class PatchSubsetMethodTest(unittest.TestCase):
     ).start_session(None, font_loader.FontLoader("./patch_subset/testdata/"))
     self.session_with_prediction = patch_subset_method.create_with_codepoint_prediction(
         50,
-        0.0).start_session(None, font_loader.FontLoader("./patch_subset/testdata/"))
+        0.0).start_session(None,
+                           font_loader.FontLoader("./patch_subset/testdata/"))
 
   def test_font_not_found(self):
     with self.assertRaises(patch_subset_method.PatchSubsetError):

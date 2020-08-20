@@ -45,15 +45,15 @@ flags.DEFINE_string(
     "Directory which contains all fonts to be used in the analysis.")
 flags.mark_flag_as_required("font_directory")
 
-flags.DEFINE_string("input_form", None,
-                    "Can either be text, binary, or json.")
+flags.DEFINE_string("input_form", None, "Can either be text, binary, or json.")
 flags.mark_flag_as_required("input_form")
 
 flags.DEFINE_bool("output_binary", False,
                   "If true outputs the results in binary proto format.")
 
-flags.DEFINE_string("default_font_id", None,
-                    "Font name to use for test data that doesn't have an associated font.")
+flags.DEFINE_string(
+    "default_font_id", None,
+    "Font name to use for test data that doesn't have an associated font.")
 
 flags.DEFINE_integer("parallelism", 12,
                      "Number of processes to use for the simulation.")
@@ -121,7 +121,9 @@ def to_method_result_proto(method_name, network_totals, cost_function):
         to_network_result_proto(key, totals, cost_function))
   return method_result_proto
 
+
 def to_network_result_proto(network_model_name, totals, cost_function):
+  """Convert totals from the simulation into a NetworkResultProto."""
   network_result_proto = result_pb2.NetworkResultProto()
   network_result_proto.network_model_name = network_model_name
 
@@ -130,27 +132,25 @@ def to_network_result_proto(network_model_name, totals, cost_function):
   response_bytes_per_page_view = distribution.Distribution(
       distribution.LinearBucketer(5))
   latency_distribution = distribution.Distribution(
-        distribution.LinearBucketer(5))
-  cost_per_page_view = distribution.Distribution(
-        distribution.LinearBucketer(5))
+      distribution.LinearBucketer(5))
+  cost_per_page_view = distribution.Distribution(distribution.LinearBucketer(5))
 
-  result_by_network = dict()
   total_request_count = 0
   total_request_bytes = 0
   total_response_bytes = 0
   total_wait_time_ms = 0
   total_cost = 0
   for total in totals:
-    cost = cost_function(total.total_time)
+    the_cost = cost_function(total.total_time)
     request_bytes_per_page_view.add_value(total.request_bytes)
     response_bytes_per_page_view.add_value(total.response_bytes)
     latency_distribution.add_value(total.total_time)
-    cost_per_page_view.add_value(cost)
+    cost_per_page_view.add_value(the_cost)
     total_request_count += total.num_requests
     total_request_bytes += total.request_bytes
     total_response_bytes += total.response_bytes
     total_wait_time_ms += total.total_time
-    total_cost += cost
+    total_cost += the_cost
 
   network_result_proto.request_bytes_per_page_view.CopyFrom(
       request_bytes_per_page_view.to_proto())
@@ -181,6 +181,7 @@ def read_text_input(input_data_path):
     text_format.Merge(input_data_file.read(), data_set)
   return data_set
 
+
 def read_json_input(input_data_path):
   """Reads json data with this format:
 
@@ -203,6 +204,7 @@ def read_json_input(input_data_path):
     page_view_sequence.page_views.append(page_view_proto)
     result.sequences.append(page_view_sequence)
   return result
+
 
 def segment_sequences(sequences, segments):
   segment_size = max(int(len(sequences) / segments), 1)

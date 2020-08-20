@@ -9,7 +9,8 @@ from analysis.pfe_methods import logged_pfe_method
 class LoggedPfeMethodTest(unittest.TestCase):
 
   def setUp(self):
-    self.session = logged_pfe_method.for_name("Method_Name").start_session(None, None)
+    self.session = logged_pfe_method.for_name("Method_Name").start_session(
+        None, None)
 
   def test_name(self):
     self.assertEqual(

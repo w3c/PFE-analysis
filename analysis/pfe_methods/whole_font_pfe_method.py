@@ -18,6 +18,7 @@ def name():
 
 
 def start_session(network_model, font_loader):
+  del network_model
   return WholeFontPfeSession(font_loader)
 
 

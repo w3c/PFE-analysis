@@ -1,24 +1,26 @@
 """Unit tests for the whole_font_pfe_method module."""
 
 import unittest
+from collections import namedtuple
+
 from analysis import font_loader
 from analysis import request_graph
 from analysis.pfe_methods import whole_font_pfe_method
-from collections import namedtuple
 
 ROBOTO_REGULAR_WOFF2_SIZE = 64736
 ROBOTO_THIN_WOFF2_SIZE = 62908
 
 
-def u(codepoints):
+def u(codepoints):  # pylint: disable=invalid-name
   usage = namedtuple("Usage", ["codepoints", "glyph_ids"])
   return usage(codepoints, None)
+
 
 class WholeFontPfeMethodTest(unittest.TestCase):
 
   def setUp(self):
-    self.session = whole_font_pfe_method.start_session(None,
-        font_loader.FontLoader("./patch_subset/testdata/"))
+    self.session = whole_font_pfe_method.start_session(
+        None, font_loader.FontLoader("./patch_subset/testdata/"))
 
   def test_font_not_found(self):
     with self.assertRaises(IOError):
@@ -35,11 +37,11 @@ class WholeFontPfeMethodTest(unittest.TestCase):
         ]))
 
   def test_cached_file_load(self):
-    session = whole_font_pfe_method.start_session(None,
-        font_loader.FontLoader("./patch_subset/testdata/"))
+    session = whole_font_pfe_method.start_session(
+        None, font_loader.FontLoader("./patch_subset/testdata/"))
     session.page_view({"Roboto-Regular.ttf": u([0x61, 0x62])})
-    session = whole_font_pfe_method.start_session(None,
-        font_loader.FontLoader("./patch_subset/testdata/"))
+    session = whole_font_pfe_method.start_session(
+        None, font_loader.FontLoader("./patch_subset/testdata/"))
     session.page_view({"Roboto-Regular.ttf": u([0x63, 0x64])})
 
     graphs = session.get_request_graphs()

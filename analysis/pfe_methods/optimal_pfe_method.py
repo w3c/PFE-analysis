@@ -20,6 +20,7 @@ def name():
 
 
 def start_session(network_model, font_loader, a_subset_sizer=None):
+  del network_model
   return OptimalPfeSession(font_loader, a_subset_sizer)
 
 
