@@ -12,6 +12,7 @@ Input data is in textproto format using the proto definitions found in
 analysis/page_view_sequence.proto
 """
 
+import collections
 import logging
 from multiprocessing import Pool
 import sys
@@ -129,6 +130,43 @@ def to_method_result_proto(method_name, network_totals, cost_function):
     method_result_proto.results_by_network.append(
         to_network_result_proto(key, totals, cost_function))
   return method_result_proto
+
+
+def get_network_model(name):
+  for net_model in NETWORK_MODELS:
+    if net_model.name == name:
+      return net_model
+  return None
+
+
+def to_network_category_protos(network_totals, cost_function):  # pylint: disable=too-many-locals
+  categories = collections.defaultdict(list)
+  num_totals = 0
+  for network_name, totals in network_totals.items():
+    net_model = get_network_model(network_name)
+    categories[net_model.category].append((net_model.weight, totals))
+    num_totals = max(num_totals, len(totals))
+
+  result = []
+  for category in sorted(categories):
+    category_costs = [0.0] * num_totals
+    category_bytes = [0.0] * num_totals
+    for category_totals in categories[category]:
+      weight = category_totals[0]
+      for i in range(len(category_totals[1])):
+        seq_total = category_totals[1][i]
+        for graph_total in seq_total.totals:
+          category_costs[i] += weight * (cost_function(graph_total.total_time))
+          category_bytes[i] += weight * (graph_total.request_bytes +
+                                         graph_total.response_bytes)
+
+    category_proto = result_pb2.NetworkCategoryResultProto()
+    category_proto.network_category = category
+    category_proto.cost_per_sequence.extend(category_costs)
+    category_proto.bytes_per_sequence.extend(category_bytes)
+    result.append(category_proto)
+
+  return result
 
 
 def to_network_result_proto(network_model_name, totals, cost_function):  # pylint: disable=too-many-locals
