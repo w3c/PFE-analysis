@@ -170,6 +170,7 @@ filegroup(
     name = "testdata",
     srcs = glob(["testdata/**"]),
     visibility = [
+        "//analysis:__pkg__",
         "//analysis/pfe_methods:__pkg__",
         "//analysis/pfe_methods/unicode_range_data:__pkg__",
         "//patch_subset/py:__pkg__",

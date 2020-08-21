@@ -165,6 +165,21 @@ py_test(
     ],
 )
 
+py_test(
+    name = "analyzer_integration_test",
+    srcs = [
+        "analyzer_integration_test.py",
+    ],
+    data = [
+        "sample/english_sequence.result.textproto",
+        "sample/english_sequence.textproto",
+        ":analyzer",
+        "//patch_subset:testdata",
+    ],
+    deps = [
+    ],
+)
+
 py_library(
     name = "fake_pfe",
     srcs = [

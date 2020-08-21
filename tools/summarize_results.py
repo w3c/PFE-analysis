@@ -6,10 +6,10 @@ Summarize the data in a few different ways. See USAGE string below.
 
 import sys
 
+from google.protobuf import text_format
 from absl import app
 from absl import flags
 from analysis import result_pb2
-from google.protobuf import text_format
 
 USAGE = """Usage:
 

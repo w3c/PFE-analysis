@@ -4,9 +4,9 @@ import functools
 import io
 import os
 
-from analysis.pfe_methods.unicode_range_data import slicing_strategy_pb2
 from fontTools import ttLib
 from google.protobuf import text_format
+from analysis.pfe_methods.unicode_range_data import slicing_strategy_pb2
 
 SLICING_STRATEGY_DIR = "analysis/pfe_methods/unicode_range_data"
 
