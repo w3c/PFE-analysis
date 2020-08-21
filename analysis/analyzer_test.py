@@ -55,12 +55,17 @@ class AnalyzerTest(unittest.TestCase):
             {
                 "Fake_PFE": {
                     "slow": [
-                        simulation.GraphTotal(2100, 1000, 2000, 5),
-                        simulation.GraphTotal(2100, 1000, 2000, 7)
+                        simulation.SequenceTotals([
+                            simulation.GraphTotal(2100, 1000, 2000, 5),
+                            simulation.GraphTotal(2100, 1000, 2000, 7)
+                        ]),
                     ],
                     "fast": [
-                        simulation.GraphTotal(200, 1000, 2000, 5),
-                        simulation.GraphTotal(200, 1000, 2000, 7)
+                        simulation.SequenceTotals([
+                            simulation.GraphTotal(200, 1000, 2000, 5),
+                        ]),
+                        simulation.SequenceTotals(
+                            [simulation.GraphTotal(200, 1000, 2000, 7)]),
                     ]
                 }
             }, mock_cost), [method_proto])

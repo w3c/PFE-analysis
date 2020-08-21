@@ -12,6 +12,7 @@ message MethodResultProto {
   string method_name = 1;
 
   repeated NetworkResultProto results_by_network = 2;
+  repeated NetworkCategoryResultProto results_by_network_category = 8;
 
   reserved 3 to 7;
   reserved "request_bytes_per_page_view", "response_bytes_per_page_view", "total_request_count", "total_request_bytes", "total_response_bytes";
@@ -30,6 +31,12 @@ message NetworkResultProto {
   uint64 total_request_count = 8;
   uint64 total_request_bytes = 9;
   uint64 total_response_bytes = 10;
+}
+
+message NetworkCategoryResultProto {
+  string network_category = 1;
+  repeated double normalized_cost_per_sequence = 2;
+  repeated double normalized_bytes_per_sequence = 3;
 }
 
 message DistributionProto {
