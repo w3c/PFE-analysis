@@ -2,10 +2,10 @@
 
 import csv
 
+from google.protobuf import text_format
 from absl import app
 from absl import flags
 from analysis.pfe_methods.unicode_range_data import slicing_strategy_pb2
-from google.protobuf import text_format
 
 FLAGS = flags.FLAGS
 flags.DEFINE_string("strategy_file", None,

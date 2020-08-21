@@ -1,8 +1,8 @@
 """Converts a set of text files into a data set proto."""
 
+from google.protobuf import text_format
 from absl import app
 from analysis import page_view_sequence_pb2
-from google.protobuf import text_format
 
 
 def create_page_view(file_path):

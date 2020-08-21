@@ -18,6 +18,7 @@ from multiprocessing import Pool
 import sys
 import json
 
+from google.protobuf import text_format
 from absl import app
 from absl import flags
 from analysis import cost
@@ -33,7 +34,6 @@ from analysis.pfe_methods import optimal_pfe_method
 from analysis.pfe_methods import range_request_pfe_method
 from analysis.pfe_methods import unicode_range_pfe_method
 from analysis.pfe_methods import whole_font_pfe_method
-from google.protobuf import text_format
 
 LOG = logging.getLogger("analyzer")
 
@@ -140,6 +140,11 @@ def get_network_model(name):
 
 
 def to_network_category_protos(network_totals, cost_function):  # pylint: disable=too-many-locals
+  """Convert network totals to per category totals.
+
+  For each network category combine the totals using a weighted average
+  to produce a total cost and total bytes transferred per sequence.
+  """
   categories = collections.defaultdict(list)
   num_totals = 0
   for network_name, totals in network_totals.items():

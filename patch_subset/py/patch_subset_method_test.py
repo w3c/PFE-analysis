@@ -4,8 +4,8 @@ import io
 import unittest
 from collections import namedtuple
 
-from analysis import font_loader
 from fontTools import ttLib
+from analysis import font_loader
 from patch_subset.py import patch_subset_method
 
 
