@@ -140,35 +140,35 @@ MOBILE_WIFI_SLOWEST = simulation.NetworkModel("mobile_wifi_slowest",
                                               rtt=500,
                                               bandwidth_up=100,
                                               bandwidth_down=100,
-                                              category="WIFI",
+                                              category="wifi",
                                               weight=0.05)
 
 MOBILE_WIFI_SLOW = simulation.NetworkModel("mobile_wifi_slow",
                                            rtt=170,
                                            bandwidth_up=200,
                                            bandwidth_down=200,
-                                           category="WIFI",
+                                           category="wifi",
                                            weight=0.2)
 
 MOBILE_WIFI_MEDIAN = simulation.NetworkModel("mobile_wifi_median",
                                              rtt=115,
                                              bandwidth_up=563,
                                              bandwidth_down=563,
-                                             category="WIFI",
+                                             category="wifi",
                                              weight=0.5)
 
 MOBILE_WIFI_FAST = simulation.NetworkModel("mobile_wifi_fast",
                                            rtt=65,
                                            bandwidth_up=1250,
                                            bandwidth_down=1250,
-                                           category="WIFI",
+                                           category="wifi",
                                            weight=0.2)
 
 MOBILE_WIFI_FASTEST = simulation.NetworkModel("mobile_wifi_fastest",
                                               rtt=35,
                                               bandwidth_up=3438,
                                               bandwidth_down=3438,
-                                              category="WIFI",
+                                              category="wifi",
                                               weight=0.05)
 
 # Desktop
@@ -177,33 +177,33 @@ DESKTOP_SLOWEST = simulation.NetworkModel("desktop_slowest",
                                           rtt=350,
                                           bandwidth_up=125,
                                           bandwidth_down=125,
-                                          category="DESKTOP",
+                                          category="desktop",
                                           weight=0.05)
 
 DESKTOP_SLOW = simulation.NetworkModel("desktop_slow",
                                        rtt=150,
                                        bandwidth_up=313,
                                        bandwidth_down=313,
-                                       category="DESKTOP",
+                                       category="desktop",
                                        weight=0.2)
 
 DESKTOP_MEDIAN = simulation.NetworkModel("desktop_median",
                                          rtt=80,
                                          bandwidth_up=938,
                                          bandwidth_down=938,
-                                         category="DESKTOP",
+                                         category="desktop",
                                          weight=0.5)
 
 DESKTOP_FAST = simulation.NetworkModel("desktop_fast",
                                        rtt=50,
                                        bandwidth_up=2188,
                                        bandwidth_down=2188,
-                                       category="DESKTOP",
+                                       category="desktop",
                                        weight=0.2)
 
 DESKTOP_FASTEST = simulation.NetworkModel("desktop_fastest",
                                           rtt=20,
                                           bandwidth_up=7500,
                                           bandwidth_down=7500,
-                                          category="DESKTOP",
+                                          category="desktop",
                                           weight=0.05)
