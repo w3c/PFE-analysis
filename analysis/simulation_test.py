@@ -58,7 +58,9 @@ class SimulationTest(unittest.TestCase):
     self.net_model = simulation.NetworkModel(name="NetModel",
                                              rtt=50,
                                              bandwidth_up=100,
-                                             bandwidth_down=200)
+                                             bandwidth_down=200,
+                                             category="New",
+                                             weight=1)
 
     self.graph_1 = request_graph.RequestGraph({
         request_graph.Request(1000, 1000),
@@ -128,12 +130,12 @@ class SimulationTest(unittest.TestCase):
   def test_simulate(self):
     a_font_loader = font_loader.FontLoader("fonts/are/here")
     self.assertEqual(
-        simulation.simulate_sequence(self.page_view_sequence,
-                                     self.mock_pfe_method,
-                                     simulation.NetworkModel("slow", 0, 10, 10),
-                                     a_font_loader), [self.graph_1])
+        simulation.simulate_sequence(
+            self.page_view_sequence, self.mock_pfe_method,
+            simulation.NetworkModel("slow", 0, 10, 10, "slow", 1),
+            a_font_loader), [self.graph_1])
     self.mock_pfe_method.start_session.assert_called_once_with(
-        simulation.NetworkModel("slow", 0, 10, 10), a_font_loader)
+        simulation.NetworkModel("slow", 0, 10, 10, "slow", 1), a_font_loader)
     usage = namedtuple("Usage", ["codepoints", "glyph_ids"])
     self.mock_pfe_session.page_view.assert_has_calls([
         mock.call({
@@ -150,12 +152,12 @@ class SimulationTest(unittest.TestCase):
   def test_simulate_logged(self):
     a_font_loader = font_loader.FontLoader("fonts/are/here")
     self.assertEqual(
-        simulation.simulate_sequence(self.page_view_sequence,
-                                     self.mock_logged_pfe_method,
-                                     simulation.NetworkModel("slow", 0, 10, 10),
-                                     a_font_loader), [self.graph_1])
+        simulation.simulate_sequence(
+            self.page_view_sequence, self.mock_logged_pfe_method,
+            simulation.NetworkModel("slow", 0, 10, 10, "slow", 1),
+            a_font_loader), [self.graph_1])
     self.mock_logged_pfe_method.start_session.assert_called_once_with(
-        simulation.NetworkModel("slow", 0, 10, 10), a_font_loader)
+        simulation.NetworkModel("slow", 0, 10, 10, "slow", 1), a_font_loader)
     self.mock_logged_pfe_session.page_view_proto.assert_has_calls(
         [mock.call(page_view) for page_view in self.page_view_sequence])
     self.mock_logged_pfe_session.get_request_graphs.assert_called_once_with()
@@ -183,18 +185,18 @@ class SimulationTest(unittest.TestCase):
                 self.mock_pfe_method_2,
             ],
             [
-                simulation.NetworkModel("slow", 0, 10, 10),
-                simulation.NetworkModel("fast", 0, 20, 20)
+                simulation.NetworkModel("slow", 0, 10, 10, "slow", 1),
+                simulation.NetworkModel("fast", 0, 20, 20, "fast", 1),
             ],
             "fonts/are/here",
         ), {
             "Mock_PFE_1": {
-                "slow": [graph2] * 2,
-                "fast": [graph] * 2
+                "slow": [simulation.SequenceTotals([graph2])] * 2,
+                "fast": [simulation.SequenceTotals([graph])] * 2,
             },
             "Mock_PFE_2": {
-                "slow": [graph2] * 4,
-                "fast": [graph] * 4
+                "slow": [simulation.SequenceTotals([graph2] * 2)] * 2,
+                "fast": [simulation.SequenceTotals([graph] * 2)] * 2,
             },
         })
 

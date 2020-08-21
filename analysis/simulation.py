@@ -9,9 +9,12 @@ GraphTotal = collections.namedtuple(
     "GraphTotal",
     ["total_time", "request_bytes", "response_bytes", "num_requests"])
 
+SequenceTotals = collections.namedtuple("SequenceTotals", ["totals"])
+
 # Bandwidth is in bytes per ms, RTT is ms
 NetworkModel = collections.namedtuple(
-    "NetworkModel", ["name", "rtt", "bandwidth_up", "bandwidth_down"])
+    "NetworkModel",
+    ["name", "rtt", "bandwidth_up", "bandwidth_down", "category", "weight"])
 
 
 class GraphHasCyclesError(Exception):
@@ -49,7 +52,8 @@ def simulate_all(sequences,
         for sequence in sequences:
           graphs = simulate_sequence(sequence, method, network_model,
                                      a_font_loader)
-          totals.extend(totals_for_network(graphs, network_model))
+          totals.append(
+              SequenceTotals(totals_for_network(graphs, network_model)))
         model_totals[network_model.name] = totals
     else:
       graph_collection = []
@@ -59,7 +63,8 @@ def simulate_all(sequences,
       for network_model in network_models:
         totals = []
         for graphs in graph_collection:
-          totals.extend(totals_for_network(graphs, network_model))
+          totals.append(
+              SequenceTotals(totals_for_network(graphs, network_model)))
         model_totals[network_model.name] = totals
     result[method.name()] = model_totals
   return result

@@ -123,13 +123,15 @@ def to_method_result_proto(method_name, network_totals, cost_function):
   method_result_proto = result_pb2.MethodResultProto()
   method_result_proto.method_name = method_name
 
+  # TODO(garretrieger): produce aggregate network results
+
   for key, totals in sorted(network_totals.items()):
     method_result_proto.results_by_network.append(
         to_network_result_proto(key, totals, cost_function))
   return method_result_proto
 
 
-def to_network_result_proto(network_model_name, totals, cost_function):
+def to_network_result_proto(network_model_name, totals, cost_function):  # pylint: disable=too-many-locals
   """Convert totals from the simulation into a NetworkResultProto."""
   network_result_proto = result_pb2.NetworkResultProto()
   network_result_proto.network_model_name = network_model_name
@@ -147,17 +149,18 @@ def to_network_result_proto(network_model_name, totals, cost_function):
   total_response_bytes = 0
   total_wait_time_ms = 0
   total_cost = 0
-  for total in totals:
-    the_cost = cost_function(total.total_time)
-    request_bytes_per_page_view.add_value(total.request_bytes)
-    response_bytes_per_page_view.add_value(total.response_bytes)
-    latency_distribution.add_value(total.total_time)
-    cost_per_page_view.add_value(the_cost)
-    total_request_count += total.num_requests
-    total_request_bytes += total.request_bytes
-    total_response_bytes += total.response_bytes
-    total_wait_time_ms += total.total_time
-    total_cost += the_cost
+  for seq_totals in totals:
+    for total in seq_totals.totals:
+      the_cost = cost_function(total.total_time)
+      request_bytes_per_page_view.add_value(total.request_bytes)
+      response_bytes_per_page_view.add_value(total.response_bytes)
+      latency_distribution.add_value(total.total_time)
+      cost_per_page_view.add_value(the_cost)
+      total_request_count += total.num_requests
+      total_request_bytes += total.request_bytes
+      total_response_bytes += total.response_bytes
+      total_wait_time_ms += total.total_time
+      total_cost += the_cost
 
   network_result_proto.request_bytes_per_page_view.CopyFrom(
       request_bytes_per_page_view.to_proto())
