@@ -67,6 +67,9 @@ flags.DEFINE_string(
     "Automatically configures filter_languages to "
     "the set of language tags for that script category.")
 
+FONT_DIRECTORY = ""
+DEFAULT_FONT_ID = ""
+
 SCRIPT_CATEGORIES = {
     "latin": {
         "en", "vi", "tr", "es", "pl", "fr", "id", "th", "ru", "pt-PT", "it",
@@ -276,7 +279,7 @@ def do_analysis(serialized_sequences):
       for s in serialized_sequences
   ]
   return simulation.simulate_all(sequences, PFE_METHODS, NETWORK_MODELS,
-                                 FLAGS.font_directory, FLAGS.default_font_id)
+                                 FONT_DIRECTORY, DEFAULT_FONT_ID)
 
 
 def merge_results(segmented_results):
@@ -339,8 +342,11 @@ def start_analysis():
   segmented_sequences = segment_sequences(sequences, FLAGS.parallelism * 2)
 
   LOG.info("Running simulations on %s sequences.", len(sequences))
-  with Pool(FLAGS.parallelism) as pool:
-    results = merge_results(pool.map(do_analysis, segmented_sequences))
+  if FLAGS.parallelism > 1:
+    with Pool(FLAGS.parallelism) as pool:
+      results = merge_results(pool.map(do_analysis, segmented_sequences))
+  else:
+    results = merge_results([do_analysis(s) for s in segmented_sequences])
 
   LOG.info("Formatting output.")
   results = to_protos(results, cost.cost)
@@ -354,7 +360,14 @@ def start_analysis():
 
 def main(argv):
   """Runs the analysis."""
+  global FONT_DIRECTORY, DEFAULT_FONT_ID  # pylint: disable=global-statement
   del argv  # Unused.
+
+  # In some environments flags don't behave well
+  # after a fork via the subprocess.Pool so save
+  # flag values in globals.
+  FONT_DIRECTORY = FLAGS.font_directory
+  DEFAULT_FONT_ID = FLAGS.default_font_id
 
   PFE_METHODS.extend([
       range_request_pfe_method,
