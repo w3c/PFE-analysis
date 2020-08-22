@@ -30,12 +30,15 @@ class AnalyzerTest(unittest.TestCase):
 
     completed = run_analyzer()
 
+    error_message = (
+        "Output does not match golden file. To update the golden "
+        "file run ./update_analyzer_golden.sh. "
+        "STDERR from the command:\n %s") % completed.stderr.decode("utf-8")
+
     self.assertEqual(completed.returncode, 0)
-    self.assertEqual(
-        completed.stdout.decode("utf-8"),
-        expected,
-        msg=("Output does not match golden file. To update the golden"
-             " file run ./update_analyzer_golden.sh"))
+    self.assertEqual(completed.stdout.decode("utf-8"),
+                     expected,
+                     msg=error_message)
 
 
 def run_analyzer():
@@ -43,11 +46,12 @@ def run_analyzer():
       [
           "analysis/analyzer",
           "--input_data=analysis/sample/english_sequence.textproto",
-          "--input_form=text", "--parallelism=2",
+          "--input_form=text", "--parallelism=1",
           "--font_directory=patch_subset/testdata/",
           "--default_font_id=Roboto-Regular.ttf"
       ],
-      stdout=subprocess.PIPE)
+      stdout=subprocess.PIPE,
+      stderr=subprocess.PIPE)
 
 
 if __name__ == '__main__':
