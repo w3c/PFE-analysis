@@ -129,6 +129,10 @@ def to_method_result_proto(method_name, network_totals, cost_function):
 
   # TODO(garretrieger): produce aggregate network results
 
+  for category_proto in to_network_category_protos(network_totals,
+                                                   cost_function):
+    method_result_proto.results_by_network_category.append(category_proto)
+
   for key, totals in sorted(network_totals.items()):
     method_result_proto.results_by_network.append(
         to_network_result_proto(key, totals, cost_function))
