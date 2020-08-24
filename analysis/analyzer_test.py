@@ -80,8 +80,24 @@ class AnalyzerTest(unittest.TestCase):
     method_proto = result_pb2.MethodResultProto()
     method_proto.method_name = "Fake_PFE"
 
+    network_category_proto = result_pb2.NetworkCategoryResultProto()
+    network_category_proto.network_category = "2G"
+    network_category_proto.cost_per_sequence.append(210.0)
+    network_category_proto.cost_per_sequence.append(0.0)
+    network_category_proto.bytes_per_sequence.append(3000.0)
+    network_category_proto.bytes_per_sequence.append(0.0)
+    method_proto.results_by_network_category.append(network_category_proto)
+
+    network_category_proto = result_pb2.NetworkCategoryResultProto()
+    network_category_proto.network_category = "desktop"
+    network_category_proto.cost_per_sequence.append(10.0)
+    network_category_proto.cost_per_sequence.append(10.0)
+    network_category_proto.bytes_per_sequence.append(1500.0)
+    network_category_proto.bytes_per_sequence.append(1500.0)
+    method_proto.results_by_network_category.append(network_category_proto)
+
     network_proto = result_pb2.NetworkResultProto()
-    network_proto.network_model_name = "fast"
+    network_proto.network_model_name = "desktop_median"
     network_proto.total_cost = 40
     network_proto.total_wait_time_ms = 400
     network_proto.wait_per_page_view_ms.buckets.add(end=200)
@@ -98,7 +114,7 @@ class AnalyzerTest(unittest.TestCase):
     method_proto.results_by_network.append(network_proto)
 
     network_proto = result_pb2.NetworkResultProto()
-    network_proto.network_model_name = "slow"
+    network_proto.network_model_name = "mobile_2g_median"
     network_proto.total_cost = 420
     network_proto.total_wait_time_ms = 4200
     network_proto.wait_per_page_view_ms.buckets.add(end=2100)
@@ -118,13 +134,13 @@ class AnalyzerTest(unittest.TestCase):
         analyzer.to_protos(
             {
                 "Fake_PFE": {
-                    "slow": [
+                    "mobile_2g_median": [
                         simulation.SequenceTotals([
                             simulation.GraphTotal(2100, 1000, 2000, 5),
                             simulation.GraphTotal(2100, 1000, 2000, 7)
                         ]),
                     ],
-                    "fast": [
+                    "desktop_median": [
                         simulation.SequenceTotals([
                             simulation.GraphTotal(200, 1000, 2000, 5),
                         ]),

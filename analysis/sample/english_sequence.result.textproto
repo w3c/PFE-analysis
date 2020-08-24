@@ -2254,6 +2254,31 @@ results {
     total_request_bytes: 584
     total_response_bytes: 2428
   }
+  results_by_network_category {
+    network_category: "2G"
+    cost_per_sequence: 4585.797802886747
+    bytes_per_sequence: 3012.0
+  }
+  results_by_network_category {
+    network_category: "3G"
+    cost_per_sequence: 302.70013241815747
+    bytes_per_sequence: 3012.0
+  }
+  results_by_network_category {
+    network_category: "4G"
+    cost_per_sequence: 9.890838848812235
+    bytes_per_sequence: 3012.0
+  }
+  results_by_network_category {
+    network_category: "desktop"
+    cost_per_sequence: 6.512720335240624
+    bytes_per_sequence: 3012.0
+  }
+  results_by_network_category {
+    network_category: "wifi"
+    cost_per_sequence: 7.717157930038885
+    bytes_per_sequence: 3012.0
+  }
 }
 results {
   method_name: "GoogleFonts_UnicodeRange"
@@ -5202,6 +5227,31 @@ results {
     total_request_bytes: 455
     total_response_bytes: 7475
   }
+  results_by_network_category {
+    network_category: "2G"
+    cost_per_sequence: 3886.602413120766
+    bytes_per_sequence: 7930.0
+  }
+  results_by_network_category {
+    network_category: "3G"
+    cost_per_sequence: 256.0756494015285
+    bytes_per_sequence: 7930.0
+  }
+  results_by_network_category {
+    network_category: "4G"
+    cost_per_sequence: 9.254348590370434
+    bytes_per_sequence: 7930.0
+  }
+  results_by_network_category {
+    network_category: "desktop"
+    cost_per_sequence: 6.199242008392619
+    bytes_per_sequence: 7930.0
+  }
+  results_by_network_category {
+    network_category: "wifi"
+    cost_per_sequence: 7.252018991391687
+    bytes_per_sequence: 7930.0
+  }
 }
 results {
   method_name: "Optimal"
@@ -6727,6 +6777,31 @@ results {
     total_request_count: 4
     total_response_bytes: 668
   }
+  results_by_network_category {
+    network_category: "2G"
+    cost_per_sequence: 3039.9780946881187
+    bytes_per_sequence: 668.0
+  }
+  results_by_network_category {
+    network_category: "3G"
+    cost_per_sequence: 202.27382360171268
+    bytes_per_sequence: 668.0
+  }
+  results_by_network_category {
+    network_category: "4G"
+    cost_per_sequence: 7.969357967773872
+    bytes_per_sequence: 668.0
+  }
+  results_by_network_category {
+    network_category: "desktop"
+    cost_per_sequence: 5.771934537243842
+    bytes_per_sequence: 668.0
+  }
+  results_by_network_category {
+    network_category: "wifi"
+    cost_per_sequence: 6.563230463640297
+    bytes_per_sequence: 668.0
+  }
 }
 results {
   method_name: "OptimalOneFont"
@@ -7897,6 +7972,31 @@ results {
     }
     total_request_count: 1
     total_response_bytes: 656
+  }
+  results_by_network_category {
+    network_category: "2G"
+    cost_per_sequence: 770.0459041103724
+    bytes_per_sequence: 656.0
+  }
+  results_by_network_category {
+    network_category: "3G"
+    cost_per_sequence: 54.167553214532596
+    bytes_per_sequence: 656.0
+  }
+  results_by_network_category {
+    network_category: "4G"
+    cost_per_sequence: 5.262153565005011
+    bytes_per_sequence: 656.0
+  }
+  results_by_network_category {
+    network_category: "desktop"
+    cost_per_sequence: 4.692869817627837
+    bytes_per_sequence: 656.0
+  }
+  results_by_network_category {
+    network_category: "wifi"
+    cost_per_sequence: 4.894948102235092
+    bytes_per_sequence: 656.0
   }
 }
 results {
@@ -10604,6 +10704,31 @@ results {
     total_request_bytes: 665
     total_response_bytes: 3911
   }
+  results_by_network_category {
+    network_category: "2G"
+    cost_per_sequence: 4754.6032675024035
+    bytes_per_sequence: 4576.0
+  }
+  results_by_network_category {
+    network_category: "3G"
+    cost_per_sequence: 315.9608615035354
+    bytes_per_sequence: 4576.0
+  }
+  results_by_network_category {
+    network_category: "4G"
+    cost_per_sequence: 15.709421946583431
+    bytes_per_sequence: 4576.0
+  }
+  results_by_network_category {
+    network_category: "desktop"
+    cost_per_sequence: 7.3112715863446915
+    bytes_per_sequence: 4576.0
+  }
+  results_by_network_category {
+    network_category: "wifi"
+    cost_per_sequence: 9.700654773497343
+    bytes_per_sequence: 4576.0
+  }
 }
 results {
   method_name: "WholeFont"
@@ -11974,6 +12099,31 @@ results {
     total_request_count: 1
     total_request_bytes: 35
     total_response_bytes: 1763
+  }
+  results_by_network_category {
+    network_category: "2G"
+    cost_per_sequence: 783.9205824820939
+    bytes_per_sequence: 1798.0
+  }
+  results_by_network_category {
+    network_category: "3G"
+    cost_per_sequence: 54.85742848330601
+    bytes_per_sequence: 1798.0
+  }
+  results_by_network_category {
+    network_category: "4G"
+    cost_per_sequence: 5.322084304854322
+    bytes_per_sequence: 1798.0
+  }
+  results_by_network_category {
+    network_category: "desktop"
+    cost_per_sequence: 4.703498296588704
+    bytes_per_sequence: 1798.0
+  }
+  results_by_network_category {
+    network_category: "wifi"
+    cost_per_sequence: 4.915795261781137
+    bytes_per_sequence: 1798.0
   }
 }
 
