@@ -308,7 +308,7 @@ def language_filter():
   """
   if FLAGS.script_category:
     if FLAGS.script_category in SCRIPT_CATEGORIES:
-      return SCRIPT_CATEGORIES
+      return SCRIPT_CATEGORIES[FLAGS.script_category]
     return set()
 
   if FLAGS.filter_languages:
