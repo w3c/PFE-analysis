@@ -4,6 +4,7 @@ Takes an AnalysisResultProto in either text or binary form and can
 Summarize the data in a few different ways. See USAGE string below.
 """
 
+import statistics
 import sys
 
 from google.protobuf import text_format
@@ -17,6 +18,7 @@ summarize_results [--input_file=<path to input>] <mode>
 
 Available modes:
   summary_report - print out a summary of several key metrics for each method and network model.
+  comparison_report <method 1> [<method 2> ...] - Compares one or more methods against a baseline method.
   cost_summary - print out the total cost for each method and network model.
   request_bytes_per_page_view <method> - print out the distribution of request bytes sent per page view.
   response_bytes_per_page_view <method> - print out the distribution of response bytes sent per page view.
@@ -33,6 +35,11 @@ flags.DEFINE_string(
 flags.DEFINE_bool("binary", False,
                   "If true, will parse the input file as a binary proto.")
 
+flags.DEFINE_string(
+    "baseline_method", "GoogleFonts_UnicodeRange",
+    "For the comparison report this method is used as a "
+    "baseline to compare other methods too.")
+
 
 class NetworkResultNotFound(Exception):
   """Could not find the specified network result."""
@@ -42,9 +49,15 @@ class MethodResultNotFound(Exception):
   """Could not find the specified method result."""
 
 
+class InvalidResultsProto(Exception):
+  """Results proto contained invalid data."""
+
+
 MODE_FUNCTIONS = {
     "summary_report":
         lambda argv, result_proto: print_summary_report(result_proto),
+    "comparison_report":
+        lambda argv, result_proto: print_comparison_report(argv, result_proto),  # pylint: disable=unnecessary-lambda
     "cost_summary":
         lambda argv, result_proto: print_cost_summary(result_proto),
     "wait_per_page_view":
@@ -124,6 +137,22 @@ def find_network_result(method, network, result_proto):
   return matches[0]
 
 
+def find_network_category_result(method, network_category, result_proto):
+  """Locates the network result proto for method and network inside of result_proto."""
+  method_proto = find_method_result(method, result_proto)
+  matches = [
+      network_proto
+      for network_proto in method_proto.results_by_network_category
+      if network_proto.network_category == network_category
+  ]
+
+  if len(matches) != 1:
+    raise NetworkResultNotFound("Cannot find network result for %s and %s." %
+                                (method, network_category))
+
+  return matches[0]
+
+
 def print_distribution(distribution_proto):
   for bucket in distribution_proto.buckets:
     print("{}, {}".format(bucket.end, bucket.count))
@@ -146,6 +175,40 @@ def print_cost_summary(result_proto):
           net_proto.network_model_name,
           net_proto.total_cost,
       ))
+
+
+def print_comparison_report(methods, result_proto):
+  """Converts the result proto into CSV with 3 columns:
+
+  method name, network category, cost change (median), bytes change (median)
+  """
+  print(
+      "method name, network category, cost change (median), bytes change (median)"
+  )
+  for method in sorted(methods):
+    method_proto = find_method_result(method, result_proto)
+    for net in method_proto.results_by_network_category:
+
+      baseline = find_network_category_result(FLAGS.baseline_method,
+                                              net.network_category,
+                                              result_proto)
+      normalized_costs = normalize_list(baseline.cost_per_sequence,
+                                        net.cost_per_sequence)
+      normalized_bytes = normalize_list(baseline.bytes_per_sequence,
+                                        net.bytes_per_sequence)
+
+      print("%s,%s,%s,%s" % (method_proto.method_name, net.network_category,
+                             statistics.median(normalized_costs),
+                             statistics.median(normalized_bytes)))
+
+
+def normalize_list(baseline_values, values):
+  """Normalize values against baseline."""
+  if len(baseline_values) != len(values):
+    raise InvalidResultsProto(
+        "cost or byte lists have differing lengths (%s != %s)" %
+        (len(baseline_values), len(values)))
+  return [values[i] / baseline_values[i] - 1 for i in range(len(values))]
 
 
 def print_summary_report(result_proto):
