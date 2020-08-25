@@ -31,11 +31,14 @@ class AnalyzerTest(unittest.TestCase):
     completed = run_analyzer()
 
     error_message = (
+        "analyzer command failed with a non-zero return code. "
+        "STDERR from the command:\n %s") % completed.stderr.decode("utf-8")
+    self.assertEqual(completed.returncode, 0, msg=error_message)
+
+    error_message = (
         "Output does not match golden file. To update the golden "
         "file run ./update_analyzer_golden.sh. "
         "STDERR from the command:\n %s") % completed.stderr.decode("utf-8")
-
-    self.assertEqual(completed.returncode, 0)
     self.assertEqual(completed.stdout.decode("utf-8"),
                      expected,
                      msg=error_message)

@@ -10,6 +10,10 @@ def mock_cost(total_time_ms):
   return total_time_ms / 10
 
 
+def sr(values, total=0):  # pylint: disable=invalid-name
+  return simulation.SimulationResults(values, total)
+
+
 def s(values):  # pylint: disable=invalid-name
   return simulation.SequenceTotals(values)
 
@@ -165,109 +169,94 @@ class AnalyzerTest(unittest.TestCase):
                                                 10))
 
   def test_merge_results(self):
-    self.assertEqual(analyzer.merge_results([]), dict())
-    self.assertEqual(analyzer.merge_results([{
-        "abc": {
+    self.assertEqual(analyzer.merge_results([]),
+                     simulation.SimulationResults(dict(), 0))
+    self.assertEqual(
+        analyzer.merge_results([sr({"abc": {
             "def": [1]
-        }
-    }]), {"abc": {
-        "def": [1]
-    }})
-
-    self.assertEqual(analyzer.merge_results([
-        {
-            "abc": {
-                "def": [1]
-            }
-        },
-        {},
-    ]), {"abc": {
-        "def": [1]
-    }})
+        }}, 13)]),
+        # Expected
+        sr({"abc": {
+            "def": [1]
+        }}, 13))
 
     self.assertEqual(
         analyzer.merge_results([
-            {
-                "abc": {
-                    "jkl": [1]
-                }
-            },
-            {
-                "def": {
-                    "ghi": [2]
-                }
-            },
-        ]), {
+            sr({"abc": {
+                "def": [1]
+            }}, 11),
+            sr({}, 13),
+        ]),
+        # Expected
+        sr({"abc": {
+            "def": [1]
+        }}, 24))
+
+    self.assertEqual(
+        analyzer.merge_results([
+            sr({"abc": {
+                "jkl": [1]
+            }}),
+            sr({"def": {
+                "ghi": [2]
+            }}),
+        ]), sr({
             "abc": {
                 "jkl": [1]
             },
             "def": {
                 "ghi": [2]
             }
-        })
+        }))
 
     self.assertEqual(
         analyzer.merge_results([
-            {
-                "abc": {
-                    "jkl": [1]
-                }
-            },
-            {
-                "abc": {
-                    "jkl": [2]
-                }
-            },
-        ]), {
+            sr({"abc": {
+                "jkl": [1]
+            }}),
+            sr({"abc": {
+                "jkl": [2]
+            }}),
+        ]), sr({
             "abc": {
                 "jkl": [1, 2]
             },
-        })
+        }))
 
     self.assertEqual(
         analyzer.merge_results([
-            {
-                "abc": {
-                    "jkl": [1]
-                }
-            },
-            {
-                "abc": {
-                    "jkl": [2]
-                }
-            },
-            {
-                "mno": {
-                    "jkl": [3]
-                }
-            },
-        ]), {
+            sr({"abc": {
+                "jkl": [1]
+            }}),
+            sr({"abc": {
+                "jkl": [2]
+            }}),
+            sr({"mno": {
+                "jkl": [3]
+            }}),
+        ]), sr({
             "abc": {
                 "jkl": [1, 2]
             },
             "mno": {
                 "jkl": [3]
             },
-        })
+        }))
 
     self.assertEqual(
         analyzer.merge_results([
-            {
-                "abc": {
-                    "jkl": [1]
-                }
-            },
-            {
-                "abc": {
-                    "mno": [2]
-                }
-            },
-        ]), {
+            sr({"abc": {
+                "jkl": [1]
+            }}),
+            sr({"abc": {
+                "mno": [2]
+            }}),
+        ]), sr({
             "abc": {
                 "jkl": [1],
                 "mno": [2]
             },
-        })
+        }))
 
 
 if __name__ == '__main__':

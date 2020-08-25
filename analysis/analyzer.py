@@ -288,16 +288,15 @@ def do_analysis(serialized_sequences):
 
 def merge_results(segmented_results):
   """Merge a set of results, one per segment of sequences, into a single result dict."""
-  merged = dict()
+
+  error_count = 0
+  merged = collections.defaultdict(lambda: collections.defaultdict(list))
+
   for segment in segmented_results:
-    for method_name, results in segment.items():
-      method_result = merged.get(method_name, dict())
-      for network_model_name, graph_totals in results.items():
-        network_model_result = method_result.get(network_model_name, list())
-        network_model_result.extend(graph_totals)
-        method_result[network_model_name] = network_model_result
-      merged[method_name] = method_result
-  return merged
+    error_count += segment.error_count
+    simulation.merge_results_by_method(segment.totals_by_method, merged)
+
+  return simulation.SimulationResults(merged, error_count)
 
 
 def language_filter():
@@ -352,8 +351,12 @@ def start_analysis():
   else:
     results = merge_results([do_analysis(s) for s in segmented_sequences])
 
+  if results.error_count:
+    LOG.info("%s sequences dropped due to errors in simulation.",
+             results.error_count)
+
   LOG.info("Formatting output.")
-  results = to_protos(results, cost.cost)
+  results = to_protos(results.totals_by_method, cost.cost)
 
   results_proto = result_pb2.AnalysisResultProto()
   for method_result in results:
