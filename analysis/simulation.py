@@ -2,8 +2,11 @@
 
 import collections
 from collections import namedtuple
+import logging
 
 from analysis import font_loader
+
+LOG = logging.getLogger("analyzer")
 
 GraphTotal = collections.namedtuple(
     "GraphTotal",
@@ -15,6 +18,9 @@ SequenceTotals = collections.namedtuple("SequenceTotals", ["totals"])
 NetworkModel = collections.namedtuple(
     "NetworkModel",
     ["name", "rtt", "bandwidth_up", "bandwidth_down", "category", "weight"])
+
+SimulationResults = collections.namedtuple("SimulationResults",
+                                           ["totals_by_method", "error_count"])
 
 
 class GraphHasCyclesError(Exception):
@@ -43,6 +49,7 @@ def simulate_all(sequences,
   """
 
   a_font_loader = font_loader.FontLoader(font_directory, default_font_id)
+  error_count = 0
   results_by_method = collections.defaultdict(
       lambda: collections.defaultdict(list))
 
@@ -50,23 +57,30 @@ def simulate_all(sequences,
 
     sequence_results = collections.defaultdict(
         lambda: collections.defaultdict(list))
-    for method in pfe_methods:
 
-      if not is_network_sensitive(method):
-        graphs = simulate_sequence(sequence, method, None, a_font_loader)
+    try:
+      for method in pfe_methods:
 
-      network_results = sequence_results[method.name()]
-      for network_model in network_models:
-        if is_network_sensitive(method):
-          graphs = simulate_sequence(sequence, method, network_model,
-                                     a_font_loader)
+        if not is_network_sensitive(method):
+          graphs = simulate_sequence(sequence, method, None, a_font_loader)
 
-        network_results[network_model.name].append(
-            SequenceTotals(totals_for_network(graphs, network_model)))
+        network_results = sequence_results[method.name()]
+        for network_model in network_models:
+          if is_network_sensitive(method):
+            graphs = simulate_sequence(sequence, method, network_model,
+                                       a_font_loader)
 
-    merge_results_by_method(sequence_results, results_by_method)
+          network_results[network_model.name].append(
+              SequenceTotals(totals_for_network(graphs, network_model)))
 
-  return results_by_method
+      merge_results_by_method(sequence_results, results_by_method)
+
+    except Exception:  # pylint: disable=broad-except
+      LOG.exception(
+          "Failure during sequence simulation. Dropping sequence from results.")
+      error_count += 1
+
+  return SimulationResults(dict(results_by_method), error_count)
 
 
 def merge_results_by_method(source, dest):

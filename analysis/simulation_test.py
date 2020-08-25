@@ -34,6 +34,11 @@ class MockLoggedPfeSession:  # pylint: disable=missing-class-docstring
     pass
 
 
+def mock_pfe_session_page_view(usage_by_font):
+  if "does_not_exist" in usage_by_font:
+    raise Exception("Font does not exist.")
+
+
 def sequence(views):
   """Helper to create a sequence of page view proto's."""
   result = []
@@ -70,7 +75,8 @@ class SimulationTest(unittest.TestCase):
     self.mock_pfe_method.name = mock.MagicMock(return_value="Mock_PFE_1")
     self.mock_pfe_method.start_session = mock.MagicMock(
         return_value=self.mock_pfe_session)
-    self.mock_pfe_session.page_view = mock.MagicMock()
+    self.mock_pfe_session.page_view = mock.MagicMock(
+        side_effect=mock_pfe_session_page_view)
     self.mock_pfe_session.get_request_graphs = mock.MagicMock(
         return_value=[self.graph_1])
 
@@ -189,16 +195,58 @@ class SimulationTest(unittest.TestCase):
                 simulation.NetworkModel("fast", 0, 20, 20, "fast", 1),
             ],
             "fonts/are/here",
-        ), {
-            "Mock_PFE_1": {
-                "slow": [simulation.SequenceTotals([graph2])] * 2,
-                "fast": [simulation.SequenceTotals([graph])] * 2,
-            },
-            "Mock_PFE_2": {
-                "slow": [simulation.SequenceTotals([graph2] * 2)] * 2,
-                "fast": [simulation.SequenceTotals([graph] * 2)] * 2,
-            },
-        })
+        ),
+        simulation.SimulationResults(
+            {
+                "Mock_PFE_1": {
+                    "slow": [simulation.SequenceTotals([graph2])] * 2,
+                    "fast": [simulation.SequenceTotals([graph])] * 2,
+                },
+                "Mock_PFE_2": {
+                    "slow": [simulation.SequenceTotals([graph2] * 2)] * 2,
+                    "fast": [simulation.SequenceTotals([graph] * 2)] * 2,
+                },
+            }, 0))
+
+  def test_simulate_all_with_error(self):
+    self.maxDiff = None  # pylint: disable=invalid-name
+    graph = simulation.GraphTotal(100.0, 1000, 1000, 1)
+    graph2 = simulation.GraphTotal(200.0, 1000, 1000, 1)
+    self.assertEqual(
+        simulation.simulate_all(
+            [
+                sequence([{
+                    "roboto": [1]
+                }, {
+                    "robto": [2]
+                }]),
+                sequence([
+                    {
+                        "does_not_exist": [1]
+                    },
+                ]),
+            ],
+            [
+                self.mock_pfe_method,
+                self.mock_pfe_method_2,
+            ],
+            [
+                simulation.NetworkModel("slow", 0, 10, 10, "slow", 1),
+                simulation.NetworkModel("fast", 0, 20, 20, "fast", 1),
+            ],
+            "fonts/are/here",
+        ),
+        simulation.SimulationResults(
+            {
+                "Mock_PFE_1": {
+                    "slow": [simulation.SequenceTotals([graph2])],
+                    "fast": [simulation.SequenceTotals([graph])],
+                },
+                "Mock_PFE_2": {
+                    "slow": [simulation.SequenceTotals([graph2] * 2)],
+                    "fast": [simulation.SequenceTotals([graph] * 2)],
+                },
+            }, 1))
 
 
 if __name__ == '__main__':
