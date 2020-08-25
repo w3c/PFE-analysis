@@ -1,5 +1,5 @@
 # PFE-analysis
-Code repository for tools for the the testing and analysis of potential Progressive Font Enrichment ([PFE](https://github.com/w3c/PFE)) solutions.
+Code repository for tools for the testing and analysis of potential Progressive Font Enrichment ([PFE](https://github.com/w3c/PFE)) solutions.
 
 ## Build
 This repository uses the bazel build system. You can build everything:
