@@ -41,33 +41,44 @@ def simulate_all(sequences,
   For each element compute a set of summary metrics, total time, total
   request bytes sent, and total response bytes sent.
   """
+
   a_font_loader = font_loader.FontLoader(font_directory, default_font_id)
-  result = dict()
-  for method in pfe_methods:
-    model_totals = dict()
-    if hasattr(method, "network_sensitive") and callable(
-        method.network_sensitive) and method.network_sensitive():
+  results_by_method = collections.defaultdict(
+      lambda: collections.defaultdict(list))
+
+  for sequence in sequences:
+
+    sequence_results = collections.defaultdict(
+        lambda: collections.defaultdict(list))
+    for method in pfe_methods:
+
+      if not is_network_sensitive(method):
+        graphs = simulate_sequence(sequence, method, None, a_font_loader)
+
+      network_results = sequence_results[method.name()]
       for network_model in network_models:
-        totals = []
-        for sequence in sequences:
+        if is_network_sensitive(method):
           graphs = simulate_sequence(sequence, method, network_model,
                                      a_font_loader)
-          totals.append(
-              SequenceTotals(totals_for_network(graphs, network_model)))
-        model_totals[network_model.name] = totals
-    else:
-      graph_collection = []
-      for sequence in sequences:
-        graphs = simulate_sequence(sequence, method, None, a_font_loader)
-        graph_collection.append(graphs)
-      for network_model in network_models:
-        totals = []
-        for graphs in graph_collection:
-          totals.append(
-              SequenceTotals(totals_for_network(graphs, network_model)))
-        model_totals[network_model.name] = totals
-    result[method.name()] = model_totals
-  return result
+
+        network_results[network_model.name].append(
+            SequenceTotals(totals_for_network(graphs, network_model)))
+
+    merge_results_by_method(sequence_results, results_by_method)
+
+  return results_by_method
+
+
+def merge_results_by_method(source, dest):
+  for method, network_results in source.items():
+    dest_network_results = dest[method]
+    for network, totals in network_results.items():
+      dest_network_results[network].extend(totals)
+
+
+def is_network_sensitive(method):
+  return hasattr(method, "network_sensitive") and callable(
+      method.network_sensitive) and method.network_sensitive()
 
 
 def totals_for_network(graphs, network_model):
