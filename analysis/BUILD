@@ -17,7 +17,7 @@ proto_library(
 )
 
 py_proto_library(
-    name = "page_view_sequence_proto_py",
+    name = "page_view_sequence_py_proto",
     srcs = ["page_view_sequence.proto"],
     visibility = [
         "//tools:__pkg__",
@@ -25,7 +25,7 @@ py_proto_library(
 )
 
 py_proto_library(
-    name = "result_proto_py",
+    name = "result_py_proto",
     srcs = ["result.proto"],
     visibility = [
         "//tools:__pkg__",
@@ -41,8 +41,8 @@ py_binary(
     deps = [
         ":common",
         ":fake_pfe",
-        ":page_view_sequence_proto_py",
-        ":result_proto_py",
+        ":page_view_sequence_py_proto",
+        ":result_py_proto",
         ":simulation",
         "//analysis/pfe_methods",
         "//patch_subset/py",
@@ -62,8 +62,8 @@ py_binary(
     deps = [
         ":common",
         ":fake_pfe",
-        ":page_view_sequence_proto_py",
-        ":result_proto_py",
+        ":page_view_sequence_py_proto",
+        ":result_py_proto",
         ":simulation",
         "//analysis/pfe_methods",
         "//patch_subset/py",
@@ -85,7 +85,7 @@ py_library(
     ],
     deps = [
         ":common",
-        ":page_view_sequence_proto_py",
+        ":page_view_sequence_py_proto",
     ],
 )
 
@@ -103,7 +103,7 @@ py_library(
         "//patch_subset/py:__pkg__",
     ],
     deps = [
-        ":result_proto_py",
+        ":result_py_proto",
     ],
 )
 
@@ -161,7 +161,7 @@ py_test(
         ":analyzer",
         ":common",
         ":fake_pfe",
-        ":result_proto_py",
+        ":result_py_proto",
     ],
 )
 

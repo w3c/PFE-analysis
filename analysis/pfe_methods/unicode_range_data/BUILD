@@ -14,7 +14,7 @@ proto_library(
 )
 
 py_proto_library(
-    name = "slicing_strategy_proto_py",
+    name = "slicing_strategy_py_proto",
     srcs = ["slicing_strategy.proto"],
     visibility = [
         "//tools:__pkg__",
@@ -41,7 +41,7 @@ py_library(
         "//analysis/pfe_methods:__pkg__",
     ],
     deps = [
-        ":slicing_strategy_proto_py",
+        ":slicing_strategy_py_proto",
         "@fonttools",
     ],
 )
