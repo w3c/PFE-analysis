@@ -90,10 +90,10 @@ class PatchSubsetMethodTest(unittest.TestCase):
     # TODO(garretrieger): Change to 100 once the predictor excludes codepoints already
     #                     in the subset.
     self.assertGreater(len(codepoints), 100)
-    self.assertTrue(0x61 in codepoints)
-    self.assertTrue(0x62 in codepoints)
-    self.assertTrue(0x63 in codepoints)
-    self.assertTrue(0x64 in codepoints)
+    self.assertIn(0x61, codepoints)
+    self.assertIn(0x62, codepoints)
+    self.assertIn(0x63, codepoints)
+    self.assertIn(0x64, codepoints)
 
   def test_multi_font_session(self):
     self.session.page_view({"Roboto-Regular.ttf": u([0x61, 0x62])})
