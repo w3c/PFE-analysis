@@ -4,7 +4,7 @@ py_binary(
         "create_data_set.py",
     ],
     deps = [
-        "//analysis:page_view_sequence_proto_py",
+        "//analysis:page_view_sequence_py_proto",
         "@io_abseil_py//absl:app",
     ],
 )
@@ -15,7 +15,7 @@ py_binary(
         "summarize_results.py",
     ],
     deps = [
-        "//analysis:result_proto_py",
+        "//analysis:result_py_proto",
         "@io_abseil_py//absl:app",
         "@io_abseil_py//absl/flags",
     ],
@@ -27,7 +27,7 @@ py_binary(
         "filter_data_set.py",
     ],
     deps = [
-        "//analysis:page_view_sequence_proto_py",
+        "//analysis:page_view_sequence_py_proto",
         "@io_abseil_py//absl:app",
         "@io_abseil_py//absl/flags",
     ],
@@ -39,7 +39,7 @@ py_binary(
         "merge_frequencies.py",
     ],
     deps = [
-        "//analysis/pfe_methods/unicode_range_data:slicing_strategy_proto_py",
+        "//analysis/pfe_methods/unicode_range_data:slicing_strategy_py_proto",
         "@io_abseil_py//absl:app",
         "@io_abseil_py//absl/flags",
     ],
