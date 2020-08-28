@@ -12,7 +12,7 @@ class Woff2Test(unittest.TestCase):
 
     roboto_woff2_bytes = woff2.ttf_to_woff2(roboto_bytes)
 
-    self.assertTrue(roboto_woff2_bytes is not None)
+    self.assertIsNot(roboto_woff2_bytes, None)
     self.assertGreater(len(roboto_woff2_bytes), 0)
     self.assertLess(len(roboto_woff2_bytes), len(roboto_bytes))
     self.assertEqual(roboto_woff2_bytes[0:4], b'wOF2')
