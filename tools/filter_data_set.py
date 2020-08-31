@@ -15,15 +15,13 @@ import sys
 
 from absl import app
 from absl import flags
+from analysis import languages
 from analysis import page_view_sequence_pb2
 
 FLAGS = flags.FLAGS
 
 flags.DEFINE_string("input_data", None, "Path to input data for the analysis.")
 flags.mark_flag_as_required("input_data")
-
-flags.DEFINE_list("filter_languages", None,
-                  "List of language tags to filter the input data by.")
 
 flags.DEFINE_integer(
     "sample_denom", 1,
@@ -35,12 +33,6 @@ def read_binary_input(input_data_path):
   with open(input_data_path, 'rb') as input_data_file:
     return page_view_sequence_pb2.DataSetProto.FromString(
         input_data_file.read())
-
-
-def keep_language(lang):
-  if not FLAGS.filter_languages:
-    return True
-  return lang in FLAGS.filter_languages
 
 
 def sample():
@@ -59,7 +51,7 @@ def main(argv):
   sequence_list = []
 
   for seq in data_set.sequences:
-    if not keep_language(seq.language):
+    if not languages.should_keep(seq.language):
       continue
 
     if not sample():
