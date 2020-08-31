@@ -95,12 +95,14 @@ py_library(
         "cost.py",
         "distribution.py",
         "font_loader.py",
+        "languages.py",
         "request_graph.py",
     ],
     srcs_version = "PY3",
     visibility = [
         "//analysis/pfe_methods:__pkg__",
         "//patch_subset/py:__pkg__",
+        "//tools:__pkg__",
     ],
     deps = [
         ":result_py_proto",
@@ -124,6 +126,18 @@ py_test(
     ],
     deps = [
         ":common",
+    ],
+)
+
+py_test(
+    name = "languages_test",
+    srcs = [
+        "languages_test.py",
+    ],
+    deps = [
+        ":common",
+        "@io_abseil_py//absl/testing:absltest",
+        "@io_abseil_py//absl/testing:flagsaver",
     ],
 )
 

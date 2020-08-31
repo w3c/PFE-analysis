@@ -27,6 +27,7 @@ py_binary(
         "filter_data_set.py",
     ],
     deps = [
+        "//analysis:common",
         "//analysis:page_view_sequence_py_proto",
         "@io_abseil_py//absl:app",
         "@io_abseil_py//absl/flags",

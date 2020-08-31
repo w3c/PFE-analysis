@@ -23,6 +23,7 @@ from absl import app
 from absl import flags
 from analysis import cost
 from analysis import distribution
+from analysis import languages
 from analysis import network_models
 from analysis import page_view_sequence_pb2
 from analysis import result_pb2
@@ -59,27 +60,8 @@ flags.DEFINE_string(
 flags.DEFINE_integer("parallelism", 12,
                      "Number of processes to use for the simulation.")
 
-flags.DEFINE_list("filter_languages", None,
-                  "List of language tags to filter the input data by.")
-
-flags.DEFINE_string(
-    "script_category", None, "One of 'latin', 'cjk', or 'arabic_indic'. "
-    "Automatically configures filter_languages to "
-    "the set of language tags for that script category.")
-
 FONT_DIRECTORY = ""
 DEFAULT_FONT_ID = ""
-
-SCRIPT_CATEGORIES = {
-    "latin": {
-        "en", "vi", "es", "ru", "pt-PT", "fr", "id", "tr", "th", "pl", "de",
-        "it", "nl", "cs", "sk", "da", "el", "sv", "sr", "fi", "ro", "hu", "no",
-        "fil", "bg", "hr", "uk", "iw", "ms", "lt", "sl", "la", "az", "lv", "mk",
-        "is", "ka", "et",
-    },
-    "arabic_indic": {"ar",  "hi", "fa", "ml", "bn", "ta", "km", "te", "mr", "my", "ur"},
-    "cjk": {"ja", "zh", "ko", "zh-Hant"},
-}
 
 PFE_METHODS = []  # Populated by 'main' method since it depends on flags.
 
@@ -300,23 +282,6 @@ def merge_results(segmented_results):
   return simulation.SimulationResults(merged, error_count)
 
 
-def language_filter():
-  """Returns the set of languages to filter sequences against.
-
-  The filter set is based on the 'script_category' and 'filter_languages'
-  flags. If 'script_category' is set it takes precendent.
-  """
-  if FLAGS.script_category:
-    if FLAGS.script_category in SCRIPT_CATEGORIES:
-      return SCRIPT_CATEGORIES[FLAGS.script_category]
-    return set()
-
-  if FLAGS.filter_languages:
-    return set(FLAGS.filter_languages)
-
-  return set()
-
-
 def start_analysis():
   """Read input data and start up the analysis."""
   input_data_path = FLAGS.input_data
@@ -337,11 +302,10 @@ def start_analysis():
   LOG.info("Preparing input data.")
   # the sequence proto's need to be serialized since they are being
   # sent to another process.
-  filter_languages = language_filter()
   sequences = [
       sequence.SerializeToString()
       for sequence in data_set.sequences
-      if not filter_languages or sequence.language in filter_languages
+      if languages.should_keep(sequence.language)
   ]
   segmented_sequences = segment_sequences(sequences, FLAGS.parallelism * 2)
 
