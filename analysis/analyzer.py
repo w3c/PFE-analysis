@@ -72,11 +72,12 @@ DEFAULT_FONT_ID = ""
 
 SCRIPT_CATEGORIES = {
     "latin": {
-        "en", "vi", "tr", "es", "pl", "fr", "id", "th", "ru", "pt-PT", "it",
-        "de", "cs", "ro", "el", "sr", "nl", "sk", "hu", "fi", "ms", "bg", "hr",
-        "sv", "fil", "da", "az", "ka", "no"
+        "en", "vi", "es", "ru", "pt-PT", "fr", "id", "tr", "th", "pl", "de",
+        "it", "nl", "cs", "sk", "da", "el", "sv", "sr", "fi", "ro", "hu", "no",
+        "fil", "bg", "hr", "uk", "iw", "ms", "lt", "sl", "la", "az", "lv", "mk",
+        "is", "ka", "et",
     },
-    "arabic_indic": {"ar", "hi", "my", "mr", "fa", "ta", "bn"},
+    "arabic_indic": {"ar",  "hi", "fa", "ml", "bn", "ta", "km", "te", "mr", "my", "ur"},
     "cjk": {"ja", "zh", "ko", "zh-Hant"},
 }
 
