@@ -1,0 +1,39 @@
+results: {
+  method_name: "ABC"
+  results_by_network_category: {
+    network_category: "slow"
+    cost_per_sequence: [0, 2, 6, 7]
+    bytes_per_sequence: [0, 20, 60, 70]
+  }
+  results_by_network_category: {
+    network_category: "fast"
+    cost_per_sequence: [0.0, 0.2, 0.6, 0.7]
+    bytes_per_sequence: [0, 20, 60, 70]
+  }
+}
+results: {
+  method_name: "DEF"
+  results_by_network_category: {
+    network_category: "slow"
+    cost_per_sequence: [0, 2, 6, 7]
+    bytes_per_sequence: [0, 20, 60, 70]
+  }
+  results_by_network_category: {
+    network_category: "fast"
+    cost_per_sequence: [0.0, 0.2, 0.6, 0.7]
+    bytes_per_sequence: [0, 20, 60, 70]
+  }
+}
+results: {
+  method_name: "GHI"
+  results_by_network_category: {
+    network_category: "slow"
+    cost_per_sequence: [0, 2, 6, 7]
+    bytes_per_sequence: [0, 20, 60, 70]
+  }
+  results_by_network_category: {
+    network_category: "fast"
+    cost_per_sequence: [0.0, 0.2, 0.6, 0.7]
+    bytes_per_sequence: [0, 20, 60, 70]
+  }
+}

@@ -182,9 +182,9 @@ def print_comparison_report(methods, result_proto):
 
   method name, network category, cost change (median), bytes change (median)
   """
-  print(
-      "method name, network category, cost change (median), bytes change (median)"
-  )
+  print("method name, network category, "
+        "cost change (5th), cost change (median), cost change (95th), "
+        "bytes change (5th), bytes change (median), bytes change (95th)")
   for method in sorted(methods):
     method_proto = find_method_result(method, result_proto)
     for net in method_proto.results_by_network_category:
@@ -197,9 +197,16 @@ def print_comparison_report(methods, result_proto):
       normalized_bytes = normalize_list(baseline.bytes_per_sequence,
                                         net.bytes_per_sequence)
 
-      print("%s,%s,%s,%s" % (method_proto.method_name, net.network_category,
-                             statistics.median(normalized_costs),
-                             statistics.median(normalized_bytes)))
+      print("%s,%s,%s,%s,%s,%s,%s,%s" % (
+          method_proto.method_name,
+          net.network_category,
+          statistics.quantiles(normalized_costs, n=20)[0],
+          statistics.median(normalized_costs),
+          statistics.quantiles(normalized_costs, n=20)[18],
+          statistics.quantiles(normalized_bytes, n=20)[0],
+          statistics.median(normalized_bytes),
+          statistics.quantiles(normalized_bytes, n=20)[18],
+      ))
 
 
 def normalize_list(baseline_values, values):

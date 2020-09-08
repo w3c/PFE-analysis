@@ -45,3 +45,25 @@ py_binary(
         "@io_abseil_py//absl/flags",
     ],
 )
+
+py_binary(
+    name = "merge_results",
+    srcs = [
+        "merge_results.py",
+    ],
+    deps = [
+        "//analysis:result_py_proto",
+        "@io_abseil_py//absl:app",
+    ],
+)
+
+py_test(
+    name = "merge_results_test",
+    srcs = [
+        "merge_results_test.py",
+    ],
+    data = glob(["testdata/**"]),
+    deps = [
+        ":merge_results",
+    ],
+)
