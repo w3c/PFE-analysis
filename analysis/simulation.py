@@ -19,8 +19,8 @@ NetworkModel = collections.namedtuple(
     "NetworkModel",
     ["name", "rtt", "bandwidth_up", "bandwidth_down", "category", "weight"])
 
-SimulationResults = collections.namedtuple("SimulationResults",
-                                           ["totals_by_method", "error_count"])
+SimulationResults = collections.namedtuple(
+    "SimulationResults", ["totals_by_method", "failed_indices"])
 
 
 class GraphHasCyclesError(Exception):
@@ -49,10 +49,11 @@ def simulate_all(sequences,
   """
 
   a_font_loader = font_loader.FontLoader(font_directory, default_font_id)
-  error_count = 0
+  failed_indices = []
   results_by_method = collections.defaultdict(
       lambda: collections.defaultdict(list))
 
+  idx = 0
   for sequence in sequences:
 
     sequence_results = collections.defaultdict(
@@ -78,9 +79,10 @@ def simulate_all(sequences,
     except Exception:  # pylint: disable=broad-except
       LOG.exception(
           "Failure during sequence simulation. Dropping sequence from results.")
-      error_count += 1
+      failed_indices.append(idx)
+    idx += 1
 
-  return SimulationResults(dict(results_by_method), error_count)
+  return SimulationResults(dict(results_by_method), failed_indices)
 
 
 def merge_results_by_method(source, dest):

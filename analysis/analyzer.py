@@ -15,6 +15,7 @@ analysis/page_view_sequence.proto
 import collections
 import logging
 from multiprocessing import Pool
+import os
 import sys
 import json
 
@@ -59,6 +60,10 @@ flags.DEFINE_string(
 
 flags.DEFINE_integer("parallelism", 12,
                      "Number of processes to use for the simulation.")
+
+flags.DEFINE_string(
+    "failed_indices_out", None,
+    "If set outputs a list of failed indices to the specified path.")
 
 FONT_DIRECTORY = ""
 DEFAULT_FONT_ID = ""
@@ -212,6 +217,12 @@ def to_network_result_proto(network_model_name, totals, cost_function):  # pylin
   return network_result_proto
 
 
+def write_failed_indices(failed_indices):
+  with open(FLAGS.failed_indices_out, 'w') as out:
+    for idx in failed_indices:
+      out.write(str(idx) + os.linesep)
+
+
 def read_binary_input(input_data_path):
   with open(input_data_path, 'rb') as input_data_file:
     return page_view_sequence_pb2.DataSetProto.FromString(
@@ -251,10 +262,10 @@ def read_json_input(input_data_path):
 
 def segment_sequences(sequences, segments):
   segment_size = max(int(len(sequences) / segments), 1)
-  return [
+  return ([
       sequences[s:s + segment_size]
       for s in range(0, len(sequences), segment_size)
-  ]
+  ], segment_size)
 
 
 def do_analysis(serialized_sequences):
@@ -269,17 +280,20 @@ def do_analysis(serialized_sequences):
                                  FONT_DIRECTORY, DEFAULT_FONT_ID)
 
 
-def merge_results(segmented_results):
+def merge_results(segmented_results, segment_size):
   """Merge a set of results, one per segment of sequences, into a single result dict."""
 
-  error_count = 0
+  failed_indices = []
   merged = collections.defaultdict(lambda: collections.defaultdict(list))
 
+  segment_no = 0
   for segment in segmented_results:
-    error_count += segment.error_count
+    failed_indices.extend(
+        [idx + segment_no * segment_size for idx in segment.failed_indices])
     simulation.merge_results_by_method(segment.totals_by_method, merged)
+    segment_no += 1
 
-  return simulation.SimulationResults(merged, error_count)
+  return simulation.SimulationResults(merged, failed_indices)
 
 
 def start_analysis():
@@ -307,18 +321,23 @@ def start_analysis():
       for sequence in data_set.sequences
       if languages.should_keep(sequence.language)
   ]
-  segmented_sequences = segment_sequences(sequences, FLAGS.parallelism * 2)
+  segmented_sequences, segment_size = segment_sequences(sequences,
+                                                        FLAGS.parallelism * 2)
 
   LOG.info("Running simulations on %s sequences.", len(sequences))
   if FLAGS.parallelism > 1:
     with Pool(FLAGS.parallelism) as pool:
-      results = merge_results(pool.map(do_analysis, segmented_sequences))
+      results = merge_results(pool.map(do_analysis, segmented_sequences),
+                              segment_size)
   else:
-    results = merge_results([do_analysis(s) for s in segmented_sequences])
+    results = merge_results([do_analysis(s) for s in segmented_sequences],
+                            segment_size)
 
-  if results.error_count:
+  if results.failed_indices:
     LOG.info("%s sequences dropped due to errors in simulation.",
-             results.error_count)
+             len(results.failed_indices))
+    if FLAGS.failed_indices_out:
+      write_failed_indices(results.failed_indices)
 
   LOG.info("Formatting output.")
   results = to_protos(results.totals_by_method, cost.cost)
