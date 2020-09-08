@@ -206,7 +206,7 @@ class SimulationTest(unittest.TestCase):
                     "slow": [simulation.SequenceTotals([graph2] * 2)] * 2,
                     "fast": [simulation.SequenceTotals([graph] * 2)] * 2,
                 },
-            }, 0))
+            }, []))
 
   def test_simulate_all_with_error(self):
     self.maxDiff = None  # pylint: disable=invalid-name
@@ -246,7 +246,7 @@ class SimulationTest(unittest.TestCase):
                     "slow": [simulation.SequenceTotals([graph2] * 2)],
                     "fast": [simulation.SequenceTotals([graph] * 2)],
                 },
-            }, 1))
+            }, [1]))
 
 
 if __name__ == '__main__':

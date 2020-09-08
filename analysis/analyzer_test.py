@@ -10,8 +10,10 @@ def mock_cost(total_time_ms):
   return total_time_ms / 10
 
 
-def sr(values, total=0):  # pylint: disable=invalid-name
-  return simulation.SimulationResults(values, total)
+def sr(values, failed_indices=None):  # pylint: disable=invalid-name
+  if failed_indices is None:
+    failed_indices = []
+  return simulation.SimulationResults(values, failed_indices)
 
 
 def s(values):  # pylint: disable=invalid-name
@@ -155,42 +157,42 @@ class AnalyzerTest(unittest.TestCase):
             }, mock_cost), [method_proto])
 
   def test_segment_sequences(self):
-    self.assertEqual([], analyzer.segment_sequences([], 3))
-    self.assertEqual([[1, 2, 3, 4, 5, 6, 7, 8, 9]],
+    self.assertEqual(([], 1), analyzer.segment_sequences([], 3))
+    self.assertEqual(([[1, 2, 3, 4, 5, 6, 7, 8, 9]], 9),
                      analyzer.segment_sequences([1, 2, 3, 4, 5, 6, 7, 8, 9], 1))
-    self.assertEqual([[1, 2, 3, 4], [5, 6, 7, 8], [9]],
+    self.assertEqual(([[1, 2, 3, 4], [5, 6, 7, 8], [9]], 4),
                      analyzer.segment_sequences([1, 2, 3, 4, 5, 6, 7, 8, 9], 2))
-    self.assertEqual([[1, 2, 3], [4, 5, 6], [7, 8, 9]],
+    self.assertEqual(([[1, 2, 3], [4, 5, 6], [7, 8, 9]], 3),
                      analyzer.segment_sequences([1, 2, 3, 4, 5, 6, 7, 8, 9], 3))
-    self.assertEqual([[1], [2], [3], [4], [5], [6], [7], [8], [9]],
+    self.assertEqual(([[1], [2], [3], [4], [5], [6], [7], [8], [9]], 1),
                      analyzer.segment_sequences([1, 2, 3, 4, 5, 6, 7, 8, 9], 9))
-    self.assertEqual([[1], [2], [3], [4], [5], [6], [7], [8], [9]],
+    self.assertEqual(([[1], [2], [3], [4], [5], [6], [7], [8], [9]], 1),
                      analyzer.segment_sequences([1, 2, 3, 4, 5, 6, 7, 8, 9],
                                                 10))
 
   def test_merge_results(self):
-    self.assertEqual(analyzer.merge_results([]),
-                     simulation.SimulationResults(dict(), 0))
+    self.assertEqual(analyzer.merge_results([], 10),
+                     simulation.SimulationResults(dict(), []))
     self.assertEqual(
         analyzer.merge_results([sr({"abc": {
             "def": [1]
-        }}, 13)]),
+        }}, [13])], 10),
         # Expected
         sr({"abc": {
             "def": [1]
-        }}, 13))
+        }}, [13]))
 
     self.assertEqual(
         analyzer.merge_results([
             sr({"abc": {
                 "def": [1]
-            }}, 11),
-            sr({}, 13),
-        ]),
+            }}, [11]),
+            sr({}, [13]),
+        ], 10),
         # Expected
         sr({"abc": {
             "def": [1]
-        }}, 24))
+        }}, [11, 23]))
 
     self.assertEqual(
         analyzer.merge_results([
@@ -200,7 +202,7 @@ class AnalyzerTest(unittest.TestCase):
             sr({"def": {
                 "ghi": [2]
             }}),
-        ]), sr({
+        ], 10), sr({
             "abc": {
                 "jkl": [1]
             },
@@ -217,7 +219,7 @@ class AnalyzerTest(unittest.TestCase):
             sr({"abc": {
                 "jkl": [2]
             }}),
-        ]), sr({
+        ], 10), sr({
             "abc": {
                 "jkl": [1, 2]
             },
@@ -234,7 +236,7 @@ class AnalyzerTest(unittest.TestCase):
             sr({"mno": {
                 "jkl": [3]
             }}),
-        ]), sr({
+        ], 10), sr({
             "abc": {
                 "jkl": [1, 2]
             },
@@ -251,7 +253,7 @@ class AnalyzerTest(unittest.TestCase):
             sr({"abc": {
                 "mno": [2]
             }}),
-        ]), sr({
+        ], 10), sr({
             "abc": {
                 "jkl": [1],
                 "mno": [2]
