@@ -372,7 +372,38 @@ prior to standardization work.
     <section>
         <h3 class="heading settled" data-level="2" id="network"><span class="secno">3.1 </span><span class="content">Network type - slow 2G to fast broadband</span><a class="self-link" href="#network"></a></h3>
 
-        <p class="todo">todo</p>
+        <p>They type of network
+          has a large impact on percieved performance
+          (time from network request to first rendered text).
+          Not only bandwidth but also latency,
+          which can be substantial (ten seconds!) on slower mobile networks,
+          must be considered.
+        </p>
+        <p>
+          In this study each network type is represented by a <em>network model</em>.
+          A network model is defined as
+          the estimated round trip time,
+          the upstream bandwidth,
+          and the downstream bandwidth.
+        </p>
+        <p>
+          The size of HTTP request headers and responses
+          (using HPACK) was based on
+          observing request header sizes
+          for sample requests
+          to a fonts Content Distribution Network (CDN).
+        </p>
+        <p>
+          The network models
+          for 2G, 3G, 4G, mobile WiFi, and Desktop (on a fast connection)
+          were derived from browser reported connection speeds (from Chrome),
+          across each connection type.
+          For each connection type
+          5 different speeds were provided,
+          ranging from the slowest observed speeds
+          to the fastest observed for that connection type.
+
+        </p>
     </section>
 
     <section>
