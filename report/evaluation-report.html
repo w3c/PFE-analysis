@@ -89,36 +89,36 @@ prior to standardization work.
      <a href="#intro"><span class="secno">1</span> <span class="content"> Introduction</span></a></li>
 
     <li>
-     <a href="#questions"><span class="secno">2</span> <span class="content"> Webfont deployment - successes, problems, solutions</span></a>
+     <a href="#deployment"><span class="secno">2</span> <span class="content"> Webfont deployment - successes, problems, solutions</span></a>
      <ol class="toc">
-      <li><a href="#purpose"><span class="secno">2.1</span> <span class="content"> @font-face</span></a>
-      <li><a href="#minimum-data"><span class="secno">2.2</span> <span class="content"> WOFF 1.0</span></a>
-      <li><a href="#personal-data"><span class="secno">2.3</span> <span class="content"> WOFF 2.0</span></a>
-      <li><a href="#sensitive-data"><span class="secno">2.4</span> <span class="content"> Static subsets and unicode-range</span></a>
-      <li><a href="#persistent-origin-specific-state"><span class="secno">2.5</span> <span class="content"> Success: Widespread success for simple fonts</span></a>
-      <li><a href="#underlying-platform-data"><span class="secno">2.6</span> <span class="content"> Failure: Large glyph repertoires</span></a>
-      <li><a href="#sensor-data"><span class="secno">2.7</span> <span class="content"> Failure: Difficulty with subsetting</span></a>
-      <li><a href="#other-data"><span class="secno">2.8</span> <span class="content"> Solution: Progressive Font Enrichment</span></a>
+      <li><a href="#fontface"><span class="secno">2.1</span> <span class="content"> @font-face</span></a>
+      <li><a href="#WOFF1"><span class="secno">2.2</span> <span class="content"> WOFF 1.0</span></a>
+      <li><a href="#WOFF2"><span class="secno">2.3</span> <span class="content"> WOFF 2.0</span></a>
+      <li><a href="#static"><span class="secno">2.4</span> <span class="content"> Static subsets and unicode-range</span></a>
+      <li><a href="#success-simple"><span class="secno">2.5</span> <span class="content"> Success: Widespread success for simple fonts</span></a>
+      <li><a href="#fail-large"><span class="secno">2.6</span> <span class="content"> Failure: Large glyph repertoires</span></a>
+      <li><a href="#sfail-subset"><span class="secno">2.7</span> <span class="content"> Failure: Difficulty with subsetting</span></a>
+      <li><a href="#soln-PFE"><span class="secno">2.8</span> <span class="content"> Solution: Progressive Font Enrichment</span></a>
 
      </ol>
     <li>
-     <a href="#threats"><span class="secno">3</span> <span class="content">Study Design</span></a>
+     <a href="#design"><span class="secno">3</span> <span class="content">Study Design</span></a>
      <ol class="toc">
-      <li><a href="#passive-network"><span class="secno">3.1</span> <span class="content"> Network type - slow 2G to fast broadband</span></a>
-      <li><a href="#active-network"><span class="secno">3.2</span> <span class="content"> Language type: small &amp; simple, complex shaping, large</span></a>
-      <li><a href="#sop-violations"><span class="secno">3.3</span> <span class="content"> Effect of Codepoint Prediction</span></a>
-      <li><a href="#third-party-tracking"><span class="secno">3.4</span> <span class="content"> Server type: intelligent vs. simple</span></a>
-      <li><a href="#legitimate-misuse"><span class="secno">3.5</span> <span class="content"> Complex subsetting: table dependency analysis</span></a>
-      <li><a href="#legitimate-misuse"><span class="secno">3.6</span> <span class="content"> Byterange subsetting: glyph grouping</span></a>
-      <li><a href="#legitimate-misuse"><span class="secno">3.7</span> <span class="content"> Web page corpus</span></a>
-      <li><a href="#legitimate-misuse"><span class="secno">3.8</span> <span class="content"> Simulation and analysis framework</span></a>
-      <li><a href="#legitimate-misuse"><span class="secno">3.9</span> <span class="content"> Out of scope</span></a>
+      <li><a href="#network"><span class="secno">3.1</span> <span class="content"> Network type - slow 2G to fast broadband</span></a>
+      <li><a href="#langtype"><span class="secno">3.2</span> <span class="content"> Language type: small &amp; simple, complex shaping, large</span></a>
+      <li><a href="#codepredict"><span class="secno">3.3</span> <span class="content"> Effect of Codepoint Prediction</span></a>
+      <li><a href="#servtype"><span class="secno">3.4</span> <span class="content"> Server type: intelligent vs. simple</span></a>
+      <li><a href="#tda"><span class="secno">3.5</span> <span class="content"> Complex subsetting: table dependency analysis</span></a>
+      <li><a href="#group"><span class="secno">3.6</span> <span class="content"> Byterange subsetting: glyph grouping</span></a>
+      <li><a href="#corpus"><span class="secno">3.7</span> <span class="content"> Web page corpus</span></a>
+      <li><a href="#framework"><span class="secno">3.8</span> <span class="content"> Simulation and analysis framework</span></a>
+      <li><a href="#oos"><span class="secno">3.9</span> <span class="content"> Out of scope</span></a>
      </ol>
 
     <li>
-     <a href="#mitigations"><span class="secno">4</span> <span class="content"> Analysis </span></a>
+     <a href="#analysis"><span class="secno">4</span> <span class="content"> Analysis </span></a>
 
-    <li><a href="#conformance"><span class="secno">5</span> <span class="content"> Conclusions</span></a>
+    <li><a href="#conclusions"><span class="secno">5</span> <span class="content"> Conclusions</span></a>
     <li>
      <a href="#references"><span class="secno">A</span> <span class="content"> References</span></a>
 
@@ -390,7 +390,7 @@ prior to standardization work.
     </section>
 
     <section>
-        <h3 class="heading settled" data-level="2" id="codepredict"><span class="secno">3.4 </span><span class="content">Server type: intelligent vs. simple</span><a class="self-link" href="#codepredict"></a></h3>
+        <h3 class="heading settled" data-level="2" id="servtype"><span class="secno">3.4 </span><span class="content">Server type: intelligent vs. simple</span><a class="self-link" href="#servtype"></a></h3>
 
         <p>
             Two entirely different types of font enrichment have been studied. One requires only a standard Web server, so could be deployed anywhere.
@@ -483,7 +483,7 @@ prior to standardization work.
     </section>
 
     <section>
-        <h2 class="heading settled" data-level="1" id="analysis"><span class="secno">4. </span><span class="content">Conclusions</span><a class="self-link" href="#analysis"></a></h2>
+        <h2 class="heading settled" data-level="1" id="conclusions"><span class="secno">4. </span><span class="content">Conclusions</span><a class="self-link" href="#conclusions"></a></h2>
 
         <p class="todo">todo</p>
 
