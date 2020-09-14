@@ -1,0 +1,827 @@
+<!doctype html><html lang="en">
+ <head>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+  <title>Progressive Font Enrichment: Evaluation Report</title>
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <link href="#fixme" rel="canonical"/>
+    <link rel="stylesheet" href="css/main.css"/>
+    <link rel="stylesheet"  href="https://www.w3.org/StyleSheets/TR/2016/W3C-WG-NOTE"/>
+ <body class="h-entry">
+  <div class="head">
+   <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
+   <h1>Progressive Font Enrichment: <br>Evaluation Report</h1>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">W3C Working Group Note, <time class="dt-updated" datetime="2020--08-20">20 Aug 2020</time></span></h2>
+   <div data-fill-with="spec-metadata">
+    <dl>
+     <dt>This version:
+     <dd><a class="u-url" href="">https://www.w3.org/TR/</a>
+     <dt>Latest published version:
+     <dd><a href="https://www.w3.org/TR/">https://www.w3.org/TR/</a>
+     <dt>Editor's Draft:
+     <dd><a href=""></a>
+     <!-- <dt>Previous Versions:
+     <dd> -->
+     <dt>Issue Tracking:
+     <dd><a href="https://github.com/w3c/PFE-analysis/issues">GitHub</a>
+     <dt class="editor">Editor:
+     <dd class="editor p-author h-card vcard" data-editor-id="1438"><a class="p-name fn u-email email" href="mailto:chris@w3.org">Chris Lilley</a> (<a class="p-org org" href="https://w3.org">W3C</a>)
+    </dl>
+   </div>
+   <div data-fill-with="warning"></div>
+<p class="copyright" data-fill-with="copyright">
+This document is made available under the <a href="http://www.w3.org/Consortium/Legal/2015/copyright-software-and-document" rel="license">W3C Software and Document License</a>.
+   </p>
+   <hr title="Separator for header">
+  </div>
+  <div class="p-summary" data-fill-with="abstract">
+   <h2 class="no-num no-toc no-ref heading settled" id="abstract"><span class="content">Abstract</span></h2>
+   <p>The success of WebFonts is unevenly distributed.
+    This study evaluates solutions
+    which would allow WebFonts to be used
+    where slow networks,
+    very large fonts,
+    or complex subsetting requirements
+    currently preclude their use.</p>
+  </div>
+
+  <section id="sotd" class="introductory"><h2 id="h-sotd" resource="#h-sotd"><span property="xhv:role" resource="xhv:heading">Status of This Document</span></h2>
+
+        <p>
+          <em>This section describes the status of this document at the time of its publication. Other documents may supersede this document. A list of current <abbr title="World Wide Web Consortium">W3C</abbr> publications and the latest revision of this technical report can be found in the <a href="https://www.w3.org/TR/"><abbr title="World Wide Web Consortium">W3C</abbr> technical reports index</a> at https://www.w3.org/TR/.</em>
+        </p>
+
+        <p>
+            This is an (a draft) Evaluation Report
+as <a href="https://www.w3.org/Fonts/WG/webfonts-2018.html#ig-other-deliverables">required
+    by the charter</a> of the
+WebFonts Working Group.
+It has not yet been reviewed or approved by that group.
+It will eventually be presented to the public
+as a report on the investigative activities undertaken
+during 2019 and 2020,
+prior to standardization work.
+        </p>
+
+          <p>
+            This document was <em>(will be)</em> published by the <a href="https://www.w3.org/Fonts/WG/">WebFonts Working Group</a> as a Working Group Note.<br>
+
+              Please raise issues on this document on <a href="https://github.com/w3c/PFE-analysis/issues">GitHub</a>. All comments are welcome.
+          </p>
+
+            <p>
+              Publication as a Working Group Note does not imply endorsement by the <abbr title="World Wide Web Consortium">W3C</abbr>
+              Membership. This is a draft document and may be updated, replaced or obsoleted by other
+              documents at any time. It is inappropriate to cite this document as other than work in
+              progress.
+            </p>
+
+
+<p data-deliverer="44556">This document was produced by a group operating under the <a href="https://www.w3.org/Consortium/Patent-Policy/">W3C Patent Policy</a>.</p>
+   <p>This document is governed by the <a href="https://www.w3.org/2019/Process-20190301/" id="w3c_process_revision">1 March 2019 W3C Process Document</a>.</p>
+
+</section>
+
+  <nav data-fill-with="table-of-contents" id="toc">
+   <h2 class="no-num no-toc no-ref todo" id="contents">Table of Contents</h2>
+   <ol class="toc" role="directory">
+    <li>
+     <a href="#intro"><span class="secno">1</span> <span class="content">Introduction</span></a></li>
+
+     <!-- <ol class="toc">
+      <li><a href="#howtouse"><span class="secno">1.1</span> <span class="content">How To Use The Questionnaire</span></a>
+     </ol>
+    <li>
+     <a href="#questions"><span class="secno">2</span> <span class="content">Questions to Consider</span></a>
+     <ol class="toc">
+      <li><a href="#purpose"><span class="secno">2.1</span> <span class="content"> What information might this feature expose to Web sites or other parties,
+    and for what purposes is that exposure necessary? </span></a>
+      <li><a href="#minimum-data"><span class="secno">2.2</span> <span class="content"> Is this specification exposing the minimum amount of information necessary
+    to power the feature? </span></a>
+      <li><a href="#personal-data"><span class="secno">2.3</span> <span class="content"> How does this specification deal with personal information or
+    personally-identifiable information or information derived thereof? </span></a>
+      <li><a href="#sensitive-data"><span class="secno">2.4</span> <span class="content"> How does this specification deal with sensitive information? </span></a>
+      <li><a href="#persistent-origin-specific-state"><span class="secno">2.5</span> <span class="content"> Does this specification introduce new state for an origin that persists
+    across browsing sessions? </span></a>
+      <li><a href="#underlying-platform-data"><span class="secno">2.6</span> <span class="content"> What information from the underlying platform, e.g. configuration data, is
+    exposed by this specification to an origin? </span></a>
+      <li><a href="#sensor-data"><span class="secno">2.7</span> <span class="content"> Does this specification allow an origin access to sensors on a user’s
+    device </span></a>
+      <li><a href="#other-data"><span class="secno">2.8</span> <span class="content"> What data does this specification expose to an origin?  Please also
+    document what data is identical to data exposed by other features, in the
+    same or different contexts. </span></a>
+      <li><a href="#string-to-script"><span class="secno">2.9</span> <span class="content"> Does this specification enable new script execution/loading mechanisms? </span></a>
+      <li><a href="#remote-device"><span class="secno">2.10</span> <span class="content"> Does this specification allow an origin to access other devices? </span></a>
+      <li><a href="#native-ui"><span class="secno">2.11</span> <span class="content"> Does this specification allow an origin some measure of control over a user
+    agent’s native UI? </span></a>
+      <li><a href="#temporary-id"><span class="secno">2.12</span> <span class="content"> What temporary identifiers might this this specification create or expose
+    to the web? </span></a>
+      <li><a href="#first-third-party"><span class="secno">2.13</span> <span class="content"> How does this specification distinguish between behavior in first-party and
+    third-party contexts? </span></a>
+      <li><a href="#private-browsing"><span class="secno">2.14</span> <span class="content"> How does this specification work in the context of a user agent’s Private
+    Browsing or "incognito" mode? </span></a>
+      <li><a href="#considerations"><span class="secno">2.15</span> <span class="content"> Does this specification have a "Security Considerations" and "Privacy
+    Considerations" section? </span></a>
+      <li><a href="#relaxed-sop"><span class="secno">2.16</span> <span class="content"> Does this specification allow downgrading default security characteristics? </span></a>
+      <li><a href="#missing-questions"><span class="secno">2.17</span> <span class="content"> What should this questionnaire have asked? </span></a>
+     </ol>
+    <li>
+     <a href="#threats"><span class="secno">3</span> <span class="content">Threat Models</span></a>
+     <ol class="toc">
+      <li><a href="#passive-network"><span class="secno">3.1</span> <span class="content">Passive Network Attackers</span></a>
+      <li><a href="#active-network"><span class="secno">3.2</span> <span class="content">Active Network Attackers</span></a>
+      <li><a href="#sop-violations"><span class="secno">3.3</span> <span class="content">Same-Origin Policy Violations</span></a>
+      <li><a href="#third-party-tracking"><span class="secno">3.4</span> <span class="content">Third-Party Tracking</span></a>
+      <li><a href="#legitimate-misuse"><span class="secno">3.5</span> <span class="content">Legitimate Misuse</span></a>
+     </ol>
+    <li>
+     <a href="#mitigations"><span class="secno">4</span> <span class="content"> Mitigation Strategies </span></a>
+     <ol class="toc">
+      <li><a href="#data-minimization"><span class="secno">4.1</span> <span class="content"> Data Minimization </span></a>
+      <li><a href="#privacy-friendly-defaults"><span class="secno">4.2</span> <span class="content"> Default Privacy Settings </span></a>
+      <li><a href="#user-mediation"><span class="secno">4.3</span> <span class="content"> Explicit user mediation </span></a>
+      <li><a href="#restrict-to-first-party"><span class="secno">4.4</span> <span class="content"> Explicitly restrict the feature to first party origins </span></a>
+      <li><a href="#secure-contexts"><span class="secno">4.5</span> <span class="content"> Secure Contexts </span></a>
+      <li><a href="#drop-feature"><span class="secno">4.6</span> <span class="content"> Drop the feature </span></a>
+      <li><a href="#privacy-impact-assessment"><span class="secno">4.7</span> <span class="content"> Making a privacy impact assessment </span></a>
+     </ol>
+    <li><a href="#conformance"><span class="secno"></span> <span class="content"> Conformance</span></a>
+    <li>
+     <a href="#index"><span class="secno"></span> <span class="content">Index</span></a>
+     <ol class="toc">
+      <li><a href="#index-defined-here"><span class="secno"></span> <span class="content">Terms defined by this specification</span></a>
+      <li><a href="#index-defined-elsewhere"><span class="secno"></span> <span class="content">Terms defined by reference</span></a>
+     </ol>
+    <li>
+     <a href="#references"><span class="secno"></span> <span class="content">References</span></a>
+     <ol class="toc">
+      <li><a href="#normative"><span class="secno"></span> <span class="content">Normative References</span></a>
+      <li><a href="#informative"><span class="secno"></span> <span class="content">Informative References</span></a>
+     </ol> -->
+   </ol>
+  </nav>
+  <main>
+   <section>
+    <h2 class="heading settled" data-level="1" id="intro"><span class="secno">1. </span><span class="content">Introduction</span><a class="self-link" href="#intro"></a></h2>
+    <p>The success of WebFonts is widespread (80%, globally)
+        but unevenly distributed.
+        In certain areas of the world, usage is <em>zero</em>.
+        This study evaluates solutions
+        which would allow WebFonts to be used
+        where slow networks,
+        very large fonts,
+        or complex subsetting requirements
+        currently preclude their use.</p>
+   </section>
+
+   <section>
+    <h2 class="heading settled" data-level="1" id="deployment"><span class="secno">2. </span><span class="content">Webfont deployment - successes, problems, solutions</span><a class="self-link" href="#deployment"></a></h2>
+    <p>
+        This section examines the historical deployment of Webfonts
+        from their inception in 1997 to date.
+        The reasons for the success in deployment are described.
+        Then, problems which prevented further deployment are examined.
+        Lastly, potential solutions are briefly introduced.
+        The detailed evaluation of these solutions comprises the majorty of this report.
+    </p>
+
+    <section>
+        <h3 class="heading settled" data-level="2" id="fontface"><span class="secno">2.1 </span><span class="content">@font-face</span><a class="self-link" href="#fontface"></a></h3>
+        <p>
+            Initially introduced in 1997 [<a href="#ref-webfonts">WebFonts</a>]
+            and later integrated into CSS2 [<a href="#ref-CSS2">CSS2</a>]
+            and SVG1 [<a href="#ref-SVG1">SVG1</a>],
+            the CSS <span class="code">@font-face</span>
+            allows for the automatic fetching of a font,
+            on demand as the stylesheet is used to render a document,
+            without user intervention.
+            The font is used immediately, without being installed onto the system.
+        </p>
+        <p>
+            This technology was a necessary but not sufficient requirement for deployment.
+            At the time, no consensus could be found on a
+            single interoperable WebFont format,
+            nor on a way to automatically convey licensing and other IPR information.
+            Thus, early implementations each used their own format:
+        </p>
+        <ul>
+            <li>Embedded OpenType (MS Internet Explorer 3)</li>
+            <li>Portable Font Resources (Netscape Navigator 4/Bitstream)</li>
+            <li>SVG Fonts (pre-smartphone SVG implementations)</li>
+        </ul>
+        <p>
+            Due to lack of interoperability,
+            plus other technical drawbacks of the initial font formats used,
+            when CSS 2.1 [<a href="#ref-CSS21">CSS21</a>] was developed as the "core, interoperable subset" of CSS2,
+            <span class="code">@font-face</span> was dropped from the specification.
+        </p>
+       </section>
+
+       <section>
+        <h3 class="heading settled" data-level="2" id="WOFF1"><span class="secno">2.2 </span><span class="content">WOFF 1.0</span><a class="self-link" href="#WOFF1"></a></h3>
+        <p>
+            Developed between 2010 and 2012, WOFF 1.0 [<a href="#ref-WOFF1">WOFF1</a>],
+            compresses each OpenType table separately with gzip,
+            and adds optional metadata which can, for example,
+            include a link to the license for that font.
+            Notably, the user agent is not expected to
+            (indeed, is <em><a href="https://www.w3.org/TR/2012/REC-WOFF-20121213/#conform-metadata-noeffect">specifically forbidden from</a></em>)
+            behaving differently based on the presence, absence, or contents of such metadata.
+            This allayed concernes by browser vendors
+            that they would be required to police font usage;
+            and allayed concerns from font vendors that font data
+            would be forever separated from its licensing metadata.
+        </p>
+        <p>
+            By using a lightweight compression scheme which already existed in browsers
+            (gzip, used in the PNG image format and also for HTTP compression),
+            implementation burden was lessened.
+            By offering bit-for-bit lossless compression,
+            concerns over "approximate" fonts
+            (which had, for example, affected the PFR format)
+            were also allayed.
+        </p>
+        <p>
+            By providing an agreed interoperable font format for download,
+            which met the requirements of both type vendors and browser vendors,
+            WOFF 1.0 was responsible for taking global WebFont usage
+            from 0.1% in 2006 to 35% in 2014 [add ref].
+        </p>
+       </section>
+
+       <section>
+        <h3 class="heading settled" data-level="2" id="WOFF2"><span class="secno">2.3 </span><span class="content">WOFF 2.0</span><a class="self-link" href="#WOFF2"></a></h3>
+
+        <p>Developed between 2014 and 2018, WOFF 2.0 [<a href="#ref-WOFF2">WOFF2</a>],
+            significantly improves over WOFF 1.0
+            by using a font-specific preprocessing step
+            followed by Brotli compression.
+        </p>
+        <p>
+            Once WOFF 1.0 had paved the way by demonstrating the utility of WebFonts,
+            it was possible to put in place a more complex, but more space efficient
+            two-part compression scheme. As the volume of font data worldwide was increasing,
+            this was seen as a high priority.
+            As it was demonstrated [WOFF2-ER]
+            that WOFF 2.0 would never give a worse compression result than WOFF 1.0,
+            WOFF 2.0 rapidly became supported by all browsers
+            and has taken over from WOFF 1.0.
+        </p>
+
+        <p>
+            Global webfont usage is now over 80%.
+        </p>
+
+        <figure>
+            <figcaption>Growth in global WebFonts usage from near-zero in 2011 to 80% in 2020</figcaption>
+            <img src="images/2020-07-22_Web_Font_Usage.png" alt="">
+        </figure>
+       </section>
+
+       <section>
+        <h3 class="heading settled" data-level="2" id="static"><span class="secno">2.4 </span><span class="content">Static subsets and unicode-range</span><a class="self-link" href="#static"></a></h3>
+
+        <p>
+            CSS has a feature, unicode-range [<a href="#ref-unicode-range">UNICODE-RANGE</a>],
+            which states which characters a font *doesn't* have glyphs for.
+            This prevents a webfont being needlessly downloaded.
+
+            Combined with static subsetting,
+            this greatly reduces the volume of font data for common, monolingual websites.
+        </p>
+        <p>
+            For example, a font which supports Latin, Greek, and Cyrillic
+            can be split into three subsets;
+            typically only one will be downloaded.
+            Google Fonts uses this approach extensively,
+            and it works well for languages which use only a small number of glyphs.
+        </p>
+
+        <p id="target">
+            This study assumes that the <em>target to beat</em> is
+            a static subset font,
+            with glyph coverage for only the characters actually used,
+            compressed with the best available method, WOFF 2.0.
+        </p>
+       </section>
+
+       <section>
+        <h3 class="heading settled" data-level="2" id="success-simple"><span class="secno">2.5 </span><span class="content">Success: Widespread success for simple fonts</span><a class="self-link" href="#success-simple"></a></h3>
+
+        <p>
+            Websites with content languages using the Latin alphabet
+            (such as Vietnamese, most European and Africal languages),
+            Greek and Cyrillic alphabets,
+            and Thai all make modest demands on fonts.
+            The number of unique characters is limited,
+            typically under a hundred;
+            contextual shaping is rare to non-existent,
+            and thus fonts are easy to subset and compressed font sizes are very small.
+        </p>
+       </section>
+
+       <section>
+        <h3 class="heading settled" data-level="2" id="fail-large"><span class="secno">2.6 </span><span class="content">Failure: Large glyph repertoires</span><a class="self-link" href="#fail-large"></a></h3>
+
+        <p>
+            Languages such as Chinese, Japanese, and Korean
+            have many thousands of characters.
+            Font data is thus massive.
+            While there is statistical variation in usage from character to character,
+            it is not in general possible to statically subset fonts into
+            "always used" and "never used" subsets;
+            the size of the "sometimes used" group predominates.
+        </p>
+        <p>
+            Static subsetting is unusable,
+            font sizes are in the megabytes,
+            and mobile Web usage is significant.
+        </p>
+        <p>
+            A 2019 study by the HTTP Archive
+            found that the median number of bytes
+            used for Web Fonts on websites in China
+            was *zero*.
+        </p>
+
+        <figure>
+            <figcaption>Usage of webfonts for CJK languages is close to zero</figcaption>
+            <img src="images/httparchive-china-zero.png" alt="china zero webfonts">
+        </figure>
+
+       </section>
+
+       <section>
+        <h3 class="heading settled" data-level="2" id="fail-subset"><span class="secno">2.7 </span><span class="content">Failure: Difficulty with subsetting</span><a class="self-link" href="#fail-subset"></a></h3>
+
+        <p class="todo">todo</p>
+
+       </section>
+
+       <section>
+        <h3 class="heading settled" data-level="2" id="soln-PFE"><span class="secno">2.8 </span><span class="content">Solution: Progressive Font Enrichment</span><a class="self-link" href="#soln-PFE"></a></h3>
+
+        <p>
+            Instead of downloading a static subset
+            (or, where static subsetting cannt work, downloading an entire font),
+            this proposed solution uses a continuous process of dynamic subsetting.
+            A small subsetted font is downloaded,
+            which can display the content currently being browsed.
+            As the user moves on to other content,
+            (or as content is added - for example on user forums or with commenting systems)
+            additional data for that font is automatically downloaded
+            and te font becomes progressively enriched over time.
+            In contrast to fine-grained static subsetting,
+            the CSS remains simple
+            because the stylesheet sees only a single font,
+            not a plethora of related fonts.
+        </p>
+        <p>
+            While this approach has been deployed experimentally
+            by several font foundries (
+            Adobe TypeKit,
+            Monotype,
+            Google Fonts
+            ),
+            it is desirable for interoperability
+            that a standardized solution for Progressive Font Enrichment (PFE) exists.
+        </p>
+        <p>
+            To ensure that the correct solution is standardized,
+            which works with a variety of network conditions
+            and content languages,
+            the W3C WebFonts Working group was chartered
+            to explore the area
+            and to run simulation experiments on the proposed solution space
+            before undertaking standards-track work.
+        </p>
+
+   </section>
+
+   <section>
+    <h2 class="heading settled" data-level="1" id="design"><span class="secno">3. </span><span class="content">Study Design</span><a class="self-link" href="#design"></a></h2>
+
+    <p class="todo">todo</p>
+
+    <section>
+        <h3 class="heading settled" data-level="2" id="network"><span class="secno">3.1 </span><span class="content">Network type - slow 2G to fast broadband</span><a class="self-link" href="#network"></a></h3>
+
+        <p class="todo">todo</p>
+    </section>
+
+    <section>
+        <h3 class="heading settled" data-level="2" id="langtype"><span class="secno">3.2 </span><span class="content">Language type: small &amp; simple, complex shaping, large</span><a class="self-link" href="#langtype"></a></h3>
+
+        <p class="todo">todo</p>
+
+    </section>
+
+    <section>
+        <h3 class="heading settled" data-level="2" id="codepredict"><span class="secno">3.3 </span><span class="content">Effect of Codepoint Prediction</span><a class="self-link" href="#codepredict"></a></h3>
+
+        <p class="todo">todo</p>
+
+    </section>
+
+    <section>
+        <h3 class="heading settled" data-level="2" id="codepredict"><span class="secno">3.4 </span><span class="content">Server type: intelligent vs. simple</span><a class="self-link" href="#codepredict"></a></h3>
+
+        <p>
+            Two entirely different types of font enrichment have been studied. One requires only a standard Web server, so could be deployed anywhere.
+            The other requires an active server extension.
+            They make differing tradeoffs and have correspondingly different advantages and disadvantages.
+        </p>
+        <p>
+            In one approach <strong>"Subset and Patch"</strong>,
+            the entire font is dynamically subsetted.
+            The client and the server communicate closely
+            to generate the optimal set of enrichment glyphs
+            and other font information
+            with each transaction.
+            A binary patch is used to update the font stored on the client.
+            This tend more closely towards
+            the theoretical peak efficiency
+            in terms of bytes transfered
+            and minimal network latency,
+            but requires an intelligent server.
+            This approach also allows parameters to be adjusted
+            to maximize efficiency
+            based on the current network conditions.
+        </p>
+
+        <p>
+            In the second approach "Glyph Byterange",
+            a static subset of the entire font
+            (but with <em>zero</em> glyph outlines)
+            is downloaded.
+            The client then requests glyph outliness as needed
+            using standard HTTP byre range requests,
+            which are supported on all common servers.
+            The efficiency loss from this approach
+            depends on the balance of glyph outline data to other font data.
+            Efficiency is improved if glyphs are re-ordered in terms of statistical occurrence.
+            This approach allows easier deployment,
+            because any standard server can be used.
+            There is no risk of accidentally breaking font rendering
+            due to mis-subsetting complex tables.
+            There is no tuning for differing network conditions.
+        </p>
+    </section>
+
+    <section>
+        <h3 class="heading settled" data-level="2" id="tda"><span class="secno">3.5 </span><span class="content">Complex subsetting: table dependency analysis</span><a class="self-link" href="#tda"></a></h3>
+
+        <p class="todo">todo</p>
+
+    </section>
+
+    <section>
+        <h3 class="heading settled" data-level="2" id="group"><span class="secno">3.6 </span><span class="content">Byterange subsetting: glyph grouping</span><a class="self-link" href="#group"></a></h3>
+
+        <p class="todo">todo</p>
+
+    </section>
+
+    <section>
+        <h3 class="heading settled" data-level="2" id="corpus"><span class="secno">3.7 </span><span class="content">Web page corpus</span><a class="self-link" href="#corpus"></a></h3>
+
+       <p class="todo">Is this needed only for the Glyph Byterange case?</p>
+
+    </section>
+
+    <section>
+        <h3 class="heading settled" data-level="2" id="framework"><span class="secno">3.8 </span><span class="content">Simulation and analysis framework</span><a class="self-link" href="#framework"></a></h3>
+
+        <p class="todo">todo</p>
+
+    </section>
+
+    <section>
+        <h3 class="heading settled" data-level="2" id="oos"><span class="secno">3.9 </span><span class="content">Out of scope</span><a class="self-link" href="#oos"></a></h3>
+
+        <p>
+            Because this was a pre-standarization experiment,
+            details of wire protocol
+            (which would certainly be needed for an interoperable standard)
+            were not defined at this stage.
+        </p>
+
+    </section>
+    </section>
+
+    <section>
+    <h2 class="heading settled" data-level="1" id="analysis"><span class="secno">4. </span><span class="content">Analysis</span><a class="self-link" href="#analysis"></a></h2>
+
+    <p class="todo">todo</p>
+
+    </section>
+
+    <section>
+        <h2 class="heading settled" data-level="1" id="analysis"><span class="secno">4. </span><span class="content">Conclusions</span><a class="self-link" href="#analysis"></a></h2>
+
+        <p class="todo">todo</p>
+
+        </section>
+
+    </section>
+
+
+
+
+
+
+   </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <!-- <section>
+    <h2 class="heading settled" data-level="1" id="intro"><span class="secno">1. </span><span class="content">Introduction</span><a class="self-link" href="#intro"></a></h2>
+    <p></p>
+   </section> -->
+
+
+  </main>
+
+  <section>
+    <h2 class="heading settled" data-level="1" id="references"><span class="secno">A. </span><span class="content">References</span><a class="self-link" href="#references"></a></h2>
+
+    <!--
+Harfbuzz Tech Talk:
+https://docs.google.com/presentation/d/1RMkpikAUmdIXaz3eEDYFETWfAwnT0Vw8_oC8Ait5xqs/edit?usp=sharing
+
+Webpage Corpus msg
+https://lists.w3.org/Archives/Public/public-webfonts-wg/2019Oct/0011.html
+Re: Webpage Corpus
+https://lists.w3.org/Archives/Public/public-webfonts-wg/2019Nov/0003.html
+
+Analysis Framework Updates msg
+https://lists.w3.org/Archives/Public/public-webfonts-wg/2019Dec/0003.html
+
+Details of our Unicode Range Blocking Algorithm
+https://lists.w3.org/Archives/Public/public-webfonts-wg/2020May/0007.html
+
+Progressive Font Enrichment Simulation Results (May 12th, 2020 Data Set)
+https://docs.google.com/document/d/1aShjR0-UVoQcu1R9GGPF_Qa3bViOdqYVlk7HM07IdGU/edit#
+
+Progressive Font Enrichment: Codepoint Prediction Results
+https://docs.google.com/document/d/1u-05ztF9MqftHbMKB_KiqeUhZKiXNFE4TRSUWFAPXsk/edit#heading=h.l2if29tj434
+
+Subset and Patch Progressive Font Enrichment Protocol Design
+https://docs.google.com/document/d/1DJ6VkUEZS2kvYZemIoX4fjCgqFXAtlRjpMlkOvblSts/edit#
+
+WOFF 2.0, the inside scoop
+https://www.w3.org/blog/2018/03/woff-2-0-the-inside-scoop/
+
+Happy Birthday Web Fonts!
+https://www.w3.org/blog/2020/07/happy-birthday-web-fonts/
+
+How does web font usage vary by country?
+https://discuss.httparchive.org/t/how-does-web-font-usage-vary-by-country/1649
+
+    -->
+    <dl>
+
+        <dt id="cl-vs-la">CLOSURE</dt>
+        <dd><cite><a href="https://docs.google.com/presentation/d/1qczAiExsuxhtm-0WSlZ0eSiHVOuuq1agTKZTU-26n5k/edit?usp=sharing">Closure vs Layout
+            </a></cite></dd>
+
+
+        <dt id="ref-CSS2">CSS2</dt>
+        <dd>
+            <cite><a href="https://www.w3.org/TR/1998/REC-CSS2-19980512/">Cascading
+                Style Sheets, level 2</a>
+                Bert Bos,
+                Håkon Wium Lie,
+                Chris Lilley,
+                Ian Jacobs (editors).
+            </cite>
+            W3C Recommendation 12 May 1998<br>
+            URL: <a href="https://www.w3.org/TR/1998/REC-CSS2-19980512/">https://www.w3.org/TR/1998/REC-CSS2-19980512/</a>
+        </dd>
+
+        <dt id="ref-CSS21">CSS2.1</dt>
+        <dd>
+            <cite><a href="https://www.w3.org/TR/2011/REC-CSS2-20110607/">Cascading
+                Style Sheets Level 2 Revision 1 (CSS 2.1) Specification</a>
+                Bert Bos,
+                Tantek Çelik,
+                Ian Hickson,
+                Håkon Wium Lie (editors).
+            </cite>
+            W3C Recommendation 07 June 2011<br>
+            URL: <a href="https://www.w3.org/TR/2011/REC-CSS2-20110607/">https://www.w3.org/TR/2011/REC-CSS2-20110607/</a>
+        </dd>
+
+        <dt id="ref-PFErepo">PFE-repo</dt>
+        <dd><cite><a href="https://github.com/w3c/PFE-analysis">Progressive Font Enrichment (PFE) GitHub repository</a></cite></dd>
+
+        <dt id="ref-SVG1">SVG1</dt>
+        <dd>
+            <cite><a href="https://www.w3.org/TR/2001/REC-SVG-20010904/">Scalable
+                Vector Graphics (SVG) 1.0 Specification</a>
+                Jon Ferraiolo (editor).
+            </cite>
+            W3C Recommendation 04 September 2001<br>
+            URL: <a href="https://www.w3.org/TR/2001/REC-SVG-20010904/">https://www.w3.org/TR/2001/REC-SVG-20010904/</a>
+        </dd>
+
+        <dt id="ref-webfonts">WebFonts</dt>
+        <dd><cite><a href="https://www.w3.org/TR/WD-font-970721">Web Fonts</a>.
+        Chris Lilley (editor).</cite>  W3C Working Draft, 21 July 1997<br>
+        URL: <a href="https://www.w3.org/TR/WD-font-970721">https://www.w3.org/TR/WD-font-970721</a>
+        </dd>
+
+        <dt id="ref-WOFF1">WOFF1</dt>
+        <dd><cite><a href="https://www.w3.org/TR/2012/REC-WOFF-20121213/">WOFF File Format 1.0</a>.
+            Jonathan Kew, Tal Leming, Erik van Blokland (editors).
+        </cite>
+        W3C Recommendation 13 December 2012<br>
+        URL: <a href="https://www.w3.org/TR/2012/REC-WOFF-20121213/">https://www.w3.org/TR/2012/REC-WOFF-20121213/</a>
+        </dd>
+
+        <dt id="ref-WOFF2">WOFF2</dt>
+        <dd><cite><a href="https://www.w3.org/TR/2018/REC-WOFF2-20180301/">WOFF
+            File Format 2.0 </a>
+            Vladimir Levantovsky,
+            Raph Levien (editors).
+        </cite>
+        W3C Recommendation 01 March 2018<br>
+        URL: <a href="https://www.w3.org/TR/2018/REC-WOFF2-20180301/">https://www.w3.org/TR/2018/REC-WOFF2-20180301/</a>
+        </dd>
+
+        <dt id="ref-WOFF2-ER">WOFF2ER</dt>
+        <dd><cite><a href="https://www.w3.org/TR/WOFF20ER/">WOFF 2.0
+            Evaluation Report</a>
+            Chris Lilley (editor)
+        </cite>
+        W3C Working Group Note, 15 March 2016<br>
+        URL: <a href="https://www.w3.org/TR/WOFF20ER/">https://www.w3.org/TR/WOFF20ER/</a>
+    </dd>
+
+        <dt id="ref-UNICODE-RANGE">UNICODE-RANGE</dt>
+        <dd><cite><a href="https://www.w3.org/TR/css-fonts-4/#unicode-range-desc">Character
+            range: the unicode-range descriptor</a></cite>. In
+        <cite><a href="https://www.w3.org/TR/css-fonts-4/">CSS
+            Fonts Module Level 4</a>
+            John Daggett,
+            Myles C. Maxfield,
+            Chris Lilley (editors).
+        </cite>
+        W3C Working Draft, 13 November 2019 <br>
+        URL: <a href="https://www.w3.org/TR/css-fonts-4/#unicode-range-desc">https://www.w3.org/TR/css-fonts-4/#unicode-range-desc</a>
+        </dd>
+
+    </dl>
+   </section>
+
+  <script>
+    (function() {
+      "use strict";
+      var collapseSidebarText = '<span aria-hidden="true">←</span> '
+                              + '<span>Collapse Sidebar</span>';
+      var expandSidebarText   = '<span aria-hidden="true">→</span> '
+                              + '<span>Pop Out Sidebar</span>';
+      var tocJumpText         = '<span aria-hidden="true">↑</span> '
+                              + '<span>Jump to Table of Contents</span>';
+
+      var sidebarMedia = window.matchMedia('screen and (min-width: 78em)');
+      var autoToggle   = function(e){ toggleSidebar(e.matches) };
+      if(sidebarMedia.addListener) {
+        sidebarMedia.addListener(autoToggle);
+      }
+
+      function toggleSidebar(on) {
+        if (on == undefined) {
+          on = !document.body.classList.contains('toc-sidebar');
+        }
+
+        /* Don’t scroll to compensate for the ToC if we’re above it already. */
+        var headY = 0;
+        var head = document.querySelector('.head');
+        if (head) {
+          // terrible approx of "top of ToC"
+          headY += head.offsetTop + head.offsetHeight;
+        }
+        var skipScroll = window.scrollY < headY;
+
+        var toggle = document.getElementById('toc-toggle');
+        var tocNav = document.getElementById('toc');
+        if (on) {
+          var tocHeight = tocNav.offsetHeight;
+          document.body.classList.add('toc-sidebar');
+          document.body.classList.remove('toc-inline');
+          toggle.innerHTML = collapseSidebarText;
+          if (!skipScroll) {
+            window.scrollBy(0, 0 - tocHeight);
+          }
+          tocNav.focus();
+          sidebarMedia.addListener(autoToggle); // auto-collapse when out of room
+        }
+        else {
+          document.body.classList.add('toc-inline');
+          document.body.classList.remove('toc-sidebar');
+          toggle.innerHTML = expandSidebarText;
+          if (!skipScroll) {
+            window.scrollBy(0, tocNav.offsetHeight);
+          }
+          if (toggle.matches(':hover')) {
+            /* Unfocus button when not using keyboard navigation,
+               because I don’t know where else to send the focus. */
+            toggle.blur();
+          }
+        }
+      }
+
+      function createSidebarToggle() {
+        /* Create the sidebar toggle in JS; it shouldn’t exist when JS is off. */
+        var toggle = document.createElement('a');
+          /* This should probably be a button, but appearance isn’t standards-track.*/
+        toggle.id = 'toc-toggle';
+        toggle.class = 'toc-toggle';
+        toggle.href = '#toc';
+        toggle.innerHTML = collapseSidebarText;
+
+        sidebarMedia.addListener(autoToggle);
+        var toggler = function(e) {
+          e.preventDefault();
+          sidebarMedia.removeListener(autoToggle); // persist explicit off states
+          toggleSidebar();
+          return false;
+        }
+        toggle.addEventListener('click', toggler, false);
+
+
+        /* Get <nav id=toc-nav>, or make it if we don’t have one. */
+        var tocNav = document.getElementById('toc-nav');
+        if (!tocNav) {
+          tocNav = document.createElement('p');
+          tocNav.id = 'toc-nav';
+          /* Prepend for better keyboard navigation */
+          document.body.insertBefore(tocNav, document.body.firstChild);
+        }
+        /* While we’re at it, make sure we have a Jump to Toc link. */
+        var tocJump = document.getElementById('toc-jump');
+        if (!tocJump) {
+          tocJump = document.createElement('a');
+          tocJump.id = 'toc-jump';
+          tocJump.href = '#toc';
+          tocJump.innerHTML = tocJumpText;
+          tocNav.appendChild(tocJump);
+        }
+
+        tocNav.appendChild(toggle);
+      }
+
+      var toc = document.getElementById('toc');
+      if (toc) {
+        createSidebarToggle();
+        toggleSidebar(sidebarMedia.matches);
+
+        /* If the sidebar has been manually opened and is currently overlaying the text
+           (window too small for the MQ to add the margin to body),
+           then auto-close the sidebar once you click on something in there. */
+        toc.addEventListener('click', function(e) {
+          if(e.target.tagName.toLowerCase() == "a" && document.body.classList.contains('toc-sidebar') && !sidebarMedia.matches) {
+            toggleSidebar(false);
+          }
+        }, false);
+      }
+      else {
+        console.warn("Can’t find Table of Contents. Please use <nav id='toc'> around the ToC.");
+      }
+
+      /* Wrap tables in case they overflow */
+      var tables = document.querySelectorAll(':not(.overlarge) > table.data, :not(.overlarge) > table.index');
+      var numTables = tables.length;
+      for (var i = 0; i < numTables; i++) {
+        var table = tables[i];
+        var wrapper = document.createElement('div');
+        wrapper.className = 'overlarge';
+        table.parentNode.insertBefore(wrapper, table);
+        wrapper.appendChild(table);
+      }
+
+    })();
+    </script>
+    <script src="//www.w3.org/scripts/TR/2016/fixup.js"></script>
+ </body>
+ </html>
