@@ -409,7 +409,50 @@ prior to standardization work.
     <section>
         <h3 class="heading settled" data-level="2" id="langtype"><span class="secno">3.2 </span><span class="content">Language type: small &amp; simple, complex shaping, large</span><a class="self-link" href="#langtype"></a></h3>
 
-        <p class="todo">todo</p>
+        <p>Fonts vary in size and complexity based on which language families they support.</p>
+
+        <p>Fonts for alphabetic languages
+          with small glyph repertoires
+          and little to no shaping requirements
+          are the smallest
+          and, to date,
+          the most sucessful in terms of Webfont usage.
+          Many European languages fall into this category.
+          The more recent adoption of
+          glyph alternates,
+          stylistic sets,
+          and variable fonts
+          has not significantly altered Webfont use for this category.
+        </p>
+
+        <p>
+          Fonts for Indic languages, Arabic, and Farsi
+          fall into a second category.
+          The glyph repertoire is much larger than the character repertoire,
+          because the scripts used have complex, context-dependent shaping requirements.
+          Fonts which fail to support these features
+          do not just provide "less beautiful" text,
+          they provide unreadable text.
+          Fonts in this category tend to use
+          <span class="todo">which OT tables besides GPOS and GSUB</span>
+          and to be easily broken by poor-quality font subsetting software.
+          When correctly done, a static per-language subset is still fairly small.
+        </p>
+
+        <p>
+          Fonts for ideographic languages
+          such as Chinese, Japanese and Korean
+          have extremely large character and glyph repertoires,
+          of the order of tens of thousands of glyphs.
+          On the other hand, besides vertical and horizontal glyph variants,
+          and "full-width" vs. "half-width" glyph variants for a few characters,
+          the shaping requirements are low to none.
+          Thus, the font size is almost entirely determined by the glyph outline data,
+          and subsetting is primarily
+          a case of partitioning the glyph outline data
+          into small groups
+          which are frequently used together.
+        </p>
 
     </section>
 
@@ -501,6 +544,10 @@ prior to standardization work.
             details of wire protocol
             (which would certainly be needed for an interoperable standard)
             were not defined at this stage.
+            Instead,
+            reasonable defaults for request and response header size
+            (35 bytes each)
+            were used in the simulation.
         </p>
 
     </section>
