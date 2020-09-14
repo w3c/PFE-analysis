@@ -85,54 +85,36 @@ prior to standardization work.
    <h2 class="no-num no-toc no-ref todo" id="contents">Table of Contents</h2>
    <ol class="toc" role="directory">
     <li>
-     <a href="#intro"><span class="secno">1</span> <span class="content">Introduction</span></a></li>
+     <a href="#intro"><span class="secno">1</span> <span class="content"> Introduction</span></a></li>
 
-     <!-- <ol class="toc">
-      <li><a href="#howtouse"><span class="secno">1.1</span> <span class="content">How To Use The Questionnaire</span></a>
+    <li>
+     <a href="#questions"><span class="secno">2</span> <span class="content"> Webfont deployment - successes, problems, solutions</span></a>
+     <ol class="toc">
+      <li><a href="#purpose"><span class="secno">2.1</span> <span class="content"> @font-face</span></a>
+      <li><a href="#minimum-data"><span class="secno">2.2</span> <span class="content"> WOFF 1.0</span></a>
+      <li><a href="#personal-data"><span class="secno">2.3</span> <span class="content"> WOFF 2.0</span></a>
+      <li><a href="#sensitive-data"><span class="secno">2.4</span> <span class="content"> Static subsets and unicode-range</span></a>
+      <li><a href="#persistent-origin-specific-state"><span class="secno">2.5</span> <span class="content"> Success: Widespread success for simple fonts</span></a>
+      <li><a href="#underlying-platform-data"><span class="secno">2.6</span> <span class="content"> Failure: Large glyph repertoires</span></a>
+      <li><a href="#sensor-data"><span class="secno">2.7</span> <span class="content"> Failure: Difficulty with subsetting</span></a>
+      <li><a href="#other-data"><span class="secno">2.8</span> <span class="content"> Solution: Progressive Font Enrichment</span></a>
+
      </ol>
     <li>
-     <a href="#questions"><span class="secno">2</span> <span class="content">Questions to Consider</span></a>
+     <a href="#threats"><span class="secno">3</span> <span class="content">Study Design</span></a>
      <ol class="toc">
-      <li><a href="#purpose"><span class="secno">2.1</span> <span class="content"> What information might this feature expose to Web sites or other parties,
-    and for what purposes is that exposure necessary? </span></a>
-      <li><a href="#minimum-data"><span class="secno">2.2</span> <span class="content"> Is this specification exposing the minimum amount of information necessary
-    to power the feature? </span></a>
-      <li><a href="#personal-data"><span class="secno">2.3</span> <span class="content"> How does this specification deal with personal information or
-    personally-identifiable information or information derived thereof? </span></a>
-      <li><a href="#sensitive-data"><span class="secno">2.4</span> <span class="content"> How does this specification deal with sensitive information? </span></a>
-      <li><a href="#persistent-origin-specific-state"><span class="secno">2.5</span> <span class="content"> Does this specification introduce new state for an origin that persists
-    across browsing sessions? </span></a>
-      <li><a href="#underlying-platform-data"><span class="secno">2.6</span> <span class="content"> What information from the underlying platform, e.g. configuration data, is
-    exposed by this specification to an origin? </span></a>
-      <li><a href="#sensor-data"><span class="secno">2.7</span> <span class="content"> Does this specification allow an origin access to sensors on a user’s
-    device </span></a>
-      <li><a href="#other-data"><span class="secno">2.8</span> <span class="content"> What data does this specification expose to an origin?  Please also
-    document what data is identical to data exposed by other features, in the
-    same or different contexts. </span></a>
-      <li><a href="#string-to-script"><span class="secno">2.9</span> <span class="content"> Does this specification enable new script execution/loading mechanisms? </span></a>
-      <li><a href="#remote-device"><span class="secno">2.10</span> <span class="content"> Does this specification allow an origin to access other devices? </span></a>
-      <li><a href="#native-ui"><span class="secno">2.11</span> <span class="content"> Does this specification allow an origin some measure of control over a user
-    agent’s native UI? </span></a>
-      <li><a href="#temporary-id"><span class="secno">2.12</span> <span class="content"> What temporary identifiers might this this specification create or expose
-    to the web? </span></a>
-      <li><a href="#first-third-party"><span class="secno">2.13</span> <span class="content"> How does this specification distinguish between behavior in first-party and
-    third-party contexts? </span></a>
-      <li><a href="#private-browsing"><span class="secno">2.14</span> <span class="content"> How does this specification work in the context of a user agent’s Private
-    Browsing or "incognito" mode? </span></a>
-      <li><a href="#considerations"><span class="secno">2.15</span> <span class="content"> Does this specification have a "Security Considerations" and "Privacy
-    Considerations" section? </span></a>
-      <li><a href="#relaxed-sop"><span class="secno">2.16</span> <span class="content"> Does this specification allow downgrading default security characteristics? </span></a>
-      <li><a href="#missing-questions"><span class="secno">2.17</span> <span class="content"> What should this questionnaire have asked? </span></a>
+      <li><a href="#passive-network"><span class="secno">3.1</span> <span class="content"> Network type - slow 2G to fast broadband</span></a>
+      <li><a href="#active-network"><span class="secno">3.2</span> <span class="content"> Language type: small &amp; simple, complex shaping, large</span></a>
+      <li><a href="#sop-violations"><span class="secno">3.3</span> <span class="content"> Effect of Codepoint Prediction</span></a>
+      <li><a href="#third-party-tracking"><span class="secno">3.4</span> <span class="content"> Server type: intelligent vs. simple</span></a>
+      <li><a href="#legitimate-misuse"><span class="secno">3.5</span> <span class="content"> Complex subsetting: table dependency analysis</span></a>
+      <li><a href="#legitimate-misuse"><span class="secno">3.6</span> <span class="content"> Byterange subsetting: glyph grouping</span></a>
+      <li><a href="#legitimate-misuse"><span class="secno">3.7</span> <span class="content"> Web page corpus</span></a>
+      <li><a href="#legitimate-misuse"><span class="secno">3.8</span> <span class="content"> Simulation and analysis framework</span></a>
+      <li><a href="#legitimate-misuse"><span class="secno">3.9</span> <span class="content"> Out of scope</span></a>
      </ol>
-    <li>
-     <a href="#threats"><span class="secno">3</span> <span class="content">Threat Models</span></a>
-     <ol class="toc">
-      <li><a href="#passive-network"><span class="secno">3.1</span> <span class="content">Passive Network Attackers</span></a>
-      <li><a href="#active-network"><span class="secno">3.2</span> <span class="content">Active Network Attackers</span></a>
-      <li><a href="#sop-violations"><span class="secno">3.3</span> <span class="content">Same-Origin Policy Violations</span></a>
-      <li><a href="#third-party-tracking"><span class="secno">3.4</span> <span class="content">Third-Party Tracking</span></a>
-      <li><a href="#legitimate-misuse"><span class="secno">3.5</span> <span class="content">Legitimate Misuse</span></a>
-     </ol>
+
+     <!--
     <li>
      <a href="#mitigations"><span class="secno">4</span> <span class="content"> Mitigation Strategies </span></a>
      <ol class="toc">
