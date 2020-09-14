@@ -65,6 +65,11 @@ flags.DEFINE_string(
     "failed_indices_out", None,
     "If set outputs a list of failed indices to the specified path.")
 
+flags.DEFINE_bool(
+    "simulate_range_request", False,
+    "If set only simulation range request. If not set then simulates "
+    "everything except for range request.")
+
 FONT_DIRECTORY = ""
 DEFAULT_FONT_ID = ""
 
@@ -360,15 +365,22 @@ def main(argv):
   FONT_DIRECTORY = FLAGS.font_directory
   DEFAULT_FONT_ID = FLAGS.default_font_id
 
-  PFE_METHODS.extend([
-      range_request_pfe_method,
-      optimal_pfe_method,
-      optimal_one_font_method,
-      unicode_range_pfe_method,
-      whole_font_pfe_method,
-      combined_patch_subset_method.CombinedPatchSubsetMethod(
-          FLAGS.script_category),
-  ])
+  if not FLAGS.simulate_range_request:
+    PFE_METHODS.extend([
+        optimal_pfe_method,
+        optimal_one_font_method,
+        unicode_range_pfe_method,
+        whole_font_pfe_method,
+        combined_patch_subset_method.CombinedPatchSubsetMethod(
+            FLAGS.script_category),
+    ])
+  else:
+    # RangeRequest requires a modified version of the data set
+    # and font library. Thus it must be simulated separately from
+    # all of the other methods.
+    PFE_METHODS.extend([
+        range_request_pfe_method,
+    ])
 
   results_proto = start_analysis()
 
