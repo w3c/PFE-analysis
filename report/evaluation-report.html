@@ -352,8 +352,31 @@ prior to standardization work.
         </p>
 
         <p>
+          Some background for a more complex example:
+          India has large linguistic diversity,
+          with 22 constitutionally recognized languages
+          and 12 distinct scripts. [[<a href="#ref-IndicLR">IndicLR</a>]]
+          In some scripts, there are complex glyph shaping needs.
+          For example a Matra (dependent vowel) is split, part before and part after a consonant.</p>
 
+          <p class="todo">Add diagram</p>
+
+          <p>There are also some shared characters between the scripts.
+          If a font supports two or more of these scripts,
+          which is common,
+          and the content developer wants to present it as a single font family
+          and use unicode range to deliver per-script subsets,
+          the shared characters need to be duplicated in each subset.
+          Not only does this mean that the total size of all subsets
+          is greater than the original font,
+          but also
+          the shared characters will be rendered from only one of the subsets
+          based on the priority of the unicode range declarations.
+          As a result syllable clustering and glyph shaping doesn't work correctly;
+          the text doesn't just look <em>less beautiful</em>, it becomes <strong>unreadable</strong>.
         </p>
+
+        <p class="todo">add illustration of correct and incorrect rendering</p>
 
         <p class="note">No mention in <a href="https://www.w3.org/TR/international-specs/">Internationalization Best Practices for Spec Developers</a>. Related <a href="https://lists.w3.org/Archives/Public/public-i18n-core/2018AprJun/0042.html">I18N-ACTION-721: Look into font subsetting for charmod-norm</a> but no mention in <a href="https://www.w3.org/TR/charmod-norm/">Character Model for the World Wide Web: String Matching</a>.</p>
 
@@ -707,6 +730,17 @@ https://discuss.httparchive.org/t/how-does-web-font-usage-vary-by-country/1649
             W3C Recommendation 07 June 2011<br>
             URL: <a href="https://www.w3.org/TR/2011/REC-CSS2-20110607/">https://www.w3.org/TR/2011/REC-CSS2-20110607/</a>
         </dd>
+
+      <dt id="ref-IndicLR">IndicLR</dt>
+      <dd><cite><a href="https://www.w3.org/TR/ilreq/#h_indian_language_complexities">Indic
+          Layout Requirements</a>
+          Swaran Lata,
+          Somnath Chandra,
+          Prashant Verma (editors).
+        </cite>
+        W3C Working Draft 29 May 2020<br>
+        URL: <a href="https://www.w3.org/TR/ilreq/#h_indian_language_complexities">https://www.w3.org/TR/ilreq/</a>
+      </dd>
 
         <dt id="ref-PFErepo">PFE-repo</dt>
         <dd><cite><a href="https://github.com/w3c/PFE-analysis">Progressive Font Enrichment (PFE) GitHub repository</a></cite></dd>
