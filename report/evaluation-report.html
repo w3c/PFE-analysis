@@ -345,9 +345,17 @@ prior to standardization work.
        <section>
         <h3 class="heading settled" data-level="2" id="fail-subset"><span class="secno">2.7 </span><span class="content">Failure: Difficulty with subsetting</span><a class="self-link" href="#fail-subset"></a></h3>
 
-        <p class="todo">todo</p>
+        <p>Static subsetting can run into difficulties when there are complex inter-relationships between different OpenType tables, or when characgters are shared between multiple scripts but behave differently in each script.</p>
 
-        <p>No mention in <a href="https://www.w3.org/TR/international-specs/">Internationalization Best Practices for Spec Developers</a>. Related <a href="https://lists.w3.org/Archives/Public/public-i18n-core/2018AprJun/0042.html">I18N-ACTION-721: Look into font subsetting for charmod-norm</a> but no mention in <a href="https://www.w3.org/TR/charmod-norm/">Character Model for the World Wide Web: String Matching</a>.</p>
+        <p>
+          To take a simple example, both Latin and Cyrillic scripts use the period (<b>.</b>) at the end of a sentence. Because Latin-only or Cyrillic-only content is common, splitting a font that covers both Latin and Cyrillic into two smaller static subsets makes sense. However, if content uses Cyrillic text and also uses the period  from the Latin subset, then kerning rules between the Cyrllic characters and the period no longer work, whereas they did in the original font which contained the complete kerning information.
+        </p>
+
+        <p>
+
+        </p>
+
+        <p class="note">No mention in <a href="https://www.w3.org/TR/international-specs/">Internationalization Best Practices for Spec Developers</a>. Related <a href="https://lists.w3.org/Archives/Public/public-i18n-core/2018AprJun/0042.html">I18N-ACTION-721: Look into font subsetting for charmod-norm</a> but no mention in <a href="https://www.w3.org/TR/charmod-norm/">Character Model for the World Wide Web: String Matching</a>.</p>
 
        </section>
 
