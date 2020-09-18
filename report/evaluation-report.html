@@ -305,13 +305,40 @@ prior to standardization work.
             A 2019 study by the HTTP Archive
             found that the median number of bytes
             used for Web Fonts on websites in China
-            was *zero*.
+            was *zero*. <span class="todo">[add reference]</span>
         </p>
 
         <figure>
             <figcaption>Usage of webfonts for CJK languages is close to zero</figcaption>
             <img src="images/httparchive-china-zero.png" alt="china zero webfonts">
         </figure>
+
+        <p>
+          Pan-Unicode fonts
+          (fonts which aim to cover a very large number of languages)
+          can be difficult to subset
+          and, if subsetted,
+          the functionality can be reduced.
+          For example, due to size, the Noto family
+          is currently as a bunch of separate families.
+          It is up to the developer to explicitly
+          pick which ones they might need.
+        </p>
+        <p>
+          Static subsets
+          where each subset appears to have a distinct
+          <em>font family</em> name
+          are also more difficult to use
+          when creating truly multilingual websites.
+          For example, a discussion forum
+          may have users posting
+          in a variety of languages.
+          A global mapping application
+          will need to render text in a wide array of scripts,
+          depending on what part of the world is being viewed.
+          In both cases, the range of supported languages
+          is wide, and may change as the content is updated.
+        </p>
 
        </section>
 
@@ -341,6 +368,10 @@ prior to standardization work.
             the CSS remains simple
             because the stylesheet sees only a single font,
             not a plethora of related fonts.
+        </p>
+        <p>
+          This helps with single-language fonts for languages such as Chinese,
+          and simplifies robust deployment of pan-Unicode fonts.
         </p>
         <p>
             While this approach has been deployed experimentally
