@@ -195,6 +195,16 @@ py_test(
     ],
 )
 
+py_test(
+    name = "font_loader_test",
+    srcs = [
+        "font_loader_test.py",
+    ],
+    deps = [
+        ":common",
+    ],
+)
+
 py_library(
     name = "fake_pfe",
     srcs = [
