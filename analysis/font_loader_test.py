@@ -28,7 +28,7 @@ class FontLoaderTest(unittest.TestCase):
 
       self.assertEqual(str(bytes, encoding='UTF-8'), font_contents)
 
-  def test_read_variable_cns_renamed_font(self):
+  def test_read_variable_renamed_font(self):
     with tempfile.TemporaryDirectory() as dir:
       font_id = 'test[axis].ttf'
       font_contents = 'font-bytes-go-here'
