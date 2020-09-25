@@ -35,11 +35,8 @@ class FontLoaderTest(unittest.TestCase):
       with open(dir + '/testBaxisB.ttf', 'w') as tmp_file:
         tmp_file.write(font_contents)
 
-      fl = font_loader.FontLoader(dir)
-      print(fl)
-      bytes = fl.load_font(font_id)
-      print(bytes)
-      print(str(bytes, encoding='UTF-8'))
+      bytes = font_loader.FontLoader(dir).load_font(font_id)
+
       self.assertEqual(str(bytes, encoding='UTF-8'), font_contents)
 
 
