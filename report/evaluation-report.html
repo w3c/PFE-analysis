@@ -128,6 +128,8 @@ prior to standardization work.
   <main>
    <section>
     <h2 class="heading settled" data-level="1" id="intro"><span class="secno">1. </span><span class="content">Introduction</span><a class="self-link" href="#intro"></a></h2>
+
+    <!-- terminology - character, glyph, font -->
     <p>The success of WebFonts is widespread (80%, globally)
         but unevenly distributed.
         In certain areas of the world, usage is <em>zero</em>.
@@ -277,7 +279,7 @@ prior to standardization work.
             By providing an agreed interoperable font format for download,
             which met the requirements of both type vendors and browser vendors,
             WOFF 1.0 was responsible for taking global WebFont usage
-            from 0.1% in 2006 to 35% in 2014 [add ref].
+            <strong>from 0.1% in 2006 to 35% in 2014</strong> <span class="todo">[add ref]</span>.
         </p>
        </section>
 
@@ -305,7 +307,7 @@ prior to standardization work.
         </figure>
 
         <p>
-            Global webfont usage is now over 80%.
+            Global webfont usage is <strong>now over 80%</strong>.
         </p>
 
         <figure>
@@ -362,12 +364,18 @@ prior to standardization work.
         <p>
             Languages such as Chinese, Japanese, and Korean
             have many thousands of characters.
+            For example, the Zhonghua Zihai (simplified Chinese: 中华字海; traditional Chinese: 中華字海) lists 85,568 Chinese characters.
+            The Hangul Syllables block in Unicode
+            lists 11,172 precomposed Hangul syllable blocks for modern Korean.
             Font data is thus massive.
             While there is statistical variation in usage from character to character,
             it is not in general possible to statically subset fonts into
             "always used" and "never used" subsets;
             the size of the "sometimes used" group predominates.
         </p>
+        <!-- reference dictionary sizes
+          https://en.wikipedia.org/wiki/Zhonghua_Zihai#Other_dictionaries
+        -->
         <p>
             Static subsetting is unusable,
             font sizes are in the megabytes,
@@ -377,7 +385,7 @@ prior to standardization work.
             A 2019 study by the HTTP Archive
             found that the median number of bytes
             used for Web Fonts on websites in China
-            was *zero*. <span class="todo">[add reference]</span>
+            was <strong>zero</strong>. <span class="todo">[add reference]</span>
         </p>
 
         <figure>
@@ -452,7 +460,7 @@ prior to standardization work.
 
         <p class="todo">add illustration of correct and incorrect rendering</p>
 
-        <p class="note">No mention in <a href="https://www.w3.org/TR/international-specs/">Internationalization Best Practices for Spec Developers</a>. Related <a href="https://lists.w3.org/Archives/Public/public-i18n-core/2018AprJun/0042.html">I18N-ACTION-721: Look into font subsetting for charmod-norm</a> but no mention in <a href="https://www.w3.org/TR/charmod-norm/">Character Model for the World Wide Web: String Matching</a>.</p>
+        <!-- <p class="note">No mention in <a href="https://www.w3.org/TR/international-specs/">Internationalization Best Practices for Spec Developers</a>. Related <a href="https://lists.w3.org/Archives/Public/public-i18n-core/2018AprJun/0042.html">I18N-ACTION-721: Look into font subsetting for charmod-norm</a> but no mention in <a href="https://www.w3.org/TR/charmod-norm/">Character Model for the World Wide Web: String Matching</a>.</p> -->
 
        </section>
 
@@ -864,6 +872,23 @@ https://discuss.httparchive.org/t/how-does-web-font-usage-vary-by-country/1649
         URL: <a href="https://www.w3.org/TR/ilreq/#h_indian_language_complexities">https://www.w3.org/TR/ilreq/</a>
       </dd>
 
+      <dt id="ref-OFF">OFF</dt>
+      <dd><cite><a href="">ISO/IEC 14496-22:2019
+        Information technology — Coding of audio-visual objects — Part 22: Open Font Format</a>
+        ISO/IEC JTC 1/SC 29
+        Coding of audio, picture, multimedia and hypermedia information
+      </cite>
+      International Standard, January 2019<br>
+      URL: <a href="https://standards.iso.org/ittf/PubliclyAvailableStandards/c074461_ISO_IEC_14496-22_2019.zip">https://standards.iso.org/ittf/PubliclyAvailableStandards/c074461_ISO_IEC_14496-22_2019.zip</a>
+    </dd>
+
+      <dt id="ref-OpenType"></dt>
+      <dd><cite><a href="https://docs.microsoft.com/en-us/typography/opentype/spec/">OpenType® specification</a>
+      Microsoft.
+      </cite>
+      URL: <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/">https://docs.microsoft.com/en-us/typography/opentype/spec/</a>
+    </dd>
+
         <dt id="ref-PFErepo">PFE-repo</dt>
         <dd><cite><a href="https://github.com/w3c/PFE-analysis">Progressive Font Enrichment (PFE) GitHub repository</a></cite></dd>
 
@@ -876,6 +901,12 @@ https://discuss.httparchive.org/t/how-does-web-font-usage-vary-by-country/1649
             W3C Recommendation 04 September 2001<br>
             URL: <a href="https://www.w3.org/TR/2001/REC-SVG-20010904/">https://www.w3.org/TR/2001/REC-SVG-20010904/</a>
         </dd>
+
+        <dt id="ref-TrueType">TrueType</dt>
+        <dd><cite><a href="https://developer.apple.com/fonts/TrueType-Reference-Manual/">TrueType Reference Manual</a>
+        Apple Inc.</cite>
+        URL: <a href="https://developer.apple.com/fonts/TrueType-Reference-Manual/">https://developer.apple.com/fonts/TrueType-Reference-Manual/</a>
+      </dd>
 
         <dt id="ref-webfonts">WebFonts</dt>
         <dd><cite><a href="https://www.w3.org/TR/WD-font-970721">Web Fonts</a>.
