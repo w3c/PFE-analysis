@@ -620,7 +620,7 @@ prior to standardization work.
             They make differing tradeoffs and have correspondingly different advantages and disadvantages.
         </p>
         <p>
-            In one approach <strong>"Subset and Patch"</strong>,
+            In one approach <strong>Patch and Subset</strong>,
             the entire font is dynamically subsetted.
             The client and the server communicate closely
             to generate the optimal set of enrichment glyphs
@@ -638,8 +638,25 @@ prior to standardization work.
         </p>
 
         <p>
-            In the second approach "Glyph Byterange",
-            a static subset of the entire font
+            In the second approach <strong>Glyph Byterange</strong>,
+            a streaming approach similar to video streaming is used.
+            As <a href="#scattered">previously mentioned</a>,
+            information required for a given glyph is scattered throughout the font.
+            Therefore, in this method, only the glyph outlines are streamed,
+            thus ensuring that all the other tables are preserved.
+            In addition, the font must be pre-processed:</p>
+
+            <ul>
+              <li>Composite glyphs are flattened into the resulting outlines
+            </li>
+            <li>The <span class="sfnt">CFF</span> table, if present, is desubroutinized</li>
+            <li>The <span class="sfnt">glyf</span> or <span class="sfnt">CFF</span>  table is moved to the end of the font
+              (the <span class="sfnt">SVG</span> table is not moved</li>
+            </ul>
+
+            The resulting preprocessed font is larger,
+            but byterange streaming can be used to download portions of the glyph outline data.
+            First a static subset of the entire font
             (but with <em>zero</em> glyph outlines)
             is downloaded.
             The client then requests glyph outliness as needed
@@ -652,7 +669,7 @@ prior to standardization work.
             because any standard server can be used.
             There is no risk of accidentally breaking font rendering
             due to mis-subsetting complex tables.
-            There is no tuning for differing network conditions.
+            There is however no tuning for differing network conditions.
         </p>
     </section>
 
