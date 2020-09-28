@@ -1222,3 +1222,6 @@ section p.todo {
 		}
     }
 
+span.sfnt {
+	font-family: monospaced;
+}

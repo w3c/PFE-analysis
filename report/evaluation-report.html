@@ -92,13 +92,14 @@ prior to standardization work.
      <a href="#deployment"><span class="secno">2</span> <span class="content"> Webfont deployment - successes, problems, solutions</span></a>
      <ol class="toc">
       <li><a href="#fontface"><span class="secno">2.1</span> <span class="content"> @font-face</span></a>
-      <li><a href="#WOFF1"><span class="secno">2.2</span> <span class="content"> WOFF 1.0</span></a>
-      <li><a href="#WOFF2"><span class="secno">2.3</span> <span class="content"> WOFF 2.0</span></a>
-      <li><a href="#static"><span class="secno">2.4</span> <span class="content"> Static subsets and unicode-range</span></a>
-      <li><a href="#success-simple"><span class="secno">2.5</span> <span class="content"> Success: Widespread success for simple fonts</span></a>
-      <li><a href="#fail-large"><span class="secno">2.6</span> <span class="content"> Failure: Large glyph repertoires</span></a>
-      <li><a href="#sfail-subset"><span class="secno">2.7</span> <span class="content"> Failure: Difficulty with subsetting</span></a>
-      <li><a href="#soln-PFE"><span class="secno">2.8</span> <span class="content"> Solution: Progressive Font Enrichment</span></a>
+      <li><a href="#common"><span class="secno">2.2</span> <span class="content"> Common font format</span></a>
+      <li><a href="#WOFF1"><span class="secno">2.3</span> <span class="content"> WOFF 1.0</span></a>
+      <li><a href="#WOFF2"><span class="secno">2.4</span> <span class="content"> WOFF 2.0</span></a>
+      <li><a href="#static"><span class="secno">2.5</span> <span class="content"> Static subsets and unicode-range</span></a>
+      <li><a href="#success-simple"><span class="secno">2.6</span> <span class="content"> Success: Widespread success for simple fonts</span></a>
+      <li><a href="#fail-large"><span class="secno">2.7</span> <span class="content"> Failure: Large glyph repertoires</span></a>
+      <li><a href="#sfail-subset"><span class="secno">2.8</span> <span class="content"> Failure: Difficulty with subsetting</span></a>
+      <li><a href="#soln-PFE"><span class="secno">2.9</span> <span class="content"> Solution: Progressive Font Enrichment</span></a>
 
      </ol>
     <li>
@@ -169,23 +170,85 @@ prior to standardization work.
             Thus, early implementations each used their own format:
         </p>
         <ul>
-            <li>Embedded OpenType (MS Internet Explorer 3)</li>
+            <li>Embedded OpenType™(MS Internet Explorer 3)</li>
             <li>Portable Font Resources (Netscape Navigator 4/Bitstream)</li>
             <li>SVG Fonts (pre-smartphone SVG implementations)</li>
         </ul>
         <p>
             Due to lack of interoperability,
             plus other technical drawbacks of the initial font formats used,
-            when CSS 2.1 [<a href="#ref-CSS21">CSS21</a>] was developed as the "core, interoperable subset" of CSS2,
-            <span class="code">@font-face</span> was dropped from the specification.
+            when in 2002 CSS 2.1 [<a href="#ref-CSS21-fpwd">CSS21 FPWD</a>] was developed as the "core, interoperable subset" of CSS2,
+            <span class="code">@font-face</span>
+             was dropped from the specification [<a href="#ref-CSS21">CSS21</a>].</p>
+
+            <p>It was only added back to CSS with CSS3 WebFonts [<a href="#ref-css3-webfonts">CSS3 WebFonts</a>], which was merged into
+            the First Public Working Draft of CSS Fonts 3 in 2011 [<a href="#ref-css-fonts-3-fpwd">CSS Fonts 3 FPWD</a> ]
+            CSS Fonts 3
         </p>
        </section>
 
        <section>
-        <h3 class="heading settled" data-level="2" id="WOFF1"><span class="secno">2.2 </span><span class="content">WOFF 1.0</span><a class="self-link" href="#WOFF1"></a></h3>
+        <h3 class="heading settled" data-level="2" id="common"><span class="secno">2.2 </span><span class="content">Common font format</span><a class="self-link" href="#fontface"></a></h3>
+
         <p>
-            Developed between 2010 and 2012, WOFF 1.0 [<a href="#ref-WOFF1">WOFF1</a>],
-            compresses each OpenType table separately with gzip,
+          The first attempts to use fonts on the web reflected the plethora of font formats in use on computers at the time. In 2002 the [<a href="#ref-css3-webfonts">CSS3 WebFonts</a>] specification
+          <a href="https://www.w3.org/TR/2002/WD-css3-webfonts-20020802/#referencing">noted an "initial" list</a>
+          of eight different font formats
+          <q>representing formats likely to be used by implementations on various platforms </q>
+        </p>
+        <ul>
+          <li>TrueDoc™ Portable Font Resource (Bitstream)</li>
+          <li>Embedded OpenType™(Microsoft)</li>
+          <li>PostScript™ Type 1 (Adobe)</li>
+          <li>TrueType™ (Apple)</li>
+          <li>OpenType™, including TrueType Open (Microsoft></li>
+          <li>TrueType™ with GX extensions (Apple)</li>
+          <li>Speedo™ (Bitstream)</li>
+          <li>Intellifont (Compugraphic)</li>
+        </ul>
+        <p>
+          (and this was without mentioning the many bitmapped formats still in common use at the time; of the SVG font format which came later).
+        </p>
+        <p>Over time OpenType™ [<a href="#ref-OpenType">OpenType</a>],
+          which uses TrueType™ outlines
+          and can also include Type 1 outlines (as CFF)
+          and SVG outlines,
+          and was then expanded to include
+          chromatic fonts and the GX-like variable fonts,
+          became the dominant format in use.
+          It was eventually standardized by ISO as Open Font Format [<a href="#ref-OFF">OFF</a>],
+          the name change caused by the trademark on the name OpenType™.
+        </p>
+        <p>
+          OpenType™ has a tabular structure, each table holding a particular type of information. For example
+          the <span class="sfnt">cmap</span> tabe holds character map information,
+          the <span class="sfnt">hhea</span> and <span class="sfnt">OS/2</span>
+          tables hold glyph metrics,
+          kerning information is stored in the
+          <span class="sfnt">GPOS</span> or <span class="sfnt">kern</span>
+          tables, while the actual glyph outlines
+          are in the <span class="sfnt">glyf</span>,
+          <span class="sfnt">CFF</span>, <span class="sfnt">CFF2</span>
+          or <span class="sfnt">SVG</span> tables.
+        </p>
+        <figure>
+          <figcaption>Some of the OpenType™ font tables which make up a practical font.</figcaption>
+          <img src="images/sfnt.svg" alt="" style="max-width: 15%">
+        </figure>
+        <p id="scattered">
+          In consequence, the total information needed to render a single glyph
+          is scattered throughout many tables in an OpenType™ font.
+          This has consequences for font subsetting,
+          and foils attempts to use simple video-like streaming,
+          as we will see later.
+        </p>
+       </section>
+
+       <section>
+        <h3 class="heading settled" data-level="2" id="WOFF1"><span class="secno">2.3 </span><span class="content">WOFF 1.0</span><a class="self-link" href="#WOFF1"></a></h3>
+        <p>
+            Developed between 2010 and 2012, WOFF 1.0 [<a href="#ref-WOFF1">WOFF1</a>]is a Web delivery format for OpenType.
+            It compresses each OpenType™ table separately with gzip,
             and adds optional metadata which can, for example,
             include a link to the license for that font.
             Notably, the user agent is not expected to
@@ -196,6 +259,11 @@ prior to standardization work.
             and allayed concerns from font vendors that font data
             would be forever separated from its licensing metadata.
         </p>
+        <figure>
+          <figcaption>Compression of font tables (left) in WOFF 1.0 (right). A header, a directory of compressed tables, and optional metadata and private data are added.</figcaption>
+          <img src="images/sfnt-woff1.svg" alt="" style="max-width: 80%">
+        </figure>
+
         <p>
             By using a lightweight compression scheme which already existed in browsers
             (gzip, used in the PNG image format and also for HTTP compression),
@@ -214,7 +282,7 @@ prior to standardization work.
        </section>
 
        <section>
-        <h3 class="heading settled" data-level="2" id="WOFF2"><span class="secno">2.3 </span><span class="content">WOFF 2.0</span><a class="self-link" href="#WOFF2"></a></h3>
+        <h3 class="heading settled" data-level="2" id="WOFF2"><span class="secno">2.4 </span><span class="content">WOFF 2.0</span><a class="self-link" href="#WOFF2"></a></h3>
 
         <p>Developed between 2014 and 2018, WOFF 2.0 [<a href="#ref-WOFF2">WOFF2</a>],
             significantly improves over WOFF 1.0
@@ -231,6 +299,10 @@ prior to standardization work.
             WOFF 2.0 rapidly became supported by all browsers
             and has taken over from WOFF 1.0.
         </p>
+        <figure>
+          <figcaption>Compression of font tables (left) in WOFF 2.0 (right). Data in the tables is made smaller, redundant data removed, and in some cases a table is entirely ommitted (to be rebuild on decompression). A header, a directory of compressed tables, and optional collection information, metadata and private data are added.</figcaption>
+          <img src="images/sfnt-woff2.svg" alt="" style="max-width: 80%">
+        </figure>
 
         <p>
             Global webfont usage is now over 80%.
@@ -243,7 +315,7 @@ prior to standardization work.
        </section>
 
        <section>
-        <h3 class="heading settled" data-level="2" id="static"><span class="secno">2.4 </span><span class="content">Static subsets and unicode-range</span><a class="self-link" href="#static"></a></h3>
+        <h3 class="heading settled" data-level="2" id="static"><span class="secno">2.5 </span><span class="content">Static subsets and unicode-range</span><a class="self-link" href="#static"></a></h3>
 
         <p>
             CSS has a feature, unicode-range [<a href="#ref-unicode-range">UNICODE-RANGE</a>],
@@ -270,7 +342,7 @@ prior to standardization work.
        </section>
 
        <section>
-        <h3 class="heading settled" data-level="2" id="success-simple"><span class="secno">2.5 </span><span class="content">Success: Widespread success for simple fonts</span><a class="self-link" href="#success-simple"></a></h3>
+        <h3 class="heading settled" data-level="2" id="success-simple"><span class="secno">2.6 </span><span class="content">Success: Widespread success for simple fonts</span><a class="self-link" href="#success-simple"></a></h3>
 
         <p>
             Websites with content languages using the Latin alphabet
@@ -285,7 +357,7 @@ prior to standardization work.
        </section>
 
        <section>
-        <h3 class="heading settled" data-level="2" id="fail-large"><span class="secno">2.6 </span><span class="content">Failure: Large glyph repertoires</span><a class="self-link" href="#fail-large"></a></h3>
+        <h3 class="heading settled" data-level="2" id="fail-large"><span class="secno">2.7 </span><span class="content">Failure: Large glyph repertoires</span><a class="self-link" href="#fail-large"></a></h3>
 
         <p>
             Languages such as Chinese, Japanese, and Korean
@@ -343,9 +415,9 @@ prior to standardization work.
        </section>
 
        <section>
-        <h3 class="heading settled" data-level="2" id="fail-subset"><span class="secno">2.7 </span><span class="content">Failure: Difficulty with subsetting</span><a class="self-link" href="#fail-subset"></a></h3>
+        <h3 class="heading settled" data-level="2" id="fail-subset"><span class="secno">2.8 </span><span class="content">Failure: Difficulty with subsetting</span><a class="self-link" href="#fail-subset"></a></h3>
 
-        <p>Static subsetting can run into difficulties when there are complex inter-relationships between different OpenType tables, or when characgters are shared between multiple scripts but behave differently in each script.</p>
+        <p>Static subsetting can run into difficulties when there are complex inter-relationships between different OpenType™tables, or when characgters are shared between multiple scripts but behave differently in each script.</p>
 
         <p>
           To take a simple example, both Latin and Cyrillic scripts use the period (<b>.</b>) at the end of a sentence. Because Latin-only or Cyrillic-only content is common, splitting a font that covers both Latin and Cyrillic into two smaller static subsets makes sense. However, if content uses Cyrillic text and also uses the period  from the Latin subset, then kerning rules between the Cyrllic characters and the period no longer work, whereas they did in the original font which contained the complete kerning information.
@@ -385,7 +457,7 @@ prior to standardization work.
        </section>
 
        <section>
-        <h3 class="heading settled" data-level="2" id="soln-PFE"><span class="secno">2.8 </span><span class="content">Solution: Progressive Font Enrichment</span><a class="self-link" href="#soln-PFE"></a></h3>
+        <h3 class="heading settled" data-level="2" id="soln-PFE"><span class="secno">2.9 </span><span class="content">Solution: Progressive Font Enrichment</span><a class="self-link" href="#soln-PFE"></a></h3>
 
         <p>
             Instead of downloading a static subset
@@ -721,6 +793,19 @@ https://discuss.httparchive.org/t/how-does-web-font-usage-vary-by-country/1649
             URL: <a href="https://www.w3.org/TR/1998/REC-CSS2-19980512/">https://www.w3.org/TR/1998/REC-CSS2-19980512/</a>
         </dd>
 
+        <dt id="ref-CSS21-fpwd">CSS2.1 FPWD</dt>
+        <dd>
+            <cite><a href="https://www.w3.org/TR/2002/WD-CSS21-20020802/">Cascading
+                Style Sheets Level 2 Revision 1 (CSS 2.1) Specification</a>
+                Bert Bos,
+                Tantek Çelik,
+                Ian Hickson,
+                Håkon Wium Lie (editors).
+            </cite>
+            W3C First Public Working Draft 2 August 2002<br>
+            URL: <a href="https://www.w3.org/TR/2002/WD-CSS21-20020802/">https://www.w3.org/TR/2002/WD-CSS21-20020802/</a>
+        </dd>
+
         <dt id="ref-CSS21">CSS2.1</dt>
         <dd>
             <cite><a href="https://www.w3.org/TR/2011/REC-CSS2-20110607/">Cascading
@@ -733,6 +818,32 @@ https://discuss.httparchive.org/t/how-does-web-font-usage-vary-by-country/1649
             W3C Recommendation 07 June 2011<br>
             URL: <a href="https://www.w3.org/TR/2011/REC-CSS2-20110607/">https://www.w3.org/TR/2011/REC-CSS2-20110607/</a>
         </dd>
+
+      <dt id="ref-css3-webfonts">CSS3 WebFonts</dt>
+      <dd><cite><a href="https://www.w3.org/TR/2002/WD-css3-webfonts-20020802/">CSS3 module: Web Fonts</a>
+        Michel Suignard,
+        Chris Lilley (editors). </cite>
+      W3C Working Draft 2 August 2002<br>
+      URL: <a href="https://www.w3.org/TR/2002/WD-css3-webfonts-20020802/">https://www.w3.org/TR/2002/WD-css3-webfonts-20020802/</a>
+    </dd>
+
+      <dt id="ref-css-fonts-3-fpwd">CSS Fonts 3 FPWD</dt>
+      <dd><cite><a href="https://www.w3.org/TR/2011/WD-css3-fonts-20111004/">CSS Fonts Module Level 3</a>
+        John Daggett (editor).
+      </cite>
+      W3C First Working Draft, 4 October 2011<br>
+      URL: <a href="https://www.w3.org/TR/2011/WD-css3-fonts-20111004/">https://www.w3.org/TR/2011/WD-css3-fonts-20111004/</a>
+    </dd>
+
+    <dt id="ref-css-fonts-3">CSS Fonts 3</dt>
+      <dd><cite><a href="https://www.w3.org/TR/css-fonts-3/">CSS Fonts Module Level 3</a>
+        John Daggett,
+        Myles Maxfield,
+        Chris Lilley (editors).
+      </cite>
+      W3C Recommendation 20 September 2018<br>
+      URL: <a href="https://www.w3.org/TR/css-fonts-3/">https://www.w3.org/TR/css-fonts-3/</a>
+    </dd>
 
       <dt id="ref-Indic-Intro">Indic-Intro</dt>
       <dd><cite><a href="">An Introduction to Indic Scripts</a>
