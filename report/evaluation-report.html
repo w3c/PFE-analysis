@@ -552,6 +552,18 @@ prior to standardization work.
           to the fastest observed for that connection type.
 
         </p>
+
+        <p>
+          For the <strong>Path and Subset</strong> model,
+          a simple HTTP POST was used for the request,
+          consisting of a binary protocol buffer (proto3)
+          which identified the font, the characters needed, and the characters already downloaded.
+          For the <strong>Glyph Byterange</strong> model,
+          HTTP GET byterange requests were used.
+          Reasonable defaults for request and response header size
+          (35 bytes each)
+          were used in the simulation.
+        </p>
     </section>
 
     <section>
@@ -601,6 +613,8 @@ prior to standardization work.
           into small groups
           which are frequently used together.
         </p>
+
+        <p>The study evaluated performance for these three linguistic groupings separately.</p>
 
     </section>
 
@@ -708,13 +722,10 @@ prior to standardization work.
 
         <p>
             Because this was a pre-standarization experiment,
-            details of wire protocol
+            details of wire protocols
             (which would certainly be needed for an interoperable standard)
-            were not defined at this stage.
-            Instead,
-            reasonable defaults for request and response header size
-            (35 bytes each)
-            were used in the simulation.
+            were not comparatively explored at this stage.
+
         </p>
 
     </section>
@@ -903,6 +914,14 @@ https://discuss.httparchive.org/t/how-does-web-font-usage-vary-by-country/1649
       International Standard, January 2019<br>
       URL: <a href="https://standards.iso.org/ittf/PubliclyAvailableStandards/c074461_ISO_IEC_14496-22_2019.zip">https://standards.iso.org/ittf/PubliclyAvailableStandards/c074461_ISO_IEC_14496-22_2019.zip</a>
     </dd>
+
+    <dt id="ref-patch-subset-design">Patch and Subset Design</dt>
+    <dd><cite><a href="https://docs.google.com/document/d/1DJ6VkUEZS2kvYZemIoX4fjCgqFXAtlRjpMlkOvblSts/edit">Subset and Patch Progressive Font Enrichment Protocol Design</a>
+      Garret Rieger (author).
+    </cite>
+    7 August 2019.<br>
+    URL: <a href="https://docs.google.com/document/d/1DJ6VkUEZS2kvYZemIoX4fjCgqFXAtlRjpMlkOvblSts/edit#">https://docs.google.com/document/d/1DJ6VkUEZS2kvYZemIoX4fjCgqFXAtlRjpMlkOvblSts/edit#</a>
+  </dd>
 
       <dt id="ref-OpenType"></dt>
       <dd><cite><a href="https://docs.microsoft.com/en-us/typography/opentype/spec/">OpenType® specification</a>
