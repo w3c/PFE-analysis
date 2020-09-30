@@ -431,11 +431,19 @@ prior to standardization work.
           To take a simple example, both Latin and Cyrillic scripts use the period (<b>.</b>) at the end of a sentence. Because Latin-only or Cyrillic-only content is common, splitting a font that covers both Latin and Cyrillic into two smaller static subsets makes sense. However, if content uses Cyrillic text and also uses the period  from the Latin subset, then kerning rules between the Cyrllic characters and the period no longer work, whereas they did in the original font which contained the complete kerning information.
         </p>
 
+        <figure>
+          <figcaption>Broken kerning due to font subsetting
+            (Latin subset in green, Cyrillic subset in blue;
+            both subsets include common punctuation).
+          </figcaption>
+          <img src="images/kern.png" alt="" style="max-width:40vw">
+        </figure>
+
         <p>
           Some background for a more complex example:
           India has large linguistic diversity,
           with 22 constitutionally recognized languages
-          and 12 distinct scripts. [<a href="#ref-IndicLR">IndicLR</a>]
+          and 12 distinct scripts [<a href="#ref-IndicLR">IndicLR</a>].
           In some scripts, there are complex glyph shaping needs
           [<a href="#ref-Indic-Intro">Indic-Intro</a>].
           For example a Matra (dependent vowel) can be placed above, below,
@@ -521,7 +529,7 @@ prior to standardization work.
         <h3 class="heading settled" data-level="2" id="network"><span class="secno">3.1 </span><span class="content">Network type - slow 2G to fast broadband</span><a class="self-link" href="#network"></a></h3>
 
         <p>The type of network
-          has a large impact on percieved performance
+          has a large impact on perceived performance
           (time from network request to first rendered text).
           Not only bandwidth but also latency,
           which can be substantial (ten seconds!) on slower mobile networks,
@@ -554,7 +562,7 @@ prior to standardization work.
         </p>
 
         <p>
-          For the <strong>Path and Subset</strong> model,
+          For the <strong>Patch and Subset</strong> model,
           a simple HTTP POST was used for the request,
           consisting of a binary protocol buffer (proto3)
           which identified the font, the characters needed, and the characters already downloaded.
