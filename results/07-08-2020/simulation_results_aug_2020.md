@@ -67,7 +67,7 @@ Due to the large number of sequences present in this group we randomly sampled o
 
 The breakdown of languages in this group:
 
-TODO ADD GRAPH
+![Graph of Language breakdown for Latin, Cyrillic, Greek and Thai](latin.lang_breakdown.png)
 
 ### Arabic and Indic
 
@@ -75,7 +75,7 @@ This group of scripts is characterized by having a relatively small number of ch
 
 The breakdown of languages for this group:
 
-TODO ADD GRAPH
+![Graph of Language breakdown for Arabic and Indic](arabic_indic.lang_breakdown.png)
 
 ### Chinese, Japanese, and Korean
 
@@ -83,7 +83,7 @@ This group of scripts is characterized by having large numbers of characters (in
 
 The breakdown of languages in the dataset for this group:
 
-TODO ADD GRAPH
+![Graph of Language breakdown for Chinese, Japanese, and Korean](cjk.lang_breakdown.png)
 
 ## Transfer Methods
 
