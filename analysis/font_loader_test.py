@@ -4,8 +4,9 @@ import tempfile
 import unittest
 from analysis import font_loader
 
+
 class FontLoaderTest(unittest.TestCase):
-  """Loads fonts from disk. Results are cached."""
+  '''Loads fonts from disk. Results are cached.'''
 
   def test_read_font(self):
     with tempfile.TemporaryDirectory() as dir:
