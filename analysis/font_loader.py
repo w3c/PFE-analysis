@@ -4,6 +4,7 @@ import functools
 import os
 import re
 
+
 class FontLoader:
   """Loads fonts from disk.
 
