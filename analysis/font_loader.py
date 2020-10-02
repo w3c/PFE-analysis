@@ -25,6 +25,7 @@ class FontLoader:
     return self.default_font_id
 
   def path_for_font(self, font_id):
+    """Where is the font file, allowing for alternate filename."""
     if font_id is None or font_id == "":
       font_id = self.default_font_id
     path = os.path.join(self.font_directory, font_id)
