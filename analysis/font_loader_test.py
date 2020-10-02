@@ -7,7 +7,7 @@ from analysis import font_loader
 
 class FontLoaderTest(unittest.TestCase):
   '''Tests for font_loader.py'''
-  
+
   def test_read_font(self):
     with tempfile.TemporaryDirectory() as dir:
       font_id = 'test.ttf'
