@@ -5,7 +5,10 @@ import os
 import re
 
 class FontLoader:
-  """Loads fonts from disk. Results are cached."""
+  """Loads fonts from disk.
+
+  Results are cached.
+  """
 
   def __init__(self, font_directory, default_font_id=None):
     self.font_directory = font_directory
