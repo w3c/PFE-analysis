@@ -45,14 +45,48 @@
   </div>
 
   <!--
+
+    AC Oct 20 -> 12-16
+
+    why a sigmoid function?
+
     where does -11.5 come from in cost function
     why are Tz and Tm divided by two
 
-    where do the "real page walks" page views and page view sequences come from
+    cost reduction maxes at 100%
 
-    why not subseample English more and the other simple languages less?
+    where do the "real page walks" page views and page view sequences come from
+    anonymyzed aggregated google staff page views?
+    not specific to google fonts
+    chrome
+    walk of urls
+    contents of urls
+    codepoints per font-face
+    sub in fonts to google fonts
+    "100% webfont" model
+    further work use non-Google fonts too.
+    glyph repertoire similar for other fonts.
+    study with Monotype fonts though
+    https://lists.w3.org/Archives/Public/public-webfonts-wg/2020May/0001.html
+    what are "adobe data set sequences"?
+    aha
+    https://lists.w3.org/Archives/Public/public-webfonts-wg/2020Apr/0005.html
+    compared to the adobe ethod
+
+    normally google removed opentype features, hints, etc to minimize filesize
+    sim did not do that
+    but
+    "fonts included have been preprocessed
+    to remove hinting and variation data"
+    https://lists.w3.org/Archives/Public/public-webfonts-wg/2020Sep/0007.html
+
+
+    why not subsample English more and the other simple languages less?
     Same for Arabic and Japanese
     Langauage list for the "too small" slices on each pie?
+    Distribution of langauges retained.
+
+
 
   -->
 
@@ -533,7 +567,46 @@ prior to standardization work.
    </section>
 
    <section>
+    <h2 class="heading settled" data-level="1" id="design"><span class="secno">3. </span><span class="content">Initial trials</span><a class="self-link" href="#trials"></a></h2>
+
+    <p>
+      Adobe has already deployed a proprietary form of progressive font enrichment.
+      Performance data from that solution was compared with
+      an early prototype of the <strong>Patch Subset</strong> method.
+      These were both compared to
+      a theoretical <strong>optimal</strong> method
+      (a static subset containing <em>exactly</em>
+      the glyphs needed for a given page sequence).
+    </p>
+
+    <p>
+      These simulations used exclusively CJK font,
+      primarily the Source Han Sans/Serif or Noto
+      Sans/Serif CJK collections.
+      All of the CFF fonts were de-subroutnized
+      before being used in the simulation.
+      This produced the lowest overall transfer sizes.
+    </p>
+
+    <p>
+        Both <strong>Adobe's solution</strong> and <strong>Patch Subset</strong>
+        deliver close to optimal results on number of bytes transferred,
+        with <strong>Patch Subset</strong> transferring an additional 19%,
+        and <strong>Adobe's solution</strong> an additional 45%,
+        versus the theoretical optimal transfer bytes.
+    </p>
+
+    <p>
+
+
+
+   <section>
     <h2 class="heading settled" data-level="1" id="design"><span class="secno">3. </span><span class="content">Study Design</span><a class="self-link" href="#design"></a></h2>
+
+    <!--
+      Thoughts on how to Summarize Simulation Results
+      https://lists.w3.org/Archives/Public/public-webfonts-wg/2020Sep/0003.html
+    -->
 
     <p>The following success criteria were taken into account:</p>
 
@@ -575,6 +648,27 @@ prior to standardization work.
     can be represented by</p>
     <p><img src="images/cost-eqn.png" alt="cost equation" style="margin-left:auto; margin-right:auto; max-width:50vw"/>
     </p>
+
+    <!--
+      Aggregate the 5 sub-network costs into a single value by computed a
+      weighted average:
+      -
+
+         Slowest - 5%
+         -
+
+         Fastest - 5%
+         -
+
+         Slow - 20%
+         -
+
+         Fast - 20%
+         -
+
+         Median - 50%
+    -->
+   </section>
 
     <section>
         <h3 class="heading settled" data-level="2" id="network"><span class="secno">3.1 </span><span class="content">Network type - slow 2G to fast broadband</span><a class="self-link" href="#network"></a></h3>
@@ -682,6 +776,21 @@ prior to standardization work.
     <section>
         <h3 class="heading settled" data-level="2" id="codepredict"><span class="secno">3.3 </span><span class="content">Effect of Codepoint Prediction</span><a class="self-link" href="#codepredict"></a></h3>
 
+        <!--
+Progressive Font Enrichment: Codepoint Prediction Results
+(patch only)
+https://docs.google.com/document/d/1u-05ztF9MqftHbMKB_KiqeUhZKiXNFE4TRSUWFAPXsk/edit
+
+Codepoint prediction, that is adding extra non-requested codepoints to a font augmentation response was tested with the progressive font enrichment simulations to see if it could improve performance and close the gaps where progressive font enrichment performed worse than existing transfer methods.
+
+The result of the simulations showed that for all three script categories using codepoint prediction was able to lower costs enough to tie or beat existing transfer methods for all connection types other than Mobile 2G and the slowest variant of Mobile 3G. This comes at the cost of sending more bytes, but still sends less bytes than existing transfer methods.
+
+CJK scripts benefited the least from prediction. Arabic, Indic, Latin, Cyrllic, Greek, and Thai saw more improvements.  For those scripts prediction closed the performance gap between existing font transfer methods for many connection types.
+
+Prediction was not beneficial in all cases. For some script and network conditions combinations it increased overall cost. If prediction is to be used it should be selectively enabled based on the script and client network capabilities.
+
+
+        -->
         <p class="todo">todo</p>
 
     </section>
@@ -817,6 +926,9 @@ prior to standardization work.
     <section>
     <h2 class="heading settled" data-level="1" id="analysis"><span class="secno">4. </span><span class="content">Analysis</span><a class="self-link" href="#analysis"></a></h2>
 
+    <!--
+
+    -->
     <p class="todo">todo</p>
 
     </section>
@@ -824,6 +936,39 @@ prior to standardization work.
     <section>
         <h2 class="heading settled" data-level="1" id="conclusions"><span class="secno">4. </span><span class="content">Conclusions</span><a class="self-link" href="#conclusions"></a></h2>
 
+        <!--
+          minimal set, not too complex
+          clearly lead to next steps
+
+          cjk good for range and pathch, as long as 4G connection or above
+
+          table, network model ( 3G below, 4G abve. high and low latency is the main effect)
+          and CJK vs non-CJK language
+          conclusion in each cell
+
+          myles wants the full matrix first. color code.
+
+          deplyability conclusion as well as perf.
+
+          Myles, proof of concept tool for making the optimised streamable font. Don't *need* to collect the glyphs
+
+          study: charstrings at end of CFF table
+
+          study: binary patch generation from brotli and client patching is already deployed in servers and clients,
+          brotli library has the function to call (?true?)
+          cost is therefore less.
+          patch benefits from brotli compression dictionary
+          brotli in FF, Chrome, Edge but not Safari (it goes to CoreText) browsers now (WOFF2 and HTTP support)
+          Safari would need to do it in webkit separately api boundary. Marginaly higher.
+
+          analysis: caches also need to understand the protocol
+          POST bypasses caches
+          Final one needs to work with caches
+
+          Garret code can go into an Apache module
+          not yet integrated
+
+        -->
         <p class="todo">todo</p>
 
         </section>
