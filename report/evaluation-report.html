@@ -148,24 +148,31 @@ prior to standardization work.
       <li><a href="#soln-PFE"><span class="secno">2.9</span> <span class="content"> Solution: Progressive Font Enrichment</span></a>
 
      </ol>
+     <li>
+      <a href="#design"><span class="secno">3</span> <span class="content">Initial trials</span></a>
     <li>
-     <a href="#design"><span class="secno">3</span> <span class="content">Study Design</span></a>
+     <a href="#design"><span class="secno">4</span> <span class="content">Study design</span></a>
      <ol class="toc">
-      <li><a href="#network"><span class="secno">3.1</span> <span class="content"> Network type - slow 2G to fast broadband</span></a>
-      <li><a href="#langtype"><span class="secno">3.2</span> <span class="content"> Language type: small &amp; simple, complex shaping, large</span></a>
-      <li><a href="#codepredict"><span class="secno">3.3</span> <span class="content"> Effect of Codepoint Prediction</span></a>
-      <li><a href="#servtype"><span class="secno">3.4</span> <span class="content"> Server type: intelligent vs. simple</span></a>
-      <li><a href="#tda"><span class="secno">3.5</span> <span class="content"> Complex subsetting: table dependency analysis</span></a>
-      <li><a href="#group"><span class="secno">3.6</span> <span class="content"> Byterange subsetting: glyph grouping</span></a>
-      <li><a href="#corpus"><span class="secno">3.7</span> <span class="content"> Web page corpus</span></a>
-      <li><a href="#framework"><span class="secno">3.8</span> <span class="content"> Simulation and analysis framework</span></a>
-      <li><a href="#oos"><span class="secno">3.9</span> <span class="content"> Out of scope</span></a>
+      <li><a href="#criteria"><span class="secno">4.1</span> <span class="content"> Success criteria</span></a>
+      <li><a href="#cost"><span class="secno">4.2</span> <span class="content"> Cost fuunction</span></a>
+      <li><a href="#corpus"><span class="secno">4.8</span> <span class="content"> Web page corpus</span></a>
+      <li><a href="#network"><span class="secno">4.3</span> <span class="content"> Network type - slow 2G to fast broadband</span></a>
+      <li><a href="#langtype"><span class="secno">4.4</span> <span class="content"> Language type: small &amp; simple, complex shaping, large</span></a>
+      <li><a href="#codepredict"><span class="secno">4.5</span> <span class="content"> Codepoint Prediction</span></a>
+      <li><a href="#servtype"><span class="secno">4.6</span> <span class="content"> Server type: intelligent vs. simple</span></a>
+      <!-- <li><a href="#tda"><span class="secno">4.5</span> <span class="content"> Complex subsetting: table dependency analysis</span></a> -->
+      <li><a href="#group"><span class="secno">4.7</span> <span class="content"> Byterange subsetting: glyph grouping</span></a>
+      <li><a href="#framework"><span class="secno">4.9</span> <span class="content"> Simulation and analysis framework</span></a>
+      <li><a href="#oos"><span class="secno">4.10</span> <span class="content"> Out of scope</span></a>
      </ol>
 
     <li>
-     <a href="#analysis"><span class="secno">4</span> <span class="content"> Analysis </span></a>
+     <a href="#analysis"><span class="secno">5</span> <span class="content"> Analysis </span></a>
+     <ol class="toc">
+      <li><a href="#codepredictresult"><span class="secno">5.x</span> <span class="content"> Effect of Codepoint Prediction</span></a>
+     </ol>
 
-    <li><a href="#conclusions"><span class="secno">5</span> <span class="content"> Conclusions</span></a>
+    <li><a href="#conclusions"><span class="secno">6</span> <span class="content"> Conclusions</span></a>
     <li>
      <a href="#references"><span class="secno">A</span> <span class="content"> References</span></a>
 
@@ -601,7 +608,10 @@ prior to standardization work.
 
 
    <section>
-    <h2 class="heading settled" data-level="1" id="design"><span class="secno">3. </span><span class="content">Study Design</span><a class="self-link" href="#design"></a></h2>
+    <h2 class="heading settled" data-level="1" id="design"><span class="secno">4. </span><span class="content">Study Design</span><a class="self-link" href="#design"></a></h2>
+
+    <section>
+      <h3 class="heading settled" data-level="2" id="criteria"><span class="secno">4.1 </span><span class="content">Success criteria</span><a class="self-link" href="#criteria"></a></h3>
 
     <!--
       Thoughts on how to Summarize Simulation Results
@@ -623,6 +633,10 @@ prior to standardization work.
       </li>
     </ul>
 
+    </section>
+
+    <section>
+      <h3 class="heading settled" data-level="2" id="cost"><span class="secno">4.2 </span><span class="content">Cost function</span><a class="self-link" href="#cost"></a></h3>
     <p>
       The impact of network delay was modelled as a <strong>cost function</strong>.
       This is not straightforward to model as there are two boundding factors:
@@ -670,8 +684,37 @@ prior to standardization work.
     -->
    </section>
 
+   <section>
+    <h3 class="heading settled" data-level="2" id="corpus"><span class="secno">4.3 </span><span class="content">Web page corpus</span><a class="self-link" href="#corpus"></a></h3>
+
+   <p>
+     To simulate the sort of multiple-page browsing experience
+     which would benefit from PFE,
+     a corpus of Web page views was assembled for each language group.
+     These were analyzed to yeild
+     <strong>sequences of character requests</strong>
+     which would generate font requests
+     for the characters not previously encountered.
+    </p>
+
+    <p>
+      To better understand how progressive font enrichment
+      performs for different scripts, the input data set was split
+      into <a href="#langtype">three groups</a>
+      based on the languages used in the page walks:</p>
+
+  <ol>
+    <li>Latin, Cyrillic, Greek and Thai</li>
+    <li>Arabic and Indic</li>
+    <li>Chinese, Japanese, and Korean</li>
+  </ol>
+
+    </p>
+
+</section>
+
     <section>
-        <h3 class="heading settled" data-level="2" id="network"><span class="secno">3.1 </span><span class="content">Network type - slow 2G to fast broadband</span><a class="self-link" href="#network"></a></h3>
+        <h3 class="heading settled" data-level="2" id="network"><span class="secno">4.4 </span><span class="content">Network type - slow 2G to fast broadband</span><a class="self-link" href="#network"></a></h3>
 
         <p>The type of network
           has a large impact on perceived performance
@@ -720,7 +763,7 @@ prior to standardization work.
     </section>
 
     <section>
-        <h3 class="heading settled" data-level="2" id="langtype"><span class="secno">3.2 </span><span class="content">Language type: small &amp; simple, complex shaping, large</span><a class="self-link" href="#langtype"></a></h3>
+        <h3 class="heading settled" data-level="2" id="langtype"><span class="secno">4.5 </span><span class="content">Language type: small &amp; simple, complex shaping, large</span><a class="self-link" href="#langtype"></a></h3>
 
         <p>Fonts vary in size and complexity based on which language families they support.</p>
 
@@ -774,8 +817,120 @@ prior to standardization work.
     </section>
 
     <section>
-        <h3 class="heading settled" data-level="2" id="codepredict"><span class="secno">3.3 </span><span class="content">Effect of Codepoint Prediction</span><a class="self-link" href="#codepredict"></a></h3>
+        <h3 class="heading settled" data-level="2" id="codepredict"><span class="secno">4.6 </span><span class="content">Codepoint Prediction</span><a class="self-link" href="#codepredict"></a></h3>
 
+        <p>
+          Because making many small requests is costly,
+          it could be beneficial to send additional codepoints
+          besides the ones actually requested.
+          The hope is that they will be needed later, when the user visits a different page.
+          This is a tradeoff, potentially increasing total download size
+          (if the codepoints end up not being used)
+          but potentially decreasing the number of separate requests.
+          This is particularly valuable on network connections with longer round trip times.
+        </p>
+
+        <p>
+          Rather than sending random codepoints,
+          it is best if the server tries to predict which unseen codepoints
+          are statistically likely to occur in the future.
+          This is called codepoint prediction.
+        </p>
+
+        <p>
+          In this study, an index of the Web was analyzed
+          to determine the frequency of occurrence
+          (percentage of documents in the index which include that codepoint at least once)
+          for each codepoint.
+          The index was segmented by script
+          (using the same script subsets
+          as are used for unicode-range subsetting
+          by Google Fonts
+          [<a href="#ref-Google-scrpt-subsets">Google script subsets</a>]).
+        </p>
+
+        <p>
+          Each client request contains the font to enrich,
+          the set of codepoints already downloaded,
+          and the set of codepoints to be added.
+        </p>
+
+        <p>
+          The prediction algorithm in this study had two variables,
+          which could be tuned to give different tradeoffs
+          suitable for different network conditions:
+          <strong>N</strong> is the number of predicted codepoints to add,
+          and
+          <strong>F</strong> is a minimum occurrence theshold.
+          Codepoints which occur less frequently than <strong>F</strong>
+          will not be sent (unless explicitly requested).
+          The algorithm proceeded in four stages:
+        </p>
+
+        <ol>
+          <li>Find all script subsets which intersect the set of codepoints the client wants to add</li>
+          <li>Discard any of those script subsets which do not intersect the codepoint coverage of the font to be augmented</li>
+          <li>Pick the top <strong>N</strong> codepoints by frequency which are
+            <ul>
+              <li>in the font to be augmented</li>
+              <li>not in the set of codepoints the client has, or wants</li>
+              <li>in any of the subsets matched in steps 1 and 2</li>
+              <li>above frequency threshold <strong>F</strong></li>
+            </ul>
+          </li>
+          <li>Return the requested codepoints,
+            plus the predicted codepoints.</li>
+        </ol>
+
+        <p>
+          The simulation was run with two or three different values for
+          <strong>N</strong> and <strong>F</strong>,
+          for each <a href="#langtype">language type</a>:</p>
+
+          <table id="pred-table">
+            <tr>
+              <th>Language Type</th>
+              <th>N (Max codepoints)</th>
+              <th>F (Frequency Threshold)</th>
+            </tr>
+            <tr>
+              <td rowspan="2">Latin, Greek Cyrillic, Thai</td>
+              <td>87</td>
+              <td>0.005</td>
+            </tr>
+            <tr>
+              <td>37</td>
+              <td>0.005</td>
+            </tr>
+            <tr>
+              <td  rowspan="2">Arabic + Indic</td>
+              <td>109</td>
+              <td>0.005</td>
+            </tr>
+            <tr>
+              <td>55</td>
+              <td>0.00615</td>
+            </tr>
+            <tr>
+              <td rowspan="3">Chinese, Japanese, Korean</td>
+              <td>1500</td>
+              <td>0.005</td>
+            </tr>
+            <tr>
+              <td>941</td>
+              <td>0.062</td>
+            </tr>
+            <tr>
+              <td>24</td>
+              <td>0.999</td>
+            </tr>
+          </table>
+
+
+        <p>
+          The results [<a href="#ref-codepoint-prediction">Codepoint Prediction</a>]
+          are summarized <a href="#analysis-prediction">later in this report</a>.
+        </p>
         <!--
 Progressive Font Enrichment: Codepoint Prediction Results
 (patch only)
@@ -791,12 +946,11 @@ Prediction was not beneficial in all cases. For some script and network conditio
 
 
         -->
-        <p class="todo">todo</p>
 
     </section>
 
     <section>
-        <h3 class="heading settled" data-level="2" id="servtype"><span class="secno">3.4 </span><span class="content">Server type: intelligent vs. simple</span><a class="self-link" href="#servtype"></a></h3>
+        <h3 class="heading settled" data-level="2" id="servtype"><span class="secno">4.7 </span><span class="content">Server type: intelligent vs. simple</span><a class="self-link" href="#servtype"></a></h3>
 
         <p>
             Two entirely different types of font enrichment have been studied. One requires only a standard Web server, so could be deployed anywhere.
@@ -859,58 +1013,31 @@ Prediction was not beneficial in all cases. For some script and network conditio
         </p>
     </section>
 
+    <!-- <section>
+        <h3 class="heading settled" data-level="2" id="tda"><span class="secno">4.8 </span><span class="content">Complex subsetting: table dependency analysis</span><a class="self-link" href="#tda"></a></h3>
+
+        <p class="todo">todo</p>
+
+    </section> -->
+
     <section>
-        <h3 class="heading settled" data-level="2" id="tda"><span class="secno">3.5 </span><span class="content">Complex subsetting: table dependency analysis</span><a class="self-link" href="#tda"></a></h3>
+        <h3 class="heading settled" data-level="2" id="group"><span class="secno">4.8 </span><span class="content">Byterange subsetting: glyph grouping</span><a class="self-link" href="#group"></a></h3>
+
+        <p class="todo">todo</p>
+
+    </section>
+
+
+
+    <section>
+        <h3 class="heading settled" data-level="2" id="framework"><span class="secno">4.9 </span><span class="content">Simulation and analysis framework</span><a class="self-link" href="#framework"></a></h3>
 
         <p class="todo">todo</p>
 
     </section>
 
     <section>
-        <h3 class="heading settled" data-level="2" id="group"><span class="secno">3.6 </span><span class="content">Byterange subsetting: glyph grouping</span><a class="self-link" href="#group"></a></h3>
-
-        <p class="todo">todo</p>
-
-    </section>
-
-    <section>
-        <h3 class="heading settled" data-level="2" id="corpus"><span class="secno">3.7 </span><span class="content">Web page corpus</span><a class="self-link" href="#corpus"></a></h3>
-
-       <p>
-         To simulate the sort of multiple-page browsing experience
-         which would benefit from PFE,
-         a corpus of Web page views was assembled for each language group.
-         These were analyzed to yeild
-         <strong>sequences of character requests</strong>
-         which would generate font requests
-         for the characters not previously encountered.
-        </p>
-
-        <p>
-          To better understand how progressive font enrichment
-          performs for different scripts, the input data set was split
-          into <a href="#langtype">three groups</a>
-          based on the languages used in the page walks:</p>
-
-      <ol>
-        <li>Latin, Cyrillic, Greek and Thai</li>
-        <li>Arabic and Indic</li>
-        <li>Chinese, Japanese, and Korean</li>
-      </ol>
-
-        </p>
-
-    </section>
-
-    <section>
-        <h3 class="heading settled" data-level="2" id="framework"><span class="secno">3.8 </span><span class="content">Simulation and analysis framework</span><a class="self-link" href="#framework"></a></h3>
-
-        <p class="todo">todo</p>
-
-    </section>
-
-    <section>
-        <h3 class="heading settled" data-level="2" id="oos"><span class="secno">3.9 </span><span class="content">Out of scope</span><a class="self-link" href="#oos"></a></h3>
+        <h3 class="heading settled" data-level="2" id="oos"><span class="secno">4.10 </span><span class="content">Out of scope</span><a class="self-link" href="#oos"></a></h3>
 
         <p>
             Because this was a pre-standarization experiment,
@@ -924,7 +1051,7 @@ Prediction was not beneficial in all cases. For some script and network conditio
     </section>
 
     <section>
-    <h2 class="heading settled" data-level="1" id="analysis"><span class="secno">4. </span><span class="content">Analysis</span><a class="self-link" href="#analysis"></a></h2>
+    <h2 class="heading settled" data-level="1" id="analysis"><span class="secno">5. </span><span class="content">Analysis</span><a class="self-link" href="#analysis"></a></h2>
 
     <!--
 
@@ -934,7 +1061,7 @@ Prediction was not beneficial in all cases. For some script and network conditio
     </section>
 
     <section>
-        <h2 class="heading settled" data-level="1" id="conclusions"><span class="secno">4. </span><span class="content">Conclusions</span><a class="self-link" href="#conclusions"></a></h2>
+        <h2 class="heading settled" data-level="1" id="conclusions"><span class="secno">6. </span><span class="content">Conclusions</span><a class="self-link" href="#conclusions"></a></h2>
 
         <!--
           minimal set, not too complex

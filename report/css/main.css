@@ -1225,3 +1225,11 @@ section p.todo {
 span.sfnt {
 	font-family: monospaced;
 }
+
+#pred-table {
+
+}
+
+#pred-table tr:hover {
+	background-color: #fdd;
+}
