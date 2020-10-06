@@ -1,4 +1,4 @@
-"""Main binary for the analyis framework.
+"""Main binary for the analysis framework.
 
 Takes an input data file and tests various progressive font enrichment methods
 against each one.
@@ -16,6 +16,7 @@ import collections
 import logging
 from multiprocessing import Pool
 import os
+import subprocess
 import sys
 import json
 
@@ -312,8 +313,10 @@ def start_analysis():
     data_set = read_text_input(input_data_path)
   elif FLAGS.input_form == "json":
     data_set = read_json_input(input_data_path)
+  elif FLAGS.input_form == "shellcmd":
+    data_set = read_shell_command_input(input_data_path)
   else:
-    LOG.error("Unknown input_form. Needs to be 'binary', 'text', or 'json'.")
+    LOG.error("Unknown input_form. Needs to be 'binary', 'text', 'json' or 'shellcmd'.")
 
   if data_set.logged_method_name:
     PFE_METHODS.append(logged_pfe_method.for_name(data_set.logged_method_name))
