@@ -581,15 +581,16 @@ prior to standardization work.
       Adobe has already deployed a proprietary form of progressive font enrichment.
       Performance data from that solution was compared with
       an early prototype of the <strong>Patch Subset</strong> method
-      ( <a href="">described below</a> ).
-      These were both compared to
+      (<a href="">described below</a>).
+      In this initial trial,
+      these were both compared to
       a theoretical <strong>optimal</strong> method
       (a static subset containing <em>exactly</em>
       the glyphs needed for a given page sequence).
     </p>
 
     <p>
-      These simulations used exclusively CJK font,
+      These simulations used exclusively CJK fonts,
       primarily the Source Han Sans/Serif or Noto
       Sans/Serif CJK collections.
       All of the CFF fonts were de-subroutnized
@@ -598,15 +599,24 @@ prior to standardization work.
     </p>
 
     <p>
-        Both <strong>Adobe's solution</strong> and <strong>Patch Subset</strong>
-        deliver close to optimal results on number of bytes transferred,
-        with <strong>Patch Subset</strong> transferring an additional 19%,
-        and <strong>Adobe's solution</strong> an additional 45%,
-        versus the theoretical optimal transfer bytes.
+      Both <strong>Adobe's solution</strong> and <strong>Patch Subset</strong>
+      deliver close to optimal results on number of bytes transferred,
+      with <strong>Patch Subset</strong> transferring an additional 19%,
+      and <strong>Adobe's solution</strong> an additional 45%,
+      versus the theoretical optimal transfer bytes.
     </p>
 
     <p>
-
+      It became clear that network bandwidth, although important,
+      was not the limiting factor for performance.
+      Rather, the network latency
+      (overall round-trip time for a single request)
+      was the important variable.
+      This is because a font is delivered in response to several requests over time,
+      rather than in one big request and response.
+      This finding informed the study design.
+    </p>
+   </section>
 
 
    <section>
@@ -620,15 +630,16 @@ prior to standardization work.
       https://lists.w3.org/Archives/Public/public-webfonts-wg/2020Sep/0003.html
     -->
 
-    <p>The following success criteria were taken into account:</p>
+    <p>The following success criteria were taken into account. A good Progressive Font Enrichment solution will:</p>
 
     <ul>
-      <li>Retain all <em>layout rules</em> found in the source font which are needed for the codepoints present on a particular page.</li>
+      <li>Retain all <em>layout rules</em> found in the source font,
+        which are needed for the codepoints present on a particular page.</li>
       <li>Load font data <em>fairly</em>, that is for each page view the amount of font data loaded is related to the number of new codepoints on that page.</li>
       <li>Minimize the <em>user perceptible delay</em> caused by font loading.</li>
-      <li>Hav good <em>network performance</em>, that is it minimizes:
+      <li>Have good <em>network performance</em>, that is it minimizes:
         <ul>
-          <li>The worst case network delay caused by font loading for clients when viewing a sequence of pages</li>
+          <li>The worst case network delay caused by font loading for clients when viewing a sequence of pages.</li>
           <li>The total number of bytes transferred (both requests and responses) caused by font loading for clients when viewing a sequence of pages.</li>
           <li>the total number of network requests caused by font loading for clients when viewing a sequence of pages.</li>
         </ul>
@@ -671,6 +682,11 @@ prior to standardization work.
     <p><img src="images/cost-eqn.png" alt="cost equation" style="margin-left:auto; margin-right:auto; max-width:50vw"/>
     </p>
 
+    <figure>
+      <figcaption>The overall shape of the cost function is sigmoid</figcaption>
+      <img src="images/cost-graph.png" alt="graph of cost equation" style="margin-left:auto; margin-right:auto; max-width:60vw"/>
+    </figure>
+
     <!--
       Aggregate the 5 sub-network costs into a single value by computed a
       weighted average:
@@ -711,22 +727,132 @@ prior to standardization work.
           and the downstream bandwidth.
         </p>
         <p>
-          The size of HTTP request headers and responses
+          The size of HTTP/2 request headers and responses
           (using HPACK) was based on
           observing request header sizes
           for sample requests
           to a fonts Content Distribution Network (CDN).
         </p>
         <p>
-          The network models
-          for 2G, 3G, 4G, mobile WiFi, and Desktop (on a fast connection)
+          The <a href="https://github.com/w3c/PFE-analysis/blob/master/analysis/network_models.py">network models</a>
+          for mobile 2G, 3G, 4G, mobile WiFi, and Desktop (on a fast connection)
           were derived from browser reported connection speeds (from Chrome),
           across each connection type.
           For each connection type
           5 different speeds were provided,
           ranging from the slowest observed speeds
           to the fastest observed for that connection type.
+        </p>
 
+        <table  class="data">
+          <caption>Network latencies (ms)</caption>
+          <tr>
+            <th> </th>
+            <th>Slowest</th>
+            <th>Slow</th>
+            <th>Median</th>
+            <th>Fast</th>
+            <th>Fastest</th>
+          </tr>
+          <tr>
+            <th>mobile 2G</th>
+            <td>10,000</td>
+            <td>4,500</td>
+            <td>2,750</td>
+            <td>1,500</td>
+            <td>125</td>
+          </tr>
+          <tr>
+            <th>mobile 3G</th>
+            <td>2,750</td>
+            <td>550</td>
+            <td>300</td>
+            <td>175</td>
+            <td>115</td>
+          </tr>
+          <tr>
+            <th>mobile 4G</th>
+            <td>650</td>
+            <td>225</td>
+            <td>150</td>
+            <td>110</td>
+            <td>70</td>
+          </tr>
+          <tr>
+            <th>mobile WiFi&nbsp;</th>
+            <td>500</td>
+            <td>170</td>
+            <td>115</td>
+            <td>65</td>
+            <td>35</td>
+          </tr>
+          <tr>
+            <th>Desktop</th>
+            <td>350</td>
+            <td>150</td>
+            <td>80</td>
+            <td>50</td>
+            <td>20</td>
+          </tr>
+        </table>
+
+        <table class="data">
+          <caption>Network bandwidth (kB/s)</caption>
+          <tr>
+            <th> </th>
+            <th>Slowest</th>
+            <th>Slow</th>
+            <th>Median</th>
+            <th>Fast</th>
+            <th>Fastest</th>
+          </tr>
+          <tr>
+            <th>mobile 2G</th>
+            <td>4</td>
+            <td>6</td>
+            <td>9</td>
+            <td>19</td>
+            <td>200</td>
+          </tr>
+          <tr>
+            <th>mobile 3G</th>
+            <td>13</td>
+            <td>50</td>
+            <td>156</td>
+            <td>219</td>
+            <td>750</td>
+          </tr>
+          <tr>
+            <th>mobile 4G</th>
+            <td>47</td>
+            <td>181</td>
+            <td>238</td>
+            <td>750</td>
+            <td>2,250</td>
+          </tr>
+          <tr>
+            <th>mobile WiFi&nbsp;</th>
+            <td>100</td>
+            <td>200</td>
+            <td>563</td>
+            <td>1,250</td>
+            <td>3,438</td>
+          </tr>
+          <tr>
+            <th>Desktop</th>
+            <td>125</td>
+            <td>313</td>
+            <td>938</td>
+            <td>2,188</td>
+            <td>7,500</td>
+          </tr>
+        </table>
+
+        <p class="note">
+          Note: In this study, download bandwidth was considered far more important
+          than upload bandwidth (because requests are small and responses large).
+          Therefore, even though asymmetric networks such as ADSL are common,
+          the bandwidth in both directions was treated as the same.
         </p>
 
         <p>
@@ -889,7 +1015,7 @@ prior to standardization work.
           <strong>N</strong> and <strong>F</strong>,
           for each <a href="#langtype">language type</a>:</p>
 
-          <table id="pred-table">
+          <table  class="data" id="pred-table">
             <tr>
               <th>Language Type</th>
               <th>N (Max codepoints)</th>
