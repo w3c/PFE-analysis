@@ -235,6 +235,11 @@ def read_binary_input(input_data_path):
         input_data_file.read())
 
 
+def read_shell_command_input(input_data_path):
+  with subprocess.Popen(input_data_path, shell=True, stdout=subprocess.PIPE) as p:
+    return page_view_sequence_pb2.DataSetProto.FromString(p.stdout.read())
+
+
 def read_text_input(input_data_path):
   data_set = page_view_sequence_pb2.DataSetProto()
   with open(input_data_path, 'r') as input_data_file:
