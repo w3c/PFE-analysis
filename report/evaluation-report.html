@@ -155,7 +155,7 @@ prior to standardization work.
      <ol class="toc">
       <li><a href="#criteria"><span class="secno">4.1</span> <span class="content"> Success criteria</span></a>
       <li><a href="#cost"><span class="secno">4.2</span> <span class="content"> Cost function</span></a>
-      <li><a href="#corpus"><span class="secno">4.8</span> <span class="content"> Web page corpus</span></a>
+
       <li><a href="#network"><span class="secno">4.3</span> <span class="content"> Network type - slow 2G to fast broadband</span></a>
       <li><a href="#langtype"><span class="secno">4.4</span> <span class="content"> Language type: small &amp; simple, complex shaping, large</span></a>
       <li><a href="#codepredict"><span class="secno">4.5</span> <span class="content"> Codepoint Prediction</span></a>
@@ -580,7 +580,8 @@ prior to standardization work.
     <p>
       Adobe has already deployed a proprietary form of progressive font enrichment.
       Performance data from that solution was compared with
-      an early prototype of the <strong>Patch Subset</strong> method.
+      an early prototype of the <strong>Patch Subset</strong> method
+      ( <a href="">described below</a> ).
       These were both compared to
       a theoretical <strong>optimal</strong> method
       (a static subset containing <em>exactly</em>
@@ -691,34 +692,6 @@ prior to standardization work.
     -->
    </section>
 
-   <section>
-    <h3 class="heading settled" data-level="2" id="corpus"><span class="secno">4.3 </span><span class="content">Web page corpus</span><a class="self-link" href="#corpus"></a></h3>
-
-   <p>
-     To simulate the sort of multiple-page browsing experience
-     which would benefit from PFE,
-     a corpus of Web page views was assembled for each language group.
-     These were analyzed to yeild
-     <strong>sequences of character requests</strong>
-     which would generate font requests
-     for the characters not previously encountered.
-    </p>
-
-    <p>
-      To better understand how progressive font enrichment
-      performs for different scripts, the input data set was split
-      into <a href="#langtype">three groups</a>
-      based on the languages used in the page walks:</p>
-
-  <ol>
-    <li>Latin, Cyrillic, Greek and Thai</li>
-    <li>Arabic and Indic</li>
-    <li>Chinese, Japanese, and Korean</li>
-  </ol>
-
-    </p>
-
-</section>
 
     <section>
         <h3 class="heading settled" data-level="2" id="network"><span class="secno">4.4 </span><span class="content">Network type - slow 2G to fast broadband</span><a class="self-link" href="#network"></a></h3>
@@ -772,7 +745,29 @@ prior to standardization work.
     <section>
         <h3 class="heading settled" data-level="2" id="langtype"><span class="secno">4.5 </span><span class="content">Language type: small &amp; simple, complex shaping, large</span><a class="self-link" href="#langtype"></a></h3>
 
-        <p>Fonts vary in size and complexity based on which language families they support.</p>
+        <p>
+          To simulate the sort of multiple-page browsing experience
+          which would benefit from PFE,
+          a corpus of Web page views was assembled for each language group.
+          These were analyzed to yeild
+          <strong>sequences of character requests</strong>
+          which would generate font requests
+          for the characters not previously encountered.
+         </p>
+
+         <p>
+           To better understand how progressive font enrichment
+           performs for different scripts, the input data set was split
+           into <a href="#langtype">three groups</a>
+           based on the languages used in the page walks.</p>
+
+       <ol>
+         <li>Simple alphabetic languages: Latin, Cyrillic, Greek and Thai</li>
+         <li>Languages which require glyph shaping: Arabic and Indic</li>
+         <li>Languages with large character repertoires: Chinese, Japanese, and Korean</li>
+       </ol>
+
+        <p>Fonts vary in size and complexity based on which of these language families they support.</p>
 
         <p>Fonts for alphabetic languages
           with small glyph repertoires
@@ -959,64 +954,73 @@ Prediction was not beneficial in all cases. For some script and network conditio
     <section>
         <h3 class="heading settled" data-level="2" id="servtype"><span class="secno">4.7 </span><span class="content">Server type: intelligent vs. simple</span><a class="self-link" href="#servtype"></a></h3>
 
-        <p>
-            Two entirely different types of font enrichment have been studied. One requires only a standard Web server, so could be deployed anywhere.
-            The other requires an active server extension.
-            They make differing tradeoffs and have correspondingly different advantages and disadvantages.
-        </p>
-        <p>
-            In one approach <strong>Patch and Subset</strong>,
-            the entire font is dynamically subsetted.
-            The client and the server communicate closely
-            to generate the optimal set of enrichment glyphs
-            and other font information
-            with each transaction.
-            A binary patch is used to update the font stored on the client.
-            This tend more closely towards
-            the theoretical peak efficiency
-            in terms of bytes transfered
-            and minimal network latency,
-            but requires an intelligent server.
-            This approach also allows parameters to be adjusted
-            to maximize efficiency
-            based on the current network conditions.
-        </p>
+      <p>
+          Two entirely different types of font enrichment have been studied. One requires only a standard Web server, so could be deployed anywhere.
+          The other requires an active server extension.
+          They make differing tradeoffs and have correspondingly different advantages and disadvantages.
+      </p>
+      <p id="patch-subset">
+          In one approach <strong>Patch and Subset</strong>,
+          the entire font is dynamically subsetted.
+          The client and the server communicate closely
+          to generate the optimal set of enrichment glyphs
+          and other font information
+          with each transaction.
+          A binary patch is used to update the font stored on the client.
+          This tend more closely towards
+          the theoretical peak efficiency
+          in terms of bytes transfered
+          and minimal network latency,
+          but requires an intelligent server.
+          This approach also allows parameters to be adjusted
+          to maximize efficiency
+          based on the current network conditions.
+      </p>
+
+        <p id="glyph-byterange">
+          In the second approach <strong>Glyph Byterange</strong>,
+          a streaming approach similar to video streaming is used.
+          As <a href="#scattered">previously mentioned</a>,
+          information required for a given glyph is scattered throughout the font.
+          Therefore, in this method, only the glyph outlines are streamed,
+          thus ensuring that all the other tables are preserved.
+          In addition, the font must be pre-processed:</p>
+
+          <ul>
+            <li>Composite glyphs are flattened into the resulting outlines
+          </li>
+          <li>The <span class="sfnt">CFF</span> table, if present, is desubroutinized,
+          charstrings (glyph outlines) moved to the end of the table
+        </li>
+          <li>The <span class="sfnt">glyf</span> or <span class="sfnt">CFF</span>  table (whichever one is present) is moved to the end of the font
+            (the <span class="sfnt">SVG</span> table, if present is not moved
+            and thus, any glyphs there are always downloaded)
+          </li>
+          </ul>
 
         <p>
-            In the second approach <strong>Glyph Byterange</strong>,
-            a streaming approach similar to video streaming is used.
-            As <a href="#scattered">previously mentioned</a>,
-            information required for a given glyph is scattered throughout the font.
-            Therefore, in this method, only the glyph outlines are streamed,
-            thus ensuring that all the other tables are preserved.
-            In addition, the font must be pre-processed:</p>
-
-            <ul>
-              <li>Composite glyphs are flattened into the resulting outlines
-            </li>
-            <li>The <span class="sfnt">CFF</span> table, if present, is desubroutinized</li>
-            <li>The <span class="sfnt">glyf</span> or <span class="sfnt">CFF</span>  table is moved to the end of the font
-              (the <span class="sfnt">SVG</span> table is not moved</li>
-            </ul>
-
             The resulting preprocessed font is larger,
-            but byterange streaming can be used to download portions of the glyph outline data.
-            First a static subset of the entire font
-            (but with <em>zero</em> glyph outlines)
-            is downloaded.
-            The client then requests glyph outliness as needed
-            using standard HTTP byre range requests,
-            which are supported on all common servers.
-            The efficiency loss from this approach
-            depends on the balance of glyph outline data to other font data.
-            Efficiency is improved if glyphs are re-ordered in terms of statistical occurrence.
-            This approach allows easier deployment,
-            because any standard server can be used.
-            There is no risk of accidentally breaking font rendering
-            due to mis-subsetting complex tables.
-            There is however no tuning for differing network conditions.
-            Also, compared to WOFF2 which compresses redundant or duplicate data,
-            there is no compression of redundant data between requests in this model.
+          <!-- how much larger -->
+          but byterange streaming can be used to download portions of the glyph outline data.
+          First a static subset of the entire font
+          (but with <em>zero</em> glyph outlines)
+          is downloaded.
+          The client then requests glyph outliness as needed
+          using standard HTTP byre range requests,
+          which are supported on all common servers.
+          The efficiency loss from this approach
+          depends on the balance of glyph outline data to other font data.
+          Efficiency is improved if glyphs are re-ordered in terms of statistical occurrence.
+        </p>
+
+        <p>
+          This approach allows easier deployment,
+          because any standard server can be used.
+          There is no risk of accidentally breaking font rendering
+          due to mis-subsetting complex tables.
+          There is however no tuning for differing network conditions.
+          Also, compared to WOFF2 which compresses redundant or duplicate data,
+          there is no compression of redundant data between requests in this model.
         </p>
     </section>
 
