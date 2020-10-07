@@ -40,7 +40,8 @@ from analysis.pfe_methods import whole_font_pfe_method
 LOG = logging.getLogger("analyzer")
 
 FLAGS = flags.FLAGS
-flags.DEFINE_string("input_data", None, "Path to input data for the analysis, or - for stdin.")
+flags.DEFINE_string("input_data", None,
+                    "Path to input data for the analysis, or - for stdin.")
 flags.mark_flag_as_required("input_data")
 
 flags.DEFINE_string(
