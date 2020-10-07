@@ -315,7 +315,7 @@ def start_analysis():
   """Read input data and start up the analysis."""
   input_data_path = FLAGS.input_data
 
-  LOG.info("Reading input data.")
+  LOG.info("Reading input data ...")
   if FLAGS.input_form == "binary":
     data_set = read_binary_input(input_data_path)
   elif FLAGS.input_form == "text":
@@ -323,9 +323,8 @@ def start_analysis():
   elif FLAGS.input_form == "json":
     data_set = read_json_input(input_data_path)
   else:
-    LOG.error(
-        "Unknown input_form. Needs to be 'binary', 'text', 'json'."
-    )
+    LOG.error("Unknown input_form. Needs to be 'binary', 'text', 'json'.")
+  LOG.info('Read %s sequences', len(data_set.sequences))
 
   if data_set.logged_method_name:
     PFE_METHODS.append(logged_pfe_method.for_name(data_set.logged_method_name))

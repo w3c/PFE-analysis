@@ -1,6 +1,5 @@
 """Unit tests for the analyzer module."""
 
-import tempfile
 import unittest
 from analysis import analyzer
 from analysis import result_pb2
