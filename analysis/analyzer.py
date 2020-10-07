@@ -230,7 +230,8 @@ def write_failed_indices(failed_indices):
 
 
 def read_binary_input(input_data_path):
-  if (input_data_path == '-'):
+  """Reads binary proto data."""
+  if input_data_path == '-':
     binary_input = sys.stdin.buffer.read()
   else:
     with open(input_data_path, 'rb') as input_data_file:
@@ -239,7 +240,8 @@ def read_binary_input(input_data_path):
 
 
 def read_text_input(input_data_path):
-  if (input_data_path == '-'):
+  """Reads text proto data."""
+  if input_data_path == '-':
     text_input = sys.stdin.read()
   else:
     with open(input_data_path, 'r') as input_data_file:
@@ -254,7 +256,7 @@ def read_json_input(input_data_path):
 
   [{"URL": "http://example.com/path.html", "Contents": "Text content of webpage here"},
    {"URL": "http://example.com/path.html", "Contents": "Text content of webpage here"}]"""
-  if (input_data_path == '-'):
+  if input_data_path == '-':
     data = sys.stdin.read()
   else:
     with open(input_data_path, 'r') as input_json_file:
