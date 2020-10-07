@@ -154,7 +154,7 @@ prior to standardization work.
      <a href="#design"><span class="secno">4</span> <span class="content">Study design</span></a>
      <ol class="toc">
       <li><a href="#criteria"><span class="secno">4.1</span> <span class="content"> Success criteria</span></a>
-      <li><a href="#cost"><span class="secno">4.2</span> <span class="content"> Cost fuunction</span></a>
+      <li><a href="#cost"><span class="secno">4.2</span> <span class="content"> Cost function</span></a>
       <li><a href="#corpus"><span class="secno">4.8</span> <span class="content"> Web page corpus</span></a>
       <li><a href="#network"><span class="secno">4.3</span> <span class="content"> Network type - slow 2G to fast broadband</span></a>
       <li><a href="#langtype"><span class="secno">4.4</span> <span class="content"> Language type: small &amp; simple, complex shaping, large</span></a>
@@ -384,7 +384,8 @@ prior to standardization work.
             For example, a font which supports Latin, Greek, and Cyrillic
             can be split into three subsets;
             typically only one will be downloaded.
-            Google Fonts uses this approach extensively,
+            Google Fonts uses this approach extensively
+            [<a href="#ref-Google-scrpt-subsets">Google script subsets</a>],
             and it works well for languages which use only a small number of glyphs.
         </p>
 
@@ -647,7 +648,8 @@ prior to standardization work.
       <dd>Beyond a certain point, the user may give up and go to a different page.
         Or, beyond a certain maximum time <strong>T<sub>m</sub></strong>
         the browser may substitute a system font so that page rendering can occur.
-        Delays beyond that point do not further impact the user experience
+        Delays beyond that point do not further impact the user experience.
+        In this study, <strong>T<sub>m</sub></strong> was set to 3.5 seconds.
       </dd>
       <dt>Too fast</dt>
       <dd>Not that anything can really be too fast, but
@@ -656,10 +658,15 @@ prior to standardization work.
         <strong>T<sub>z</sub></strong>
         for a font that already loads rapidly will not improve the user experience
         because it is no longer the limiting factor.
+        <strong>T<sub>z</sub></strong> was set to 400 milliseconds.
       </dd>
     </dl>
     <p>Denoting the maximum cost as <strong>M</strong>, the cost at time <em>t</em>
-    can be represented by</p>
+    can be represented by a <a href="https://github.com/w3c/PFE-analysis/blob/master/analysis/cost.py">sigmoid function</a>,
+    chosen to give a cost rising from 0 after <strong>T<sub>z</sub></strong>,
+    approaching 1000 at <strong>T<sub>m</sub></strong>,
+    and centered within that range.
+    </p>
     <p><img src="images/cost-eqn.png" alt="cost equation" style="margin-left:auto; margin-right:auto; max-width:50vw"/>
     </p>
 
@@ -1270,6 +1277,13 @@ https://discuss.httparchive.org/t/how-does-web-font-usage-vary-by-country/1649
       URL: <a href="https://standards.iso.org/ittf/PubliclyAvailableStandards/c074461_ISO_IEC_14496-22_2019.zip">https://standards.iso.org/ittf/PubliclyAvailableStandards/c074461_ISO_IEC_14496-22_2019.zip</a>
     </dd>
 
+    <dt id="ref-OpenType">OpenType</dt>
+    <dd><cite><a href="https://docs.microsoft.com/en-us/typography/opentype/spec/">OpenType® specification</a>
+    Microsoft.
+    </cite>
+    URL: <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/">https://docs.microsoft.com/en-us/typography/opentype/spec/</a>
+  </dd>
+
     <dt id="ref-patch-subset-design">Patch and Subset Design</dt>
     <dd><cite><a href="https://docs.google.com/document/d/1DJ6VkUEZS2kvYZemIoX4fjCgqFXAtlRjpMlkOvblSts/edit">Subset and Patch Progressive Font Enrichment Protocol Design</a>
       Garret Rieger (author).
@@ -1278,30 +1292,23 @@ https://discuss.httparchive.org/t/how-does-web-font-usage-vary-by-country/1649
     URL: <a href="https://docs.google.com/document/d/1DJ6VkUEZS2kvYZemIoX4fjCgqFXAtlRjpMlkOvblSts/edit#">https://docs.google.com/document/d/1DJ6VkUEZS2kvYZemIoX4fjCgqFXAtlRjpMlkOvblSts/edit#</a>
   </dd>
 
-      <dt id="ref-OpenType"></dt>
-      <dd><cite><a href="https://docs.microsoft.com/en-us/typography/opentype/spec/">OpenType® specification</a>
-      Microsoft.
-      </cite>
-      URL: <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/">https://docs.microsoft.com/en-us/typography/opentype/spec/</a>
-    </dd>
+      <dt id="ref-PFErepo">PFE-repo</dt>
+      <dd><cite><a href="https://github.com/w3c/PFE-analysis">Progressive Font Enrichment (PFE) GitHub repository</a></cite></dd>
 
-        <dt id="ref-PFErepo">PFE-repo</dt>
-        <dd><cite><a href="https://github.com/w3c/PFE-analysis">Progressive Font Enrichment (PFE) GitHub repository</a></cite></dd>
+      <dt id="ref-SVG1">SVG1</dt>
+      <dd>
+          <cite><a href="https://www.w3.org/TR/2001/REC-SVG-20010904/">Scalable
+              Vector Graphics (SVG) 1.0 Specification</a>
+              Jon Ferraiolo (editor).
+          </cite>
+          W3C Recommendation 04 September 2001<br>
+          URL: <a href="https://www.w3.org/TR/2001/REC-SVG-20010904/">https://www.w3.org/TR/2001/REC-SVG-20010904/</a>
+      </dd>
 
-        <dt id="ref-SVG1">SVG1</dt>
-        <dd>
-            <cite><a href="https://www.w3.org/TR/2001/REC-SVG-20010904/">Scalable
-                Vector Graphics (SVG) 1.0 Specification</a>
-                Jon Ferraiolo (editor).
-            </cite>
-            W3C Recommendation 04 September 2001<br>
-            URL: <a href="https://www.w3.org/TR/2001/REC-SVG-20010904/">https://www.w3.org/TR/2001/REC-SVG-20010904/</a>
-        </dd>
-
-        <dt id="ref-TrueType">TrueType</dt>
-        <dd><cite><a href="https://developer.apple.com/fonts/TrueType-Reference-Manual/">TrueType Reference Manual</a>
-        Apple Inc.</cite>
-        URL: <a href="https://developer.apple.com/fonts/TrueType-Reference-Manual/">https://developer.apple.com/fonts/TrueType-Reference-Manual/</a>
+      <dt id="ref-TrueType">TrueType</dt>
+      <dd><cite><a href="https://developer.apple.com/fonts/TrueType-Reference-Manual/">TrueType Reference Manual</a>
+      Apple Inc.</cite>
+      URL: <a href="https://developer.apple.com/fonts/TrueType-Reference-Manual/">https://developer.apple.com/fonts/TrueType-Reference-Manual/</a>
       </dd>
 
         <dt id="ref-webfonts">WebFonts</dt>
@@ -1482,6 +1489,6 @@ https://discuss.httparchive.org/t/how-does-web-font-usage-vary-by-country/1649
 
     })();
     </script>
-    <script src="//www.w3.org/scripts/TR/2016/fixup.js"></script>
+    <script src="https://www.w3.org/scripts/TR/2016/fixup.js"></script>
  </body>
  </html>
