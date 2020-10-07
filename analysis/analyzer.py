@@ -233,7 +233,7 @@ def read_binary_input(input_data_path):
     binary_input = sys.stdin.buffer.read()
   else:
     with open(input_data_path, 'rb') as input_data_file:
-      binary_input = input_data_file.read();
+      binary_input = input_data_file.read()
   return page_view_sequence_pb2.DataSetProto.FromString(binary_input)
 
 
