@@ -322,7 +322,8 @@ def start_analysis():
     data_set = read_shell_command_input(input_data_path)
   else:
     LOG.error(
-        "Unknown input_form. Needs to be 'binary', 'text', 'json' or 'shellcmd'.")
+        "Unknown input_form. Needs to be 'binary', 'text', 'json' or 'shellcmd'."
+    )
 
   if data_set.logged_method_name:
     PFE_METHODS.append(logged_pfe_method.for_name(data_set.logged_method_name))
