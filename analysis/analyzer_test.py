@@ -1,7 +1,9 @@
 """Unit tests for the analyzer module."""
 
+import tempfile
 import unittest
 from analysis import analyzer
+from analysis import page_view_sequence_pb2
 from analysis import result_pb2
 from analysis import simulation
 
@@ -259,6 +261,18 @@ class AnalyzerTest(unittest.TestCase):
                 "mno": [2]
             },
         }))
+
+  def test_read_shellcmd(self):
+    expected = page_view_sequence_pb2.DataSetProto()
+    expected.logged_method_name = "testing123"
+    with tempfile.TemporaryDirectory() as the_dir:
+      test_input = the_dir + '/test_input.pb'
+      with open(test_input, 'wb') as tmp_file:
+        tmp_file.write(expected.SerializeToString())
+      #
+      result = analyzer.read_shell_command_input("cat " + test_input)
+      #
+      self.assertEqual(expected, result)
 
 
 if __name__ == '__main__':
