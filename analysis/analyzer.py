@@ -16,7 +16,6 @@ import collections
 import logging
 from multiprocessing import Pool
 import os
-import subprocess
 import sys
 import json
 
@@ -41,7 +40,7 @@ from analysis.pfe_methods import whole_font_pfe_method
 LOG = logging.getLogger("analyzer")
 
 FLAGS = flags.FLAGS
-flags.DEFINE_string("input_data", None, "Path to input data for the analysis.")
+flags.DEFINE_string("input_data", None, "Path to input data for the analysis, or - for stdin.")
 flags.mark_flag_as_required("input_data")
 
 flags.DEFINE_string(
@@ -230,21 +229,22 @@ def write_failed_indices(failed_indices):
 
 
 def read_binary_input(input_data_path):
-  with open(input_data_path, 'rb') as input_data_file:
-    return page_view_sequence_pb2.DataSetProto.FromString(
-        input_data_file.read())
-
-
-def read_shell_command_input(input_data_path):
-  with subprocess.Popen(input_data_path, shell=True,
-                        stdout=subprocess.PIPE) as pipe:
-    return page_view_sequence_pb2.DataSetProto.FromString(pipe.stdout.read())
+  if (input_data_path == '-'):
+    binary_input = sys.stdin.buffer.read()
+  else:
+    with open(input_data_path, 'rb') as input_data_file:
+      binary_input = input_data_file.read();
+  return page_view_sequence_pb2.DataSetProto.FromString(binary_input)
 
 
 def read_text_input(input_data_path):
+  if (input_data_path == '-'):
+    text_input = sys.stdin.read()
+  else:
+    with open(input_data_path, 'r') as input_data_file:
+      text_input = input_data_file.read()
   data_set = page_view_sequence_pb2.DataSetProto()
-  with open(input_data_path, 'r') as input_data_file:
-    text_format.Merge(input_data_file.read(), data_set)
+  text_format.Parse(text_input, data_set)
   return data_set
 
 
@@ -253,8 +253,11 @@ def read_json_input(input_data_path):
 
   [{"URL": "http://example.com/path.html", "Contents": "Text content of webpage here"},
    {"URL": "http://example.com/path.html", "Contents": "Text content of webpage here"}]"""
-  with open(input_data_path, 'r') as input_json_file:
-    data = input_json_file.read()
+  if (input_data_path == '-'):
+    data = sys.stdin.read()
+  else:
+    with open(input_data_path, 'r') as input_json_file:
+      data = input_json_file.read()
   corpus = json.loads(data)
   result = page_view_sequence_pb2.DataSetProto()
   for item in corpus:
@@ -319,11 +322,9 @@ def start_analysis():
     data_set = read_text_input(input_data_path)
   elif FLAGS.input_form == "json":
     data_set = read_json_input(input_data_path)
-  elif FLAGS.input_form == "shellcmd":
-    data_set = read_shell_command_input(input_data_path)
   else:
     LOG.error(
-        "Unknown input_form. Needs to be 'binary', 'text', 'json' or 'shellcmd'."
+        "Unknown input_form. Needs to be 'binary', 'text', 'json'."
     )
 
   if data_set.logged_method_name:
