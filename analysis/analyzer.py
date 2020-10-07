@@ -323,7 +323,7 @@ def start_analysis():
   elif FLAGS.input_form == "json":
     data_set = read_json_input(input_data_path)
   else:
-    LOG.error("Unknown input_form. Needs to be 'binary', 'text', 'json'.")
+    LOG.error("Unknown input_form. Needs to be 'binary', 'text', or 'json'.")
   LOG.info('Read %s sequences', len(data_set.sequences))
 
   if data_set.logged_method_name:
