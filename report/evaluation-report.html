@@ -650,16 +650,19 @@ prior to standardization work.
       <h3 class="heading settled" data-level="2" id="servtype"><span class="secno">4.2 </span><span class="content">Server type: intelligent vs. simple</span><a class="self-link" href="#servtype"></a></h3>
 
     <p>
-        Two entirely different types of font enrichment have been studied. One requires only a standard Web server, so could be deployed anywhere.
-        The other requires an active server extension.
+        Two entirely different types of font enrichment have been studied.
+        They differ in the demands made of the server which serves the fonts
+        (both approaches require client support).
+        One requires an active server extension.
+        The other requires only a standard Web server, so could be deployed anywhere.
         They make differing tradeoffs and have correspondingly different advantages and disadvantages.
     </p>
 
     <section>
       <h4 class="heading settled" data-level="3" id="patch-subset"><span class="secno">4.2.1 </span><span class="content">Patch and Subset</span><a class="self-link" href="#patch-subset"></a></h4>
     <p >
-        In one approach <strong>Patch and Subset</strong>,
-        the entire font is dynamically subsetted.
+        In one approach, <strong>Patch and Subset</strong>,
+        the entire font is dynamically subsetted on the server.
         The client and the server communicate closely
         to generate the optimal set of enrichment glyphs
         and other font information
@@ -667,19 +670,35 @@ prior to standardization work.
     </p>
 
     <p>
-
+      The first response is a standalone woff2 font,
+      (tus, Brotli compressed)
+      containing <em>only</em> the data (glyphs and metrics)
+      required to render the specific codepoints requested.
+      This means that every OpenType table
+      has been dynamically subsetted on the server,
+      to produce this response.
     </p>
 
     <p>
-        A binary patch is used to update the font stored on the client.
-        This tend more closely towards
-        the theoretical peak efficiency
-        in terms of bytes transfered
-        and minimal network latency,
-        but requires an intelligent server.
-        This approach also allows parameters to be adjusted
-        to maximize efficiency
-        based on the current network conditions.
+      For subsequent responses,
+      a Brotli binary patch is used to update the font stored on the client.
+      (Generating these patches, and applying them,
+      are both features of the standard Brotli library).
+      The patches make use of the Brotli compression dictionary
+      created to serve the initial font,
+      and thus the cost of an duplicated data is greatly reduced.
+      This approach tends more closely towards
+      the theoretical peak efficiency
+      in terms of bytes transfered
+      and minimal network latency,
+      but requires an intelligent server
+      which can subset all OpenType tables,
+      without breaking layout,
+      retain the compression dictionary,
+      and woff-compress the font on the fly.
+      This approach also allows parameters to be tuned
+      to maximize efficiency
+      based on the current network conditions.
     </p>
     </section>
 
@@ -687,12 +706,17 @@ prior to standardization work.
       <h4 class="heading settled" data-level="3" id="glyph-byterange"><span class="secno">4.2.2 </span><span class="content">Glyph Byterange</span><a class="self-link" href="#glyph-byterange"></a></h4>
 
       <p>
-        In the second approach <strong>Glyph Byterange</strong>,
+        In the second approach, <strong>Glyph Byterange</strong>,
         a streaming approach similar to video streaming is used.
         As <a href="#scattered">previously mentioned</a>,
         information required for a given glyph is scattered throughout the font.
-        Therefore, in this method, only the glyph outlines are streamed,
+        Therefore, in this method, <em>only</em> the glyph outlines are streamed,
         thus ensuring that all the other tables are preserved.
+        Ths means that the download size for the processed font
+        is the same as the original font, for all tables which do not contain glyph outlines.
+      </p>
+
+      <p>
         In addition, the font must be pre-processed:</p>
 
         <ul>
@@ -705,7 +729,14 @@ prior to standardization work.
           (the <span class="sfnt">SVG</span> table, if present is not moved
           and thus, any glyphs there are always downloaded)
         </li>
-        </ul>
+      </ul>
+
+      <p>
+        This preprocessing need only happen once,
+        so can be done by an authoring tool or a utility.
+        (An experimental proof-of-concept utility to do this preprocessing
+        is available [<a href="#ref-Streamable-Fonts">Streamable Fonts</a>]).
+      </p>
 
       <p>
           The resulting preprocessed font is larger,
@@ -1430,6 +1461,14 @@ https://discuss.httparchive.org/t/how-does-web-font-usage-vary-by-country/1649
 
       <dt id="ref-PFErepo">PFE-repo</dt>
       <dd><cite><a href="https://github.com/w3c/PFE-analysis">Progressive Font Enrichment (PFE) GitHub repository</a></cite></dd>
+
+
+    <dt id="ref-Streamable-Fonts">Streamable Fonts</dt>
+    <dd><cite><a href="https://github.com/litherum/StreamableFonts">Streamable
+      Fonts GitHub repo</a>
+      Myles Maxfield</cite>
+      URL: <a href="https://github.com/litherum/StreamableFonts">https://github.com/litherum/StreamableFonts</a>
+  </dd>
 
       <dt id="ref-SVG1">SVG1</dt>
       <dd>
