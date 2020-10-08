@@ -453,14 +453,14 @@ prior to standardization work.
           and, if subsetted,
           the functionality can be reduced.
           For example, due to size, the Noto family
-          is currently as a bunch of separate families.
+          is currently served as a bunch of separate families.
           It is up to the developer to explicitly
           pick which ones they might need.
         </p>
         <p>
           Static subsets
           where each subset appears to have a distinct
-          <em>font family</em> name
+          <em>font family name</em>
           are also more difficult to use
           when creating truly multilingual websites.
           For example, a discussion forum
@@ -680,8 +680,8 @@ prior to standardization work.
     </p>
 
     <p>
-      The first response is a standalone woff2 font,
-      (tus, Brotli compressed)
+      The first response is a standalone OpenType font,
+      (served over HTTP/2, and with Brotli Content Transfer Encoding)
       containing <em>only</em> the data (glyphs and metrics)
       required to render the specific codepoints requested.
       This means that every OpenType table
@@ -718,9 +718,16 @@ prior to standardization work.
       <p>
         In the second approach, <strong>Glyph Byterange</strong>,
         a streaming approach similar to video streaming is used.
+        Again, an OpenType font is
+        served (over HTTP/2, and with Brotli Content Transfer Encoding).
         As <a href="#scattered">previously mentioned</a>,
         information required for a given glyph is scattered throughout the font.
-        Therefore, in this method, <em>only</em> the glyph outlines are streamed,
+        Thus, the client stops the transfer as soon as the table directory is seen.
+        Individual tables, as needed, are then loaded
+        with HTTP/2 byterange requests.
+        Individual glyph outlines are also requested
+        with HTTP/2 byterange requests.
+        Therefore, in this method, <em>only</em> the glyph outlines are subsetted,
         thus ensuring that all the other tables are preserved.
         Ths means that the download size for the processed font
         is the same as the original font, for all tables which do not contain glyph outlines.
