@@ -184,16 +184,89 @@ prior to standardization work.
    <section>
     <h2 class="heading settled" data-level="1" id="intro"><span class="secno">1. </span><span class="content">Introduction</span><a class="self-link" href="#intro"></a></h2>
 
-    <!-- terminology - character, glyph, font -->
-    <p>The success of WebFonts is widespread (80%, globally)
+    <section>
+      <h3 class="heading settled" data-level="2" id="terminology"><span class="secno">1.1 </span><span class="content">Terminology</span><a class="self-link" href="#terminology"></a></h3>
+
+    <p>
+      A <em>character</em> is a Unicode <em>codepoint</em>,
+      together with some <em>properties</em>.
+      For example, the Latin letter "a" has the hexadecimal Unicode codepoint 0061
+      and has the properties of being alphabetic,
+      being lower-case ("A" is upper case),
+      not being a numeral, and not being punctuation.
+    </p>
+
+    <p>
+      A <em>glyph</em> is a visual representation of
+      (one or more) characters, used on screen or in print.
+      There can be multiple glyph styles corresponding to a character.
+      For example, these are all glyphs for the Latin letter "a":
+    </p>
+
+    <p>
+      A <em>font</em> is a computer file which allows
+      (sequences of) characters to be rendered as
+      (sequences of) glyphs. In addition to the glyph shapes themselves
+      (usually stored as scalable vector outlines)
+      it also contains alignment and positioning information,
+      describes when one glyph should be substituted for another, and so on.
+    </p>
+
+    <p>
+      Although languages such as English often have a 1:1 relationship
+      between characters and glyphs,
+      this is not the case in general.
+      As a simple example, in Arabic, a single character will
+      be rendered with different glyphs
+      depending on whether it is at the start, middle, or end of a word;
+      and also depending on the characters preceeding and following it.
+      For example, here are different glyphs for the
+      Arabic letter Noon (Unicode codepoint 0646),
+      considering only the glyphs used at the start of a word
+      [<a href="#ref-ALReq">Arabic Language Requirements</a>]:
+    </p>
+
+    <figure>
+      <figcaption>Different glyphs (in red) for the letter Noon</figcaption>
+      <img src="images/differentInitialNoon.jpg" alt="initial Noon glyph forms"/>
+    </figure>
+
+    <p>
+      These contextual changes to the shape of a glyph
+      are referred to as <em>shaping</em>.
+    </p>
+
+    </section>
+
+    <section>
+      <h3 class="heading settled" data-level="2" id="terminology"><span class="secno">1.2 </span><span class="content">Installed fonts, Web fonts</span><a class="self-link" href="#terminology"></a></h3>
+
+      <p>
+        Computers, phones, and tablets come with a selection of fonts installed.
+        On some systems the user can choose to install additional fonts.
+        In the early days of the Web, installed fonts
+        were all that could be used to render Web pages.
+      </p>
+
+      <p>
+        Webfonts are fonts which are referenced from a stylesheet,
+        automatically downloaded on demand by the browser,
+        used to render a Web page,
+        but are not installed on a system.
+      </p>
+
+      <p>
+        The success of Webfonts is widespread
+        (globally, 80% of the top 10 million websites use Webfonts)
         but unevenly distributed.
         In certain areas of the world, usage is <em>zero</em>.
         This study evaluates solutions
         which would allow WebFonts to be used
-        where slow networks,
-        very large fonts,
-        or complex subsetting requirements
-        currently preclude their use.</p>
+        where <strong>slow networks</strong>,
+        <strong>very large fonts</strong>,
+        or <strong>complex subsetting requirements</strong>
+        currently preclude their use.
+      </p>
    </section>
 
    <section>
@@ -1454,6 +1527,14 @@ https://discuss.httparchive.org/t/how-does-web-font-usage-vary-by-country/1649
 
     -->
     <dl>
+
+      <dt id="ref-ALReq">Arabic Language Requirements</dt>
+      <dd><cite><a href="https://w3c.github.io/alreq/">Text Layout Requirements for the Arabic Script</a>,
+        Behnam Esfahbod <em>et. al.</em></cite>
+      W3C Working Draft, 8 September 2020.<br>
+      URL:  <a href="https://w3c.github.io/alreq/">https://w3c.github.io/alreq/</a>
+
+      </dd>
 
         <dt id="cl-vs-la">CLOSURE</dt>
         <dd><cite><a href="https://docs.google.com/presentation/d/1qczAiExsuxhtm-0WSlZ0eSiHVOuuq1agTKZTU-26n5k/edit?usp=sharing">Closure vs Layout
