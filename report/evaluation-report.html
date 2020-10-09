@@ -169,6 +169,10 @@ prior to standardization work.
       <li><a href="#cost"><span class="secno">4.3</span> <span class="content"> Cost function</span></a>
       <li><a href="#network"><span class="secno">4.4</span> <span class="content"> Network type - slow 2G to fast broadband</span></a>
       <li><a href="#langtype"><span class="secno">4.5</span> <span class="content"> Language type: small &amp; simple, complex shaping, large</span></a>
+        <ol class="toc">
+          <li><a href="#corpus"><span class="secno">4.5.1</span> <span class="content"> Web corpus</span></a>
+          <li><a href="#font-langtype"><span class="secno">4.5.2</span> <span class="content"> Fonts by language type</span></a>
+        </ol>
       <li><a href="#codepredict"><span class="secno">4.6</span> <span class="content"> Codepoint Prediction</span></a>
       <!-- <li><a href="#group"><span class="secno">4.7</span> <span class="content"> Byterange subsetting: glyph grouping</span></a> -->
       <li><a href="#framework"><span class="secno">4.7</span> <span class="content"> Simulation and analysis framework</span></a>
@@ -493,7 +497,7 @@ prior to standardization work.
 
         <p>
             Websites with content languages using the Latin alphabet
-            (such as Vietnamese, most European and Africal languages),
+            (such as Vietnamese, most European and African languages),
             Greek and Cyrillic alphabets,
             and Thai all make modest demands on fonts.
             The number of unique characters is limited,
@@ -540,7 +544,8 @@ prior to standardization work.
 
         <figure>
             <figcaption>Usage of webfonts for CJK languages is close to zero</figcaption>
-            <img src="images/httparchive-china-zero.png" alt="china zero webfonts">
+            <img src="images/httparchive-china-zero.png" alt="china zero webfonts"
+            style="filter: hue-rotate(220deg)">
         </figure>
 
         <p>
@@ -1405,8 +1410,14 @@ Prediction was not beneficial in all cases. For some script and network conditio
     <section>
         <h3 class="heading settled" data-level="2" id="framework"><span class="secno">4.7 </span><span class="content">Simulation and analysis framework</span><a class="self-link" href="#framework"></a></h3>
 
-        <p class="todo">todo</p>
-
+        <p>
+          The C++ and Python code used for the testing and analysis framework,
+          plus instructions to build the software and run the tests,
+          and the datafiles holding the Web corpus,
+          are all available on GitHub
+          to allow independent verification and
+          further experimentation [ <a href="#ref-PFErepo">PFE-analysis repo</a> ]
+        </p>
     </section>
 
     <section>
@@ -1668,8 +1679,8 @@ https://discuss.httparchive.org/t/how-does-web-font-usage-vary-by-country/1649
     URL: <a href="https://docs.google.com/document/d/1DJ6VkUEZS2kvYZemIoX4fjCgqFXAtlRjpMlkOvblSts/edit#">https://docs.google.com/document/d/1DJ6VkUEZS2kvYZemIoX4fjCgqFXAtlRjpMlkOvblSts/edit#</a>
   </dd>
 
-  <dt id="ref-PFErepo">PFE-repo</dt>
-  <dd><cite><a href="https://github.com/w3c/PFE-analysis">Progressive Font Enrichment (PFE) GitHub repository</a></cite>
+  <dt id="ref-PFErepo">PFE-analysis repo</dt>
+  <dd><cite><a href="https://github.com/w3c/PFE-analysis">Progressive Font Enrichment (PFE) Analysis GitHub repository</a></cite>
   </dd>
 
   <dt id="ref-PFE-font-sizes">PFE Font Sizes</dt>
