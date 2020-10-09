@@ -443,6 +443,10 @@ prior to standardization work.
             used for Web Fonts on websites in China
             was <strong>zero</strong>.
             <span>[<a href="#ref-Web-Almanac-2019-Fonts">Web Almanac 2019: Fonts</a>]</span>
+            <!--
+              Map from
+              https://discuss.httparchive.org/t/how-does-web-font-usage-vary-by-country/1649/9
+             -->
         </p>
 
         <figure>
@@ -1096,6 +1100,11 @@ prior to standardization work.
           has not significantly altered Webfont use for this category.
         </p>
 
+        <p>
+          The TrueType or OpenType fonts used for alphabetic languages had a median size of 17,660 bytes,
+          with a spread from 15,784 bytes (5th percentile) to 184,152 bytes (95th percentile). The median size once WOFF2 compressed was 8,360 bytes. [<a href="ref-PFE-font-sizes">PFE Font Sizes</a>]
+        </p>
+
 
         <p>
           Fonts for Indic languages, Arabic, and Farsi
@@ -1106,9 +1115,14 @@ prior to standardization work.
           do not just provide "less beautiful" text,
           they provide unreadable text.
           Fonts in this category tend to use
-          <span class="todo">which OT tables besides GPOS and GSUB</span>
+          <!-- <span class="todo">which OT tables besides GPOS and GSUB</span> -->
           and to be easily broken by poor-quality font subsetting software.
           When correctly done, a static per-language subset is still fairly small.
+        </p>
+
+        <p>
+          The TrueType or OpenType fonts used for glyph shaping languages had a median size of 93,588 bytes,
+          with a spread from 15,784 bytes (5th percentile) to 459,600 bytes (95th percentile). The median size once WOFF2 compressed was 30,332 bytes. [<a href="ref-PFE-font-sizes">PFE Font Sizes</a>]
         </p>
 
         <p>
@@ -1126,15 +1140,31 @@ prior to standardization work.
           which are frequently used together.
         </p>
 
-        <p class="note">Note: because the preprocessor
+        <p>
+          The TrueType or OpenType fonts used for CJK languages had a median size of 1,834,496 bytes,
+          with a spread from 16,832 bytes (5th percentile) to 5,524,2080 bytes (95th percentile). The median size once WOFF2 compressed was 768,492 bytes. [<a href="ref-PFE-font-sizes">PFE Font Sizes</a>]
+        </p>
+
+        <p class="note">
+          Note: because the preprocessor
           used to prepare fonts for the <strong>Glyph Byterange</strong>
           approach drops all hinting information,
           to make a fair comparison,
-          the fonts used for the <strong>Paths and Subset</strong>
+          the fonts used for the <strong>Patch and Subset</strong>
           approach also had hintng information removed.
           There is nothing in either approach
           which precludes sending hinting information;
           this was just a limitation of some of the software used in this analysis.
+        </p>
+
+        <p class="note">
+          Note: Because the <a href="https://www.w3.org/TR/WOFF2/#table_format">additional table transforms in WOFF2</a>
+          (and subsequent client-side table reconstitution)
+          would have complicated the simulation,
+          both <strong>Patch and Subset</strong> and
+          <strong>Glyph Byterange</strong>
+          simulated serving the initial font as  TrueType or Opentype font
+          (over HTTP/2), with Brotli used as HTTP Content Transfer Encoding.
         </p>
 
     </section>
@@ -1544,6 +1574,13 @@ https://discuss.httparchive.org/t/how-does-web-font-usage-vary-by-country/1649
   <dt id="ref-PFErepo">PFE-repo</dt>
   <dd><cite><a href="https://github.com/w3c/PFE-analysis">Progressive Font Enrichment (PFE) GitHub repository</a></cite>
   </dd>
+
+  <dt id="ref-PFE-font-sizes">PFE Font Sizes</dt>
+  <dd><cite><a href="https://docs.google.com/spreadsheets/d/1KJvxQxeBtGNYmcSPFT4CAFEQU2hDBN2XwFIyqf8_ISY/edit#gid=0">Sizes of fonts used in the PFE simulation</a>,
+    Garret Rieger (author)
+  </cite>
+  URL: <a href="https://docs.google.com/spreadsheets/d/1KJvxQxeBtGNYmcSPFT4CAFEQU2hDBN2XwFIyqf8_ISY/edit#gid=0">https://docs.google.com/spreadsheets/d/1KJvxQxeBtGNYmcSPFT4CAFEQU2hDBN2XwFIyqf8_ISY/edit#gid=0</a>
+</dd>
 
   <dt id="ref-Sheeter-BigQuery">Sheeter BigQuery</dt>
   <dd><cite>Analysis of <a href="https://github.com/HTTPArchive/almanac.httparchive.org/issues/902#issuecomment-662689190">HTTP Archive Web Almanac results</a>,
