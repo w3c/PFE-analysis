@@ -163,9 +163,9 @@ prior to standardization work.
       <li><a href="#network"><span class="secno">4.4</span> <span class="content"> Network type - slow 2G to fast broadband</span></a>
       <li><a href="#langtype"><span class="secno">4.5</span> <span class="content"> Language type: small &amp; simple, complex shaping, large</span></a>
       <li><a href="#codepredict"><span class="secno">4.6</span> <span class="content"> Codepoint Prediction</span></a>
-      <li><a href="#group"><span class="secno">4.7</span> <span class="content"> Byterange subsetting: glyph grouping</span></a>
-      <li><a href="#framework"><span class="secno">4.8</span> <span class="content"> Simulation and analysis framework</span></a>
-      <li><a href="#oos"><span class="secno">4.9</span> <span class="content"> Out of scope</span></a>
+      <!-- <li><a href="#group"><span class="secno">4.7</span> <span class="content"> Byterange subsetting: glyph grouping</span></a> -->
+      <li><a href="#framework"><span class="secno">4.7</span> <span class="content"> Simulation and analysis framework</span></a>
+      <li><a href="#oos"><span class="secno">4.8</span> <span class="content"> Out of scope</span></a>
      </ol>
 
     <li>
@@ -822,28 +822,9 @@ prior to standardization work.
 
     <figure>
       <figcaption>The overall shape of the cost function is sigmoid</figcaption>
-      <img src="../results/07-08-2020/" alt="graph of cost equation" style="margin-left:auto; margin-right:auto; max-width:60vw"/>
+      <img src="../results/07-08-2020/cost.png" alt="graph of cost equation" style="margin-left:auto; margin-right:auto; max-width:60vw"/>
     </figure>
 
-    <!--
-      Aggregate the 5 sub-network costs into a single value by computed a
-      weighted average:
-      -
-
-         Slowest - 5%
-         -
-
-         Fastest - 5%
-         -
-
-         Slow - 20%
-         -
-
-         Fast - 20%
-         -
-
-         Median - 50%
-    -->
    </section>
 
 
@@ -1004,10 +985,42 @@ prior to standardization work.
           (35 bytes each)
           were used in the simulation.
         </p>
+
+        <p>
+          For the earlier tests,
+          results were reported for each speed class in each network type.
+          However this was found to be too cluttered for meaningful comparison
+          and so the resuts for each network type
+          were aggregated as a weighted average.
+          Slowest and Fastest were weighted 5%,
+          Slow and Fast weighted 20%,
+          and Median weighted 50%.
+        </p>
     </section>
 
     <section>
         <h3 class="heading settled" data-level="2" id="langtype"><span class="secno">4.5 </span><span class="content">Language type: small &amp; simple, complex shaping, large</span><a class="self-link" href="#langtype"></a></h3>
+
+        <p>
+          To better understand how progressive font enrichment
+          performs for different scripts, the Web page corpus data
+          and the corresponding fonts
+          were divided
+          into <a href="#langtype">three groups</a>
+          based on the characteristics of those languages:</p>
+
+      <ol>
+        <li>Simple alphabetic languages: using Latin, Cyrillic, Greek and Thai scripts</li>
+        <li>Languages which require glyph shaping: Arabic and Indic</li>
+        <li>Languages with large character repertoires: Chinese, Japanese, and Korean</li>
+      </ol>
+
+      <p>The study evaluated performance for these three linguistic groupings separately.
+        The groupings were selected by grouping together scripts that should have similar behaviour with respect to progressive font enrichment.
+      </p>
+
+      <section>
+        <h4 class="heading settled" data-level="3" id="corpus"><span class="secno">4.5.1 </span><span class="content">Web corpus</span><a class="self-link" href="#corpus"></a></h4>
 
         <p>
           To simulate the sort of multiple-page browsing experience
@@ -1019,17 +1032,53 @@ prior to standardization work.
           for the characters not previously encountered.
          </p>
 
-         <p>
-           To better understand how progressive font enrichment
-           performs for different scripts, the input data set was split
-           into <a href="#langtype">three groups</a>
-           based on the languages used in the page walks.</p>
 
-       <ol>
-         <li>Simple alphabetic languages: Latin, Cyrillic, Greek and Thai</li>
-         <li>Languages which require glyph shaping: Arabic and Indic</li>
-         <li>Languages with large character repertoires: Chinese, Japanese, and Korean</li>
-       </ol>
+       <p>
+         The breakdown of languages within each linguistic category was as follows:
+       </p>
+
+       <figure>
+         <figcaption>Breakdown of simple alphabetic languages</figcaption>
+         <img src="../results/07-08-2020/latin.lang_breakdown.png" alt="" style="max-width: 90vw">
+       </figure>
+
+       <p>
+        Due to the large number of sequences present in the simple alphabetic group,
+        one out of 1000 of the sequences in the data set was randomly selected
+        for use in the analysis.
+        After sampling. this data set is composed of approximately 130,000 sequences.
+        English predominates, at 50%.
+        Using different sampling to increase the number of
+        non-English sequences was considered,
+        but it was decided to retain the observed language distribution of websites.
+      </p>
+
+       <figure>
+        <figcaption>Breakdown of glyph-shaping languages</figcaption>
+        <img src="../results/07-08-2020/arabic_indic.lang_breakdown.png" alt="" style="max-width: 90vw">
+      </figure>
+
+      <p>
+        After sampling, the glyph-shaping data set
+        is composed of approximately 6,500 sequences.
+        Arabic languages, at 53%, predominate in this dataset.
+      </p>
+
+      <figure>
+        <figcaption>Breakdown of CJK languages</figcaption>
+        <img src="../results/07-08-2020/cjk.lang_breakdown.png" alt="" style="max-width: 90vw">
+      </figure>
+
+      <p>
+        After sampling, the CJK dtatset contained approximately 6,000 sequences.
+        Japanese predominates at 60%,
+        with Traditional and Simplified Chinese totalling 35%.
+      </p>
+
+    </section>
+
+    <section>
+      <h4 class="heading settled" data-level="3" id="font-langtype"><span class="secno">4.5.2 </span><span class="content">Fonts by language type</span><a class="self-link" href="#font-langtype"></a></h4>
 
         <p>Fonts vary in size and complexity based on which of these language families they support.</p>
 
@@ -1046,6 +1095,7 @@ prior to standardization work.
           and variable fonts
           has not significantly altered Webfont use for this category.
         </p>
+
 
         <p>
           Fonts for Indic languages, Arabic, and Farsi
@@ -1076,8 +1126,15 @@ prior to standardization work.
           which are frequently used together.
         </p>
 
-        <p>The study evaluated performance for these three linguistic groupings separately.
-          The groupings were selected by grouping together scripts that should have similar behaviour with respect to progressive font enrichment.
+        <p class="note">Note: because the preprocessor
+          used to prepare fonts for the <strong>Glyph Byterange</strong>
+          approach drops all hinting information,
+          to make a fair comparison,
+          the fonts used for the <strong>Paths and Subset</strong>
+          approach also had hintng information removed.
+          There is nothing in either approach
+          which precludes sending hinting information;
+          this was just a limitation of some of the software used in this analysis.
         </p>
 
     </section>
@@ -1214,18 +1271,20 @@ Prediction was not beneficial in all cases. For some script and network conditio
         -->
 
     </section>
+<!--
+  I'm sure we studied this but I can't find any report on it, so commenting out for now.
 
     <section>
         <h3 class="heading settled" data-level="2" id="group"><span class="secno">4.7 </span><span class="content">Byterange subsetting: glyph grouping</span><a class="self-link" href="#group"></a></h3>
 
         <p class="todo">todo</p>
 
-    </section>
+    </section> -->
 
 
 
     <section>
-        <h3 class="heading settled" data-level="2" id="framework"><span class="secno">4.8 </span><span class="content">Simulation and analysis framework</span><a class="self-link" href="#framework"></a></h3>
+        <h3 class="heading settled" data-level="2" id="framework"><span class="secno">4.7 </span><span class="content">Simulation and analysis framework</span><a class="self-link" href="#framework"></a></h3>
 
         <p class="todo">todo</p>
 
