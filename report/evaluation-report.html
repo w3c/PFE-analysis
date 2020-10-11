@@ -183,8 +183,8 @@ prior to standardization work.
      <a href="#analysis"><span class="secno">5</span> <span class="content"> Analysis </span></a>
      <ol class="toc">
       <li><a href="#analysis-alphabetic"><span class="secno">5.1</span> <span class="content"> Analysis: Alphabetic</span></a>
-      <li><a href="#codepredictresult"><span class="secno">5.2</span> <span class="content"> Analysis: Glyph Shaping</span></a>
-      <li><a href="#codepredictresult"><span class="secno">5.3</span> <span class="content"> Analysis: CJK</span></a>
+      <li><a href="#analysis-shaping"><span class="secno">5.2</span> <span class="content"> Analysis: Glyph Shaping</span></a>
+      <li><a href="#analysis-cjk"><span class="secno">5.3</span> <span class="content"> Analysis: CJK</span></a>
       <li><a href="#codepredictresult"><span class="secno">5.4</span> <span class="content"> Analysis: Effect of Codepoint Prediction</span></a>
      </ol>
 
@@ -1160,7 +1160,7 @@ prior to standardization work.
       </figure>
 
       <p>
-        After sampling, the glyph-shaping data set
+        After sampling by a factor of 500, the glyph-shaping data set
         is composed of approximately 6,500 sequences.
         Arabic languages, at 53%, predominate in this dataset.
       </p>
@@ -1504,6 +1504,9 @@ Prediction was not beneficial in all cases. For some script and network conditio
     <section>
       <h2 class="heading settled" data-level="2" id="analysis-alphabetic"><span class="secno">5.1 </span><span class="content">Analysis: Alphabetic</span><a class="self-link" href="#analysis-alphabetic"></a></h2>
 
+      <section>
+        <h3 class="heading settled" data-level="3" id="analysis-alphabetic-bytes"><span class="secno">5.1.1 </span><span class="content">Bytes Transferred</span><a class="self-link" href="#analysis-alphabetic-bytes"></a></h3>
+
       <p>
         For languages in the alphabetic group (using Latin, Cyrillic, Greek and Thai scripts), all three methods produced in increase in median performance for bytes transferred. The distribution of performance <span class="gain">showed an increase </span>over almost all of the range, with the two PFE methods showing <span class="loss">a very small regression</span> (less than 10%) for the 5% percentile on the slower networks.
       </p>
@@ -1518,23 +1521,47 @@ Prediction was not beneficial in all cases. For some script and network conditio
         (a median <span class="gain">improvement of around 21%</span> on all networks).
       </p>
 
+      <!--
+        We really need graphs of absolute byte savings
+      -->
+      <p>
+        To put these byte savings in context,
+        the median size of font
+        used for alphabetic languages
+        was <strong>17,660 bytes</strong>,
+        so a reduction of 50% would make that
+        <strong>8,830 bytes</strong>.
+        For a Content Distribution Network,
+        this is a worthwhile saving in monthly bandwidth;
+        for an individual Web page, the saving is modest,
+        and the guarantee of not breaking rendering is more worthwhile.
+      </p>
+
       <figure>
         <figcaption>Savings in bytes transferred, alphabetic group of languages</figcaption>
         <img src="../results/07-08-2020/comparison.latin.sampled_1000.bytes.png" alt="" style="max-width:60vw"/>
       </figure>
 
+      </section>
+
+      <section>
+        <h3 class="heading settled" data-level="3" id="analysis-alphabetic-cost"><span class="secno">5.1.2 </span><span class="content">Cost</span><a class="self-link" href="#analysis-alphabetic-cost"></a></h3>
+
       <p>
         For languages in the alphabetic group, the cost function
         shows a <span class="gain">median improvement</span> over <strong>whole font</strong>
         for <strong>Unicode Range</strong> and <strong>Patch Subset</strong>,
-        for networks in the 3G class or faster. On 2G networks,
-        the <span class="loss">performance regression in median cost function</span>
-        was sufficiently large
-        that it is shown on a separate graph with a different scale on the x-axis.
+        for networks in the 3G class or faster.
         The cost function for <strong>Range Request</strong>
         showed a consistent regression on all networks,
         ranging from a <span class="loss">median 50% slower</span> on the fastest network
         to <span class="loss">median 175% slower</span> on 2G networks.
+        On 2G networks,
+        for all methods,
+        the <span class="loss">performance regression in median cost function</span>
+        was sufficiently large
+        that it is shown on a separate graph: note the different scale on the x-axis.
+
       </p>
 
       <p>
@@ -1543,34 +1570,152 @@ Prediction was not beneficial in all cases. For some script and network conditio
         showed <span class="loss">performance regression ranging from 50% slower to 250% slower</span>, at the fifth percentile.
       </p>
 
+      <p>
+        For 3G and 2G networks, despite the reduction in bytes transferred,
+        the cost function results indicate that for alphabetic languages,
+        <span class="gain">transferring the whole font</span>
+        in one network request
+        will result in faster page rendering than <strong>Patch Subset</strong>.
+      </p>
+
+      <p>
+        For all network types, despite the reduction in bytes transferred,
+        the cost function results indicate that for alphabetic languages,
+        <span class="gain">transferring the whole font</span>
+        in one network request
+        will result in faster page rendering than <strong>Range Request</strong>.
+      </p>
+
       <figure>
-        <figcaption>Savings (or losses) incost function, alphabetic group of languages</figcaption>
+        <figcaption>Savings (or losses) in cost function, alphabetic group of languages</figcaption>
         <img src="../results/07-08-2020/comparison.latin.sampled_1000.cost.png" alt="" style="max-width:60vw"/> <br/>
         <img src="../results/07-08-2020/comparison.latin.sampled_1000.2G.cost.png" alt="" style="max-width:60vw"/>
       </figure>
+
+      </section>
 
     </section>
 
     <section>
       <h2 class="heading settled" data-level="2" id="analysis-shaping"><span class="secno">5.2 </span><span class="content">Analysis: Glyph Shaping</span><a class="self-link" href="#analysis-shaping"></a></h2>
 
+      <section>
+        <h3 class="heading settled" data-level="3" id="analysis-shaping-bytes"><span class="secno">5.2.1 </span><span class="content">Bytes Transferred</span><a class="self-link" href="#analysis-shaping-bytes"></a></h3>
+
       <p>
+        For languages in the shaping group (Arabic and Indic), all three methods produced in increase in median performance for bytes transferred. The distribution of performance <span class="gain">showed an increase </span>over almost all of the range, with the two PFE methods showing <span class="loss">a fairly small regression</span> (8 to 15%) for the 5% percentile on <em>all</em> networks.
+      </p>
+
+      <p>
+        <strong>Patch Subset</strong> shows the largest reduction
+        in bytes transferred (a median <span class="gain">improvement of 55%</span>
+        on all but the slowest networks,
+        dropping to <span class="gain">48%</span> on 2G).
+        <strong>Unicode Range</strong> and <strong>Range Request</strong>
+        showed smaller  reductions
+        (a median <span class="gain">improvement of around 25%</span>
+        on all networks, for both methods).
+        On all but 2G networks,
+        the 5th percentile of <strong>Patch Subset</strong>
+        was as good as the median performance of the other two methods.
+      </p>
+
+      <p>
+        To put these byte savings in context,
+        the median size of font
+        used for shaping languages
+        was <strong>93,588 bytes</strong>,
+        so a reduction of 55% would make that
+        <strong>42,115 bytes</strong>.
+        For a Content Distribution Network,
+        this is an even more worthwhile saving in monthly bandwidth.
+        For an individual Web page, the saving is significant,
+        but again the guarantee of not breaking rendering
+        (which is a major drawback of <strong>Unicode Range</strong> for this language group) is a <span class="gain">significant gain in functionality</span>.
+      </p>
+
+      <figure>
+        <figcaption>Savings in bytes transferred, shaping group of languages</figcaption>
+        <img src="../results/07-08-2020/comparison.arabic_indic.sampled_500.bytes.png" alt="" style="max-width:60vw"/>
+      </figure>
+
+      </section>
+
+      <section>
+        <h3 class="heading settled" data-level="3" id="analysis-shaping-cost"><span class="secno">5.2.2 </span><span class="content">Cost</span><a class="self-link" href="#analysis-shaping-cost"></a></h3>
+
+      <p>
+        For languages in the shaping group, the cost function
+        shows a <span class="gain">median improvement</span> over <strong>whole font</strong>
+        for <strong>Unicode Range</strong> and <strong>Patch Subset</strong>,
+        for networks in the 3G class or faster.
+        The cost function for <strong>Range Request</strong>
+        again showed a <span class="loss">consistent regression on all networks</span>,
+        ranging from a <span class="loss">median 50% slower</span> on the fastest network
+        to <span class="loss">median 175% slower</span> on 2G networks.
+        Once again, for 2G networks,
+        the <span class="loss">performance regression in median cost function</span>
+        for all methods was sufficiently large
+        that it is shown on a separate graph: note the different scale on the x-axis.
+      </p>
+
+      <p>
+        On 3G and 2G networks, at the fifth percentile (worst case results),
+        <strong>Unicode Range</strong>
+        showed <span class="loss">performance regression ranging from 50% slower to 100% slower</span>, while
+        <strong>Patch Subset</strong> was worse,
+        showing <span class="loss">performance regression ranging from 130% slower to 260% slower</span>, and
+        <strong>Range Request</strong> showed
+        <span class="loss">performance regression ranging from 310% slower to 650% slower</span>
+      </p>
+
+      <p>
+        For <em>2G networks</em>, despite the reduction in bytes transferred,
+        the cost function results indicate that for shaping languages,
+        <span class="gain">transferring the whole font</span>
+        in one network request
+        will result in faster page rendering than <strong>Patch Subset</strong>.
+        For <em>3G networks</em>, for shaping languages,
+        <strong>Patch Subset</strong> will result in <span class="gain">faster rendering much of the time</span> but
+        <span class="loss">slower rendering sometimes</span>.
 
       </p>
+
+      <p>
+        For <em>all network types</em>, despite the reduction in bytes transferred,
+        the cost function results indicate that for shaping languages,
+        <span class="gain">transferring the whole font</span>
+        in one network request
+        will result in significantly faster page rendering than <strong>Range Request</strong>.
+      </p>
+
+      <figure>
+        <figcaption>Savings (or losses) in cost function, shaping group of languages</figcaption>
+        <img src="../results/07-08-2020/comparison.arabic_indic.sampled_500.cost.png" alt="" style="max-width:60vw"/> <br/>
+        <img src="../results/07-08-2020/comparison.arabic_indic.sampled_500.2G.cost.png" alt="" style="max-width:60vw"/>
+      </figure>
+
+      </section>
 
     </section>
 
     <section>
       <h2 class="heading settled" data-level="2" id="analysis-cjk"><span class="secno">5.3 </span><span class="content">Analysis: CJK</span><a class="self-link" href="#analysis-cjk"></a></h2>
 
-      <p>
+      <section>
+        <h3 class="heading settled" data-level="3" id="analysis-shaping-bytes"><span class="secno">5.3.1 </span><span class="content">Bytes Transferred</span><a class="self-link" href="#analysis-shaping-bytes"></a></h3>
 
-      </p>
+      </section>
+
+      <section>
+        <h3 class="heading settled" data-level="3" id="analysis-shaping-cost"><span class="secno">5.3.2 </span><span class="content">Cost</span><a class="self-link" href="#analysis-shaping-cost"></a></h3>
+
+      </section>
 
     </section>
 
     <section>
-      <h2 class="heading settled" data-level="2" id="codepredictresult"><span class="secno">5.3 </span><span class="content">Analysis: Effect of Codepoint Prediction</span><a class="self-link" href="#codepredictresult"></a></h2>
+      <h2 class="heading settled" data-level="2" id="codepredictresult"><span class="secno">5.4 </span><span class="content">Analysis: Effect of Codepoint Prediction</span><a class="self-link" href="#codepredictresult"></a></h2>
 
       <p>
 
