@@ -1171,7 +1171,8 @@ prior to standardization work.
       </figure>
 
       <p>
-        After sampling, the CJK dtatset contained approximately 6,000 sequences.
+        After sampling by a factor of 5000,
+        the CJK datatset contained approximately 6,000 sequences.
         Japanese predominates at 60%,
         with Traditional and Simplified Chinese totalling 35%.
       </p>
@@ -1705,11 +1706,119 @@ Prediction was not beneficial in all cases. For some script and network conditio
       <section>
         <h3 class="heading settled" data-level="3" id="analysis-shaping-bytes"><span class="secno">5.3.1 </span><span class="content">Bytes Transferred</span><a class="self-link" href="#analysis-shaping-bytes"></a></h3>
 
+
+      <p>
+        For languages in the CJK group, <span class="gain">all three methods produced in increase in median performance for bytes transferred</span>.
+        Both <strong>Patch Subset</strong> and <strong>Range Request</strong>
+        significantly outperformed
+        <strong>Unicode Range</strong>.
+        The distribution of performance <span class="gain">showed an increase </span>over <em>the entire range</em>,
+        with no regression even at the 5th percentile,
+        on <em>all</em> networks.
+      </p>
+
+      <p>
+        <strong>Patch Subset</strong> shows the largest reduction
+        in bytes transferred (a median <span class="gain">improvement of 90%</span>
+        on all but the slowest networks,
+        dropping to <span class="gain">65%</span> on 2G).
+        <strong>Range Request</strong>
+        also showed a very good reduction
+        (a median <span class="gain">improvement of around 80%</span>
+        on all but the slowest networks,
+        dropping to <span class="gain">80%</span> on 2G,
+        where it outperformed <strong>Patch Subset</strong>).
+        <strong>Unicode Range</strong> had a consistent reduction,
+        (a median <span class="gain">improvement of 50%</span>
+        on all networks.
+      </p>
+
+      <!--
+        wait these should be calculated relative to whle font WOFF2, right?
+      -->
+      <p>
+        To put these byte savings in context,
+        the median size of font
+        used for CJK languages
+        was <strong>1.8 Megabytes</strong>,
+        which is <strong>769 kilobytes as WOFF2</strong>.
+        The 75th percentile was <strong>2.6 Megabytes</strong>,
+        which is <strong>1.2 Megabytes as WOFF2</strong>,
+        while the 95th percentile
+        was <strong>5.2 Megabytes</strong>,
+        which is <strong>2.6 Megabytes as WOFF2</strong>.
+        CJK fonts thus require a <em>massive reduction</em>
+        in bytes transferred,
+        to be usable as Webfonts.
+      </p>
+
+      <p>
+        For <strong>Patch Subset</strong>, a reduction of 90%
+        would make the median font size
+        <strong>0.18 Megabytes (180 kilobytes)</strong>
+        and the 95th percentile <strong>0.52 Megabytes (520 kilobytes)</strong>.
+        For <strong>Range Request</strong>, a reduction of 65% would make the median
+        <strong>810 kilobytes</strong>
+        and the 95th percentile <strong>2.34 Megabytes</strong>.
+        Although those results are 4 to 5 times worse,
+        they might still be usable on fast networks
+        if an active server extension is not an option.
+      </p>
+
+      <p>
+        For a Content Distribution Network,
+        these are <span class="gain">massive saving in monthly bandwidth</span>.
+        For an individual Web page, <span class="gain">the savings are also vast</span>, but <span class="loss">still might not be enough.</span>
+      <p>
+
+      <p>
+        For the first time, <strong>Patch Subset</strong>
+        makes CJK Webfonts an expensive but realistic resource,
+        rather than being completely unusable.
+      </p>
+
+      <figure>
+        <figcaption>Savings in bytes transferred, CJK group of languages</figcaption>
+        <img src="../results/07-08-2020/comparison.cjk.sampled_5000.bytes.png" alt="" style="max-width:60vw"/>
+      </figure>
+
       </section>
 
       <section>
         <h3 class="heading settled" data-level="3" id="analysis-shaping-cost"><span class="secno">5.3.2 </span><span class="content">Cost</span><a class="self-link" href="#analysis-shaping-cost"></a></h3>
 
+        <!--
+          needs better cost reduction graph for patch subset (only)
+          because the data is squeezed up near 100%
+        -->
+        <p>
+          On 4G and faster networks, for languages in the CJK group,
+          the cost function
+          shows a <span class="gain">median improvement</span> over <strong>whole font</strong>
+          for all methods.</p>
+
+        <p>
+          On 3G networks, <strong>Patch Subset</strong>
+          was still providing <span class="gain">a median improvement of 55%</span>
+          while <strong>Unicode Range</strong> and <strong>Range Request</strong>
+          had shifted to <span class="loss">a performance regression in page load times</span>.
+        <p>
+
+        <p>
+          Once again, for 2G networks,
+          the <span class="loss">performance regression in median cost function</span>
+          for all methods was sufficiently large
+          that it is shown on a separate graph: note the different scale on the x-axis.
+          The cost function for CJK fonts on 2G networks
+          showed a <span class="loss">significant regression</span> over <strong>whole font</strong>
+          for <em>all methods</em>.
+        </p>
+
+        <figure>
+          <figcaption>Savings (or losses) in cost function, CJK group of languages</figcaption>
+          <img src="../results/07-08-2020/comparison.cjk.sampled_5000.cost.png" alt="" style="max-width:60vw"/> <br/>
+          <img src="../results/07-08-2020/comparison.cjk.sampled_5000.2G.cost.png" alt="" style="max-width:60vw"/>
+        </figure>
       </section>
 
     </section>
@@ -1720,8 +1829,6 @@ Prediction was not beneficial in all cases. For some script and network conditio
       <p>
 
       </p>
-
-    </section>
 
     </section>
 
