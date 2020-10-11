@@ -1233,3 +1233,12 @@ span.sfnt {
 #pred-table tr:hover {
 	background-color: #fdd;
 }
+
+.loss {
+	color: hsl(4.641, 81.166%, 46.275%);
+	font-weight: bold;
+}
+.gain {
+	color: hsl(136.034, 52.727%, 33.137%);
+	font-weight: bold;
+}

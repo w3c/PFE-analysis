@@ -163,8 +163,8 @@ prior to standardization work.
       <li><a href="#criteria"><span class="secno">4.1</span> <span class="content"> Success criteria</span></a>
       <li><a href="#servtype"><span class="secno">4.2</span> <span class="content"> Server type: intelligent vs. simple</span></a>
         <ol class="toc">
-          <li><a href="#patch-subset"><span class="secno">4.2.1</span> <span class="content"> Patch and Subset</span></a>
-            <li><a href="#glyph-byterange"><span class="secno">4.2.2</span> <span class="content"> Glyph Byterange</span></a>
+          <li><a href="#patch-subset"><span class="secno">4.2.1</span> <span class="content"> Patch Subset</span></a>
+            <li><a href="#glyph-byterange"><span class="secno">4.2.2</span> <span class="content"> Range Request</span></a>
         </ol>
       <li><a href="#cost"><span class="secno">4.3</span> <span class="content"> Cost function</span></a>
       <li><a href="#network"><span class="secno">4.4</span> <span class="content"> Network type - slow 2G to fast broadband</span></a>
@@ -182,7 +182,10 @@ prior to standardization work.
     <li>
      <a href="#analysis"><span class="secno">5</span> <span class="content"> Analysis </span></a>
      <ol class="toc">
-      <li><a href="#codepredictresult"><span class="secno">5.x</span> <span class="content"> Effect of Codepoint Prediction</span></a>
+      <li><a href="#analysis-alphabetic"><span class="secno">5.1</span> <span class="content"> Analysis: Alphabetic</span></a>
+      <li><a href="#codepredictresult"><span class="secno">5.2</span> <span class="content"> Analysis: Glyph Shaping</span></a>
+      <li><a href="#codepredictresult"><span class="secno">5.3</span> <span class="content"> Analysis: CJK</span></a>
+      <li><a href="#codepredictresult"><span class="secno">5.4</span> <span class="content"> Analysis: Effect of Codepoint Prediction</span></a>
      </ol>
 
     <li><a href="#conclusions"><span class="secno">6</span> <span class="content"> Conclusions</span></a>
@@ -681,7 +684,7 @@ prior to standardization work.
     <p>
       Adobe has already deployed a proprietary form of progressive font enrichment.
       Performance data from that solution was compared with
-      an early prototype of the <strong>Patch and Subset</strong> method
+      an early prototype of the <strong>Patch Subset</strong> method
       (<a href="#patch-subset">described below</a>).
       In this initial trial,
       these were both compared to
@@ -700,9 +703,9 @@ prior to standardization work.
     </p>
 
     <p>
-      Both <strong>Adobe's solution</strong> and <strong>Patch and Subset</strong>
+      Both <strong>Adobe's solution</strong> and <strong>Patch Subset</strong>
       deliver close to optimal results on number of bytes transferred,
-      with <strong>Patch and Subset</strong> transferring an additional 19%,
+      with <strong>Patch Subset</strong> transferring an additional 19%,
       and <strong>Adobe's solution</strong> an additional 45%,
       versus the theoretical optimal transfer bytes.
     </p>
@@ -711,7 +714,7 @@ prior to standardization work.
       The test was repeated, but this time using
       fonts provided by Monotype.
       The results were similar,
-      except that <strong>Patch and Subset</strong>
+      except that <strong>Patch Subset</strong>
       transferred an additional 65%
       versus the theoretical optimal transfer bytes.
     </p>
@@ -771,9 +774,9 @@ prior to standardization work.
     </p>
 
     <section>
-      <h4 class="heading settled" data-level="3" id="patch-subset"><span class="secno">4.2.1 </span><span class="content">Patch and Subset</span><a class="self-link" href="#patch-subset"></a></h4>
+      <h4 class="heading settled" data-level="3" id="patch-subset"><span class="secno">4.2.1 </span><span class="content">Patch Subset</span><a class="self-link" href="#patch-subset"></a></h4>
     <p >
-        In one approach, <strong>Patch and Subset</strong>,
+        In one approach, <strong>Patch Subset</strong>,
         the entire font is dynamically subsetted on the server.
         The client and the server communicate closely
         to generate the optimal set of enrichment glyphs
@@ -815,10 +818,10 @@ prior to standardization work.
     </section>
 
     <section>
-      <h4 class="heading settled" data-level="3" id="glyph-byterange"><span class="secno">4.2.2 </span><span class="content">Glyph Byterange</span><a class="self-link" href="#glyph-byterange"></a></h4>
+      <h4 class="heading settled" data-level="3" id="glyph-byterange"><span class="secno">4.2.2 </span><span class="content">Range Request</span><a class="self-link" href="#glyph-byterange"></a></h4>
 
       <p>
-        In the second approach, <strong>Glyph Byterange</strong>,
+        In the second approach, <strong>Range Request</strong>,
         a streaming approach similar to video streaming is used.
         Again, an OpenType font is
         served (over HTTP/2, and with Brotli Content Transfer Encoding).
@@ -1073,11 +1076,11 @@ prior to standardization work.
         </p>
 
         <p>
-          For the <strong>Patch and Subset</strong> model,
+          For the <strong>Patch Subset</strong> model,
           a simple HTTP POST was used for the request,
           consisting of a binary protocol buffer (proto3)
           which identified the font, the characters needed, and the characters already downloaded.
-          For the <strong>Glyph Byterange</strong> model,
+          For the <strong>Range Request</strong> model,
           HTTP GET byterange requests were used.
           Reasonable defaults for request and response header size
           (35 bytes each)
@@ -1241,24 +1244,27 @@ prior to standardization work.
 
         <p class="note">
           Note: because the preprocessor
-          used to prepare fonts for the <strong>Glyph Byterange</strong>
+          used to prepare fonts for the <strong>Range Request</strong>
           approach drops all hinting information,
           to make a fair comparison,
-          the fonts used for the <strong>Patch and Subset</strong>
+          the fonts used for the <strong>Patch Subset</strong>
           approach also had hintng information removed.
           There is nothing in either approach
           which precludes sending hinting information;
-          this was just a limitation of some of the software used in this analysis.
+          this was just a limitation of some of the software used in this simulation.
         </p>
 
         <p class="note">
           Note: Because the <a href="https://www.w3.org/TR/WOFF2/#table_format">additional table transforms in WOFF2</a>
           (and subsequent client-side table reconstitution)
           would have complicated the simulation,
-          both <strong>Patch and Subset</strong> and
-          <strong>Glyph Byterange</strong>
-          simulated serving the initial font as  TrueType or Opentype font
+          both <strong>Patch Subset</strong> and
+          <strong>Range Request</strong>
+          simulated serving the initial font as a TrueType or Opentype font
           (over HTTP/2), with Brotli used as HTTP Content Transfer Encoding.
+          Ths means that the performance gains
+          from the WOFF2 table transforms
+          were not obtained in this simulation.
         </p>
 
     </section>
@@ -1376,7 +1382,7 @@ prior to standardization work.
 
         <p>
           The results [<a href="#ref-codepoint-prediction">Codepoint Prediction</a>]
-          are summarized <a href="#analysis-prediction">later in this report</a>.
+          are summarized <a href="#codepredictresult">later in this report</a>.
         </p>
         <!--
 Progressive Font Enrichment: Codepoint Prediction Results
@@ -1437,10 +1443,140 @@ Prediction was not beneficial in all cases. For some script and network conditio
     <section>
     <h2 class="heading settled" data-level="1" id="analysis"><span class="secno">5. </span><span class="content">Analysis</span><a class="self-link" href="#analysis"></a></h2>
 
-    <!--
+    <p>
+      The following four font transfer methods are reported:
+    </p>
 
-    -->
-    <p class="todo">todo</p>
+    <dl>
+      <dt>Whole font</dt>
+      <dd>
+        This is used as the performance baseline.
+        The entire original font file (with hinting removed) is loaded directly, compressed as a woff2. In the graphs below,
+        the gains or losses of other three methods are normalized such that <strong>whole font</strong> corresponds to 0%.</dd>
+      <dt>Unicode range</dt>
+      <dd>
+        The fonts are split into multiple subsets,
+        and woff2 compressed. Each subset is downloaded only if needed for a given page. The subset definitions used are those currently in use by the Google Fonts service
+        [<a href="#ref-Google-scrpt-subsets">Google script subsets</a>].
+        Unicode range is the current state of the art in partially transferring
+        fonts and is in widespread use today. It can result in incorrect rendering, as <a href="#fail-subset">noted earlier</a>.
+      </dd>
+      <dt>Patch Subset</dt>
+      <dd>
+        <a href="#patch-subset">Described above</a>, this is
+        a progressive font enrichment method where
+        the client first requests a font
+        which is transmitted with Brotli compression.
+        The fonts is then subsequently
+        extended to cover additional codepoints
+        via a Brotli binary patch computed by the server.
+      </dd>
+      <dt>Range Request</dt>
+      <dd>
+        <a href="#glyph-byterange">Described above</a>, this is
+        a progressive font enrichment method where
+        the client first requests
+        a pre-processed font
+        which contains everything except for the glyf or CFF table.
+        The fonts is transmitted with Brotli compression.
+        Then the glyf or CFF table is filled in as needed
+        by requesting pieces of it using HTTP/2 range requests.
+      </dd>
+    </dl>
+
+    <p>
+      In the graphs below, the performance distribution is represented
+      by it’s 5th, 25th, 50th (median), 75th and 95th percentile.
+      Portions of the distribution which reduced
+      the number of bytes transferred or the loading cost
+      are <span class="gain">shaded green</span> (which represents an improvement in performance),
+      while portions of the distribution which increased
+      the number of bytes or cost
+      are <span class="loss">shaded red</span> (which represents a performance regression).
+    </p>
+
+    <p>
+      For those who wish to graph the results differently,
+      the numerical raw data <a href="https://docs.google.com/document/d/1wldVimEjofr1-IT5YfyZ_IN8VgYYii3xN0T1jFxfAIk/edit#heading=h.kgbhpvsdylo0">is
+      available</a> [<a href="#ref-PFE-Results-07Aug2020">PFE Results 07 Aug 2020</a>]
+    </p>
+
+    <section>
+      <h2 class="heading settled" data-level="2" id="analysis-alphabetic"><span class="secno">5.1 </span><span class="content">Analysis: Alphabetic</span><a class="self-link" href="#analysis-alphabetic"></a></h2>
+
+      <p>
+        For languages in the alphabetic group (using Latin, Cyrillic, Greek and Thai scripts), all three methods produced in increase in median performance for bytes transferred. The distribution of performance <span class="gain">showed an increase </span>over almost all of the range, with the two PFE methods showing <span class="loss">a very small regression</span> (less than 10%) for the 5% percentile on the slower networks.
+      </p>
+
+      <p>
+        <strong>Patch Subset</strong> shows the largest reduction
+        in bytes transferred (a median <span class="gain">improvement of 50%</span>
+        on the fastest networks, to <span class="gain">43%</span> on the slowest)
+        with <strong>Unicode Range</strong> close behind
+        (a median <span class="gain">improvement of around 43%</span> on all networks).
+        <strong>Range Request</strong> has much smaller reduction
+        (a median <span class="gain">improvement of around 21%</span> on all networks).
+      </p>
+
+      <figure>
+        <figcaption>Savings in bytes transferred, alphabetic group of languages</figcaption>
+        <img src="../results/07-08-2020/comparison.latin.sampled_1000.bytes.png" alt="" style="max-width:60vw"/>
+      </figure>
+
+      <p>
+        For languages in the alphabetic group, the cost function
+        shows a <span class="gain">median improvement</span> over <strong>whole font</strong>
+        for <strong>Unicode Range</strong> and <strong>Patch Subset</strong>,
+        for networks in the 3G class or faster. On 2G networks,
+        the <span class="loss">performance regression in median cost function</span>
+        was sufficiently large
+        that it is shown on a separate graph with a different scale on the x-axis.
+        The cost function for <strong>Range Request</strong>
+        showed a consistent regression on all networks,
+        ranging from a <span class="loss">median 50% slower</span> on the fastest network
+        to <span class="loss">median 175% slower</span> on 2G networks.
+      </p>
+
+      <p>
+        On 3G and 2G networks,
+        <strong>Unicode Range</strong> and <strong>Patch Subset</strong>
+        showed <span class="loss">performance regression ranging from 50% slower to 250% slower</span>, at the fifth percentile.
+      </p>
+
+      <figure>
+        <figcaption>Savings (or losses) incost function, alphabetic group of languages</figcaption>
+        <img src="../results/07-08-2020/comparison.latin.sampled_1000.cost.png" alt="" style="max-width:60vw"/> <br/>
+        <img src="../results/07-08-2020/comparison.latin.sampled_1000.2G.cost.png" alt="" style="max-width:60vw"/>
+      </figure>
+
+    </section>
+
+    <section>
+      <h2 class="heading settled" data-level="2" id="analysis-shaping"><span class="secno">5.2 </span><span class="content">Analysis: Glyph Shaping</span><a class="self-link" href="#analysis-shaping"></a></h2>
+
+      <p>
+
+      </p>
+
+    </section>
+
+    <section>
+      <h2 class="heading settled" data-level="2" id="analysis-cjk"><span class="secno">5.3 </span><span class="content">Analysis: CJK</span><a class="self-link" href="#analysis-cjk"></a></h2>
+
+      <p>
+
+      </p>
+
+    </section>
+
+    <section>
+      <h2 class="heading settled" data-level="2" id="codepredictresult"><span class="secno">5.3 </span><span class="content">Analysis: Effect of Codepoint Prediction</span><a class="self-link" href="#codepredictresult"></a></h2>
+
+      <p>
+
+      </p>
+
+    </section>
 
     </section>
 
@@ -1480,6 +1616,13 @@ Prediction was not beneficial in all cases. For some script and network conditio
           not yet integrated
 
         -->
+
+        <!--
+        conclusion, for alphabetic: range request can be used to eliminate subsetting breakage,
+        but with a 15% performance penalty in bytes transferred. This is likely acceptable given the small media filesize of these fonts.
+        patch subset can be used to eliminate subsetting breakage,
+        with a small 5% performance improvement in bytes transferred.
+      -->
         <p class="todo">todo</p>
 
         </section>
@@ -1671,13 +1814,21 @@ https://discuss.httparchive.org/t/how-does-web-font-usage-vary-by-country/1649
     URL: <a href="https://docs.microsoft.com/en-us/typography/opentype/spec/">https://docs.microsoft.com/en-us/typography/opentype/spec/</a>
   </dd>
 
-    <dt id="ref-patch-subset-design">Patch and Subset Design</dt>
+    <dt id="ref-patch-subset-design">Patch Subset Design</dt>
     <dd><cite><a href="https://docs.google.com/document/d/1DJ6VkUEZS2kvYZemIoX4fjCgqFXAtlRjpMlkOvblSts/edit">Subset and Patch Progressive Font Enrichment Protocol Design</a>,
       Garret Rieger (author).
     </cite>
     7 August 2019.<br>
     URL: <a href="https://docs.google.com/document/d/1DJ6VkUEZS2kvYZemIoX4fjCgqFXAtlRjpMlkOvblSts/edit#">https://docs.google.com/document/d/1DJ6VkUEZS2kvYZemIoX4fjCgqFXAtlRjpMlkOvblSts/edit#</a>
   </dd>
+
+  <dt id="ref-PFE-Results-07Aug2020">PFE Results 07 Aug 2020</dt>
+  <dd><cite><a href="https://docs.google.com/document/d/1wldVimEjofr1-IT5YfyZ_IN8VgYYii3xN0T1jFxfAIk/edit#heading=h.jczymrmidmhq">Progressive Font Enrichment, Simulation Results (August 7th, 2020 Data Set)</a>,
+    Garret Rieger (author).
+  </cite>
+  17 Sep 2020. <br>
+  URL: <a href="https://docs.google.com/document/d/1wldVimEjofr1-IT5YfyZ_IN8VgYYii3xN0T1jFxfAIk/edit#heading=h.btkxzdhc7lyb">https://docs.google.com/document/d/1wldVimEjofr1-IT5YfyZ_IN8VgYYii3xN0T1jFxfAIk/edit#heading=h.btkxzdhc7lyb</a>
+</dd>
 
   <dt id="ref-PFErepo">PFE-analysis repo</dt>
   <dd><cite><a href="https://github.com/w3c/PFE-analysis">Progressive Font Enrichment (PFE) Analysis GitHub repository</a></cite>
