@@ -1385,21 +1385,7 @@ prior to standardization work.
           The results [<a href="#ref-codepoint-prediction">Codepoint Prediction</a>]
           are summarized <a href="#codepredictresult">later in this report</a>.
         </p>
-        <!--
-Progressive Font Enrichment: Codepoint Prediction Results
-(patch only)
-https://docs.google.com/document/d/1u-05ztF9MqftHbMKB_KiqeUhZKiXNFE4TRSUWFAPXsk/edit
 
-Codepoint prediction, that is adding extra non-requested codepoints to a font augmentation response was tested with the progressive font enrichment simulations to see if it could improve performance and close the gaps where progressive font enrichment performed worse than existing transfer methods.
-
-The result of the simulations showed that for all three script categories using codepoint prediction was able to lower costs enough to tie or beat existing transfer methods for all connection types other than Mobile 2G and the slowest variant of Mobile 3G. This comes at the cost of sending more bytes, but still sends less bytes than existing transfer methods.
-
-CJK scripts benefited the least from prediction. Arabic, Indic, Latin, Cyrllic, Greek, and Thai saw more improvements.  For those scripts prediction closed the performance gap between existing font transfer methods for many connection types.
-
-Prediction was not beneficial in all cases. For some script and network conditions combinations it increased overall cost. If prediction is to be used it should be selectively enabled based on the script and client network capabilities.
-
-
-        -->
 
     </section>
 <!--
@@ -1826,10 +1812,37 @@ Prediction was not beneficial in all cases. For some script and network conditio
 
     <section>
       <h2 class="heading settled" data-level="2" id="codepredictresult"><span class="secno">5.4 </span><span class="content">Analysis: Effect of Codepoint Prediction</span><a class="self-link" href="#codepredictresult"></a></h2>
+<!--
 
-      <p>
+-->
 
-      </p>
+<!-- Codepoint prediction, that is adding extra non-requested codepoints to a font augmentation response was tested with the progressive font enrichment simulations to see if it could improve performance and close the gaps where progressive font enrichment performed worse than existing transfer methods. -->
+
+  <p>
+    The result of the simulations showed that
+    for all three script categories,
+    using codepoint prediction was able to lower costs
+    enough to tie or beat existing transfer methods
+    for all connection types
+    other than Mobile 2G and the slowest variant of Mobile 3G.
+    This comes at the cost of sending more bytes,
+    but still sends less bytes than existing transfer methods.
+  </p>
+
+  <p>
+    CJK scripts benefited the least from prediction.
+    Arabic, Indic, Latin, Cyrllic, Greek, and Thai saw more improvements.
+    For those scripts, prediction closed the performance gap
+    between existing font transfer methods for many connection types.
+  </p>
+
+  <p>
+    Prediction was not beneficial in all cases.
+    For some script and network conditions combinations
+    it increased overall cost.
+    If prediction is to be used it should be selectively enabled
+    based on the script and client network capabilities.
+  </p>
 
     </section>
 
@@ -1965,6 +1978,13 @@ https://discuss.httparchive.org/t/how-does-web-font-usage-vary-by-country/1649
           Roderick Sheeter (author)</cite>
       </dd>
 
+      <dt id="ref-Codepoint-Prediction">Codepoint Prediction Results</dt>
+  <dd><cite><a href="https://docs.google.com/document/d/1u-05ztF9MqftHbMKB_KiqeUhZKiXNFE4TRSUWFAPXsk/edit">Progressive Font Enrichment: Codepoint Prediction Results
+    </a>,
+    Garret Rieger (author).
+  </cite>
+  URL: <a href="https://docs.google.com/document/d/1u-05ztF9MqftHbMKB_KiqeUhZKiXNFE4TRSUWFAPXsk/edit">https://docs.google.com/document/d/1u-05ztF9MqftHbMKB_KiqeUhZKiXNFE4TRSUWFAPXsk/edit</a>
+</dd>
 
         <dt id="ref-CSS2">CSS2</dt>
         <dd>
