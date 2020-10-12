@@ -1529,13 +1529,14 @@ Prediction was not beneficial in all cases. For some script and network conditio
         To put these byte savings in context,
         the median size of font
         used for alphabetic languages
-        was <strong>17,660 bytes</strong>,
+        was <strong>17,660 bytes</strong> (<strong>8,360 as WOFF2</strong> ),
         so a reduction of 50% would make that
-        <strong>8,830 bytes</strong>.
+        <strong>4,180 bytes</strong>.
         For a Content Distribution Network,
-        this is a worthwhile saving in monthly bandwidth;
+        servin very large numbers of fonts,
+        this may be worthwhile saving in monthly bandwidth;
         for an individual Web page, the saving is modest,
-        and the guarantee of not breaking rendering is more worthwhile.
+        and the guarantee of <span class="gain">not breaking rendering is more worthwhile</span>.
       </p>
 
       <figure>
@@ -1625,13 +1626,13 @@ Prediction was not beneficial in all cases. For some script and network conditio
         To put these byte savings in context,
         the median size of font
         used for shaping languages
-        was <strong>93,588 bytes</strong>,
+        was <strong>93,588 bytes</strong> (<strong>30,332 as WOFF2</strong> ),
         so a reduction of 55% would make that
-        <strong>42,115 bytes</strong>.
+        <strong>13,649 bytes</strong>.
         For a Content Distribution Network,
-        this is an even more worthwhile saving in monthly bandwidth.
+        this is a worthwhile saving in monthly bandwidth.
         For an individual Web page, the saving is significant,
-        but again the guarantee of not breaking rendering
+        but again the guarantee of <span class="gain">not breaking rendering</span>
         (which is a major drawback of <strong>Unicode Range</strong> for this language group) is a <span class="gain">significant gain in functionality</span>.
       </p>
 
@@ -1755,14 +1756,14 @@ Prediction was not beneficial in all cases. For some script and network conditio
       <p>
         For <strong>Patch Subset</strong>, a reduction of 90%
         would make the median font size
-        <strong>0.18 Megabytes (180 kilobytes)</strong>
-        and the 95th percentile <strong>0.52 Megabytes (520 kilobytes)</strong>.
+        <strong>76.9 kilobytes</strong>
+        and the 95th percentile <strong>260 kilobytes</strong>.
         For <strong>Range Request</strong>, a reduction of 65% would make the median
-        <strong>810 kilobytes</strong>
-        and the 95th percentile <strong>2.34 Megabytes</strong>.
+        <strong>269 kilobytes</strong>
+        and the 95th percentile <strong>910 kilobytes</strong>.
         Although those results are 4 to 5 times worse,
-        they might still be usable on fast networks
-        if an active server extension is not an option.
+        if an active server extension is not an option,
+        they might still be usable on fast networks.
       </p>
 
       <p>
