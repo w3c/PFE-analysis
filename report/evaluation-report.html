@@ -1846,7 +1846,7 @@ prior to standardization work.
           <strong>Patch Subset</strong> and <strong>Range Request</strong>.
           Both gave <span class="gain">significant reductions
             in the number of bytes transferred</span>,
-          compared to sending the whole font, or using the existing
+          compared to sending the whole font as WOFF2, or using the existing
           <strong>Unicode Range</strong> method.
         </p>
 
@@ -1930,6 +1930,26 @@ prior to standardization work.
           Relying on pre-installed fonts for CJK content on 2G networks remains the only viable solution, alas.
         </p>
 
+        <p>
+          Further work is expected to refine the already impressive gains
+          noted in this report.
+          The simulation skipped the first stage of WOFF2 compression
+          (table rearrangement), which should give improved results.
+          Codepoint prediction could be further refined
+          and the dependence on network type further investigated.
+          HTTP/2 POST requests bypasses Web caches;
+          a solution which works with existing Web caches should be investigated.
+          Pushing <strong>Patch Subset</strong> to give better than 90% bye reductions
+          on CJK fonts will improve the chance of significant uptake.
+        </p>
+
+        <p>
+          The impressive results from this simulation study clearly indicate
+          that standarization-track work to refine and develop Progressive Font Enrichment should be undertaken immediately.
+          This is expected to extend the localized success of Webfonts
+          to the Global Web.
+        </p>
+
         <!--
           minimal set, not too complex
           clearly lead to next steps
@@ -1970,9 +1990,6 @@ prior to standardization work.
         patch subset can be used to eliminate subsetting breakage,
         with a small 5% performance improvement in bytes transferred.
       -->
-        <p class="todo">todo</p>
-
-        </section>
 
     </section>
 
