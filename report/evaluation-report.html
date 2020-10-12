@@ -1758,11 +1758,6 @@ prior to standardization work.
         For an individual Web page, <span class="gain">the savings are also vast</span>, but <span class="loss">still might not be enough.</span>
       <p>
 
-      <p>
-        For the first time, <strong>Patch Subset</strong>
-        makes CJK Webfonts an expensive but realistic resource,
-        rather than being completely unusable.
-      </p>
 
       <figure>
         <figcaption>Savings in bytes transferred, CJK group of languages</figcaption>
@@ -1812,9 +1807,6 @@ prior to standardization work.
 
     <section>
       <h2 class="heading settled" data-level="2" id="codepredictresult"><span class="secno">5.4 </span><span class="content">Analysis: Effect of Codepoint Prediction</span><a class="self-link" href="#codepredictresult"></a></h2>
-<!--
-
--->
 
 <!-- Codepoint prediction, that is adding extra non-requested codepoints to a font augmentation response was tested with the progressive font enrichment simulations to see if it could improve performance and close the gaps where progressive font enrichment performed worse than existing transfer methods. -->
 
@@ -1848,6 +1840,95 @@ prior to standardization work.
 
     <section>
         <h2 class="heading settled" data-level="1" id="conclusions"><span class="secno">6. </span><span class="content">Conclusions</span><a class="self-link" href="#conclusions"></a></h2>
+
+        <p>
+          Two approaches to Progressive Font Enrichment were studied,
+          <strong>Patch Subset</strong> and <strong>Range Request</strong>.
+          Both gave <span class="gain">significant reductions
+            in the number of bytes transferred</span>,
+          compared to sending the whole font, or using the existing
+          <strong>Unicode Range</strong> method.
+        </p>
+
+        <p>
+          The limiting factor when displaying content with Webfonts,
+          especially on slower networks with longer round-trip times,
+          is latency. The effect is increased when many requests are made.
+          This was modelled as a <em>cost function</em>.
+        </p>
+
+        <p>
+          The alphabetic group of languages
+          (using Latin, Cyrillic, Greek and Thai scripts),
+          is currently well served by existing Web font delivery methods,
+          and is little affected by shaping failure from subsetting.
+          The cost function data indicated that
+          the <span class="gain"><strong>Patch Subset</strong> approach
+            would improve page load times, on 3G or faster networks</span>.
+          The <span class="loss"><strong>Range Request</strong> approach
+            would worsen page load times on Desktop and Mobile WiFi networks,
+            and significantly worsen page load times on 4G, 3G and 2G networks.</span>
+          Therefore, for 2G networks, loading <em>the entire font</em>
+          as a WOFF2 would be the best approach.
+        </p>
+
+        <p>
+          The shaping group of languages
+          (using Arabic and Indic scripts)
+          is significantly impacted by
+          <a href="#fail-subset">subsetting-induced failure of shaping</a>
+          and other rendering failures.
+          The cost function data indicated that
+          the <span class="gain"><strong>Patch Subset</strong> approach
+          would improve page load times, on 4G or faster networks,
+          while retaining the rendering fidelity of the whole font</span>.
+          Codepoint prediction <span class="gain">improves page load times
+            for the shaping group of languages</span>.
+          The <span class="loss"><strong>Range Request</strong> approach
+          would worsen page load times on Desktop networks,
+          and significantly worsen page load times on
+          Mobile WiFi, 4G, 3G and 2G networks</span>.
+          Therefore, for 3G and 2G networks,
+          loading <em>the entire font</em>
+          as a WOFF2 would be the best approach.
+          Codepoint prediction improves page load times
+          for the shaping group of languages.
+        </p>
+
+        <p>
+          The Chinese, Japanese and Korean (CJK) group of languages
+          is currently unable to use Webfonts
+          due to the very large filesizes.
+          A substantial reduction in filesize is needed,
+          without a significant increase in page loat times caused by multiple network requests.
+        </p>
+
+        <p>
+          For the first time, <span class="gain">on 4G and faster networks,
+            <strong>Patch Subset</strong>
+            makes CJK Webfonts a realistic resource</span>,
+          rather than being completely unusable.</p>
+
+         <p>
+          On 3G networks, <strong>Patch Subset</strong>
+          may still be usable for CJK Webfonts
+          (improving page load times in many but not all cases,
+          while worsening them in others).
+         </p>
+
+         <p>
+           If an active server extension cannot be used,
+           then for 4G and faster networks,
+           <span class="gain"><strong>Range Request</strong>
+           makes CJK Webfonts an expensive but usable resource.</span>
+         </p>
+
+         <p>
+          On 2G networks, the
+          <span class="gain">byte savings from <strong>Range Request</strong></span>
+          are outweighed by the <span class="loss">massive cost increases of all methods</span>.
+          Relying on pre-installed fonts for CJK content on 2G networks remains the only viable solution, alas.
+        </p>
 
         <!--
           minimal set, not too complex
