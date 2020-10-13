@@ -204,9 +204,9 @@ prior to standardization work.
     <p>
       A <em>character</em> is a Unicode <em>codepoint</em>,
       together with some <em>properties</em>.
-      For example, the Latin letter "a" has the hexadecimal Unicode codepoint 0061
+      For example, the Latin letter “a” has the hexadecimal Unicode codepoint 0061
       and has the properties of being alphabetic,
-      being lower-case ("A" is upper case),
+      being lower-case (“A” is upper case),
       not being a numeral, and not being punctuation.
     </p>
 
@@ -214,8 +214,12 @@ prior to standardization work.
       A <em>glyph</em> is a visual representation of
       (one or more) characters, used on screen or in print.
       There can be multiple glyph styles corresponding to a character.
-      For example, these are all glyphs for the Latin letter "a":
+      For example, these are all glyphs for the Latin letter “a”:
     </p>
+
+    <figure>
+      <figcaption>Different glyphs for the Latin character “a”.
+    </figure>
 
     <p>
       A <em>font</em> is a computer file which allows
@@ -235,13 +239,13 @@ prior to standardization work.
       depending on whether it is at the start, middle, or end of a word;
       and also depending on the characters preceeding and following it.
       For example, here are different glyphs for the
-      Arabic letter Noon (Unicode codepoint 0646),
+      Arabic letter “Noon” (Unicode codepoint 0646),
       considering only the glyphs used at the start of a word
       [<a href="#ref-ALReq">Arabic Language Requirements</a>]:
     </p>
 
     <figure>
-      <figcaption>Different glyphs (in red) for the letter Noon</figcaption>
+      <figcaption>Different glyphs (in red) for the letter “Noon”</figcaption>
       <img src="images/differentInitialNoon.jpg" alt="initial Noon glyph forms"/>
     </figure>
 
@@ -326,7 +330,7 @@ prior to standardization work.
         <p>
             Due to lack of interoperability,
             plus other technical drawbacks of the initial font formats used,
-            when in 2002 CSS 2.1 [<a href="#ref-CSS21-fpwd">CSS21 FPWD</a>] was developed as the "core, interoperable subset" of CSS2,
+            when in 2002 CSS 2.1 [<a href="#ref-CSS21-fpwd">CSS21 FPWD</a>] was developed as the “core, interoperable subset” of CSS2,
             <span class="code">@font-face</span>
              was dropped from the specification [<a href="#ref-CSS21">CSS21</a>].</p>
 
@@ -341,7 +345,7 @@ prior to standardization work.
 
         <p>
           The first attempts to use fonts on the web reflected the plethora of font formats in use on computers at the time. In 2002 the [<a href="#ref-css3-webfonts">CSS3 WebFonts</a>] specification
-          <a href="https://www.w3.org/TR/2002/WD-css3-webfonts-20020802/#referencing">noted an "initial" list</a>
+          <a href="https://www.w3.org/TR/2002/WD-css3-webfonts-20020802/#referencing">noted an “initial” list</a>
           of eight different font formats
           <q>representing formats likely to be used by implementations on various platforms </q>
         </p>
@@ -358,7 +362,7 @@ prior to standardization work.
         <p>
           (and this was without mentioning the many bitmapped formats still in common use at the time; or the SVG font format which came later).
         </p>
-        <p>Over time TrueType™,
+        <p>Over time TrueType™ [ <a href="#ref-TrueType">TrueType</a> ],
           and OpenType™ [<a href="#ref-OpenType">OpenType</a>],
           which uses TrueType™ outlines
           and can also include Type 1 outlines (as CFF)
@@ -421,7 +425,7 @@ prior to standardization work.
             (gzip, used in the PNG image format and also for HTTP compression),
             implementation burden was lessened.
             By offering bit-for-bit lossless compression,
-            concerns over "approximate" fonts
+            concerns over substandard “approximate” fonts
             (which had, for example, affected the PFR format)
             were also allayed.
         </p>
@@ -472,7 +476,7 @@ prior to standardization work.
 
         <p>
             CSS has a feature, unicode-range [<a href="#ref-unicode-range">UNICODE-RANGE</a>],
-            which states which characters a font *doesn't* have glyphs for.
+            which states which characters a font <em>doesn't</em> have glyphs for.
             This prevents a webfont being needlessly downloaded.
 
             Combined with static subsetting,
@@ -522,8 +526,8 @@ prior to standardization work.
             Font data is thus massive.
             While there is statistical variation in usage from character to character,
             it is not in general possible to statically subset fonts into
-            "always used" and "never used" subsets;
-            the size of the "sometimes used" group predominates.
+            “always used” and never used” subsets;
+            the size of the sometimes used” group predominates.
         </p>
         <!-- reference dictionary sizes
           https://en.wikipedia.org/wiki/Zhonghua_Zihai#Other_dictionaries
@@ -583,7 +587,7 @@ prior to standardization work.
        <section>
         <h3 class="heading settled" data-level="2" id="fail-subset"><span class="secno">2.8 </span><span class="content">Failure: Difficulty with subsetting</span><a class="self-link" href="#fail-subset"></a></h3>
 
-        <p>Static subsetting can run into difficulties when there are complex inter-relationships between different OpenType™tables, or when characgters are shared between multiple scripts but behave differently in each script.</p>
+        <p>Static subsetting can run into difficulties when there are complex inter-relationships between different OpenType™ tables, or when characters are shared between multiple scripts but behave differently in each script.</p>
 
         <p>
           To take a simple example, both Latin and Cyrillic scripts use the period (<b>.</b>) at the end of a sentence. Because Latin-only or Cyrillic-only content is common, splitting a font that covers both Latin and Cyrillic into two smaller static subsets makes sense. However, if content uses Cyrillic text and also uses the period  from the Latin subset, then kerning rules between the Cyrllic characters and the period no longer work, whereas they did in the original font which contained the complete kerning information.
@@ -658,11 +662,9 @@ prior to standardization work.
         </p>
         <p>
             While this approach has been deployed experimentally
-            by several font foundries (
-            Adobe TypeKit,
+            by several font foundries (Adobe TypeKit,
             Monotype,
-            Google Fonts
-            ),
+            Google Fonts),
             it is desirable for interoperability
             that a standardized solution for Progressive Font Enrichment (PFE) exists.
         </p>
@@ -1159,14 +1161,15 @@ prior to standardization work.
 
        <p>
         Due to the large number of sequences present in the simple alphabetic group,
-        one out of 1000 of the sequences in the data set was randomly selected
+        one out of every 1000 of the sequences in the data set was randomly selected
         for use in the analysis.
-        After sampling. this data set is composed of approximately 130,000 sequences.
+        After sampling, this data set is composed of approximately 130,000 sequences.
         English predominates, at 50%.
-        Using different sampling to increase the number of
-        non-English sequences was considered,
-        but it was decided to retain the observed language distribution of websites.
       </p>
+
+      <p class="note">Note: Using different sampling to increase the number of
+        non-English sequences was considered,
+        but it was decided to retain the observed language distribution of websites.</p>
 
        <figure>
         <figcaption>Breakdown of glyph-shaping languages</figcaption>
@@ -1243,9 +1246,10 @@ prior to standardization work.
           have extremely large character and glyph repertoires,
           of the order of tens of thousands of glyphs.
           On the other hand, besides vertical and horizontal glyph variants,
-          and "full-width" vs. "half-width" glyph variants for a few characters,
+          and “full-width” vs. “half-width” glyph variants for a few characters,
           the shaping requirements are low to none.
-          Thus, the font size is almost entirely determined by the glyph outline data,
+          Thus, the font size is
+          <em>almost entirely determined by the glyph outline data</em>,
           and subsetting is primarily
           a case of partitioning the glyph outline data
           into small groups
@@ -1877,6 +1881,9 @@ prior to standardization work.
           This was modelled as a <em>cost function</em>.
         </p>
 
+        <section>
+          <h3 class="heading settled" data-level="2" id="conclusions-alphabetic"><span class="secno">6.1 </span><span class="content">Conclusions, Alphabetic</span><a class="self-link" href="#conclusions-alphabetic"></a></h3>
+
         <p>
           The alphabetic group of languages
           (using Latin, Cyrillic, Greek and Thai scripts),
@@ -1891,6 +1898,11 @@ prior to standardization work.
           Therefore, for 2G networks, loading <em>the entire font</em>
           as a WOFF2 would be the best approach.
         </p>
+
+        </section>
+
+        <section>
+          <h3 class="heading settled" data-level="2" id="conclusions-shaping"><span class="secno">6.2 </span><span class="content">Conclusions, Shaping</span><a class="self-link" href="#conclusions-shaping"></a></h3>
 
         <p>
           The shaping group of languages
@@ -1912,6 +1924,11 @@ prior to standardization work.
           loading <em>the entire font</em>
           as a WOFF2 would be the best approach.
         </p>
+
+        </section>
+
+        <section>
+          <h3 class="heading settled" data-level="2" id="conclusions-cjk"><span class="secno">6.3 </span><span class="content">Conclusions, CJK</span><a class="self-link" href="#conclusions-cjk"></a></h3>
 
         <p>
           The Chinese, Japanese and Korean (CJK) group of languages
@@ -1947,6 +1964,11 @@ prior to standardization work.
           are outweighed by the <span class="loss">massive cost increases of all methods</span>.
           Relying on pre-installed fonts for CJK content on 2G networks remains the only viable solution, alas.
         </p>
+
+        </section>
+
+        <section>
+          <h3 class="heading settled" data-level="2" id="conclusions-next"><span class="secno">6.4 </span><span class="content">Conclusions, Further work</span><a class="self-link" href="#conclusions-next"></a></h3>
 
         <p>
           Further work is expected to refine the already impressive gains
