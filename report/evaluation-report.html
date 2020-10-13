@@ -1993,7 +1993,7 @@ prior to standardization work.
         <ul>
           <li>The simulation skipped the first stage of WOFF2 compression
             (table rearrangement), which should give improved results.</li>
-          <li>Codepoint prediction could be further refined
+          <li>Codepoint prediction could be further refined,
             and the dependence on network type further investigated.</li>
           <li>Additional sorting functions and fitness functions in the streaming font preprocessor could be investigated</li>
           <li>HTTP/2 POST requests bypasses Web caches;
@@ -2001,6 +2001,16 @@ prior to standardization work.
           <li>Pushing <strong>Patch Subset</strong> to give better than 90% bye reductions
             on CJK fonts will improve the chance of significant uptake.</li>
         </ul>
+
+        <p>
+          The simulation performed here is <em>entirely theoretical</em>.
+          Testing in actual browsers on real networks should be performed
+          using proof of concept implementations of
+          <strong>Range Request</strong> and <strong>Patch Subset</strong>.
+          This will give more accurate assessments
+          of the performance of these two transfer methods
+          and validate the results reported here.
+        </p>
 
         <p>
           The impressive results from this simulation study clearly indicate
