@@ -1,0 +1,8 @@
+Bytes remaining (as well as % bytes saved) for CJK
+
+can't multiply 2 medians together.
+
+missing "what is a glyph" diagram
+
+reference closure vs layout
+
