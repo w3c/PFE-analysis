@@ -3,20 +3,20 @@
   <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
   <title>Progressive Font Enrichment: Evaluation Report</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
-    <link href="#fixme" rel="canonical"/>
+    <link href="https://www.w3.org/TR/PFE-evaluation" rel="canonical"/>
     <link rel="stylesheet" href="css/main.css"/>
     <link rel="stylesheet"  href="https://www.w3.org/StyleSheets/TR/2016/W3C-WG-NOTE"/>
  <body class="h-entry">
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
-   <h1>Progressive Font Enrichment: <br>Evaluation Report</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">W3C Working Group Note, 14 September 2020</span></h2>
+   <h1 id="title">Progressive Font Enrichment: <br>Evaluation Report</h1>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">W3C Working Group Note, 15 October 2020</span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
-     <dt>This version:
-     <dd><a class="u-url" href="">https://www.w3.org/TR/<span class="todo">todo</span></a>
+     <!-- <dt>This version:
+     <dd><a class="u-url" href="https://www.w3.org/TR/2020/NOTE-PFE-evaluation-20201015/">https://www.w3.org/TR/2020/NOTE-PFE-evaluation-20201015/</a>
      <dt>Latest published version:
-     <dd><a href="https://www.w3.org/TR/">https://www.w3.org/TR/<span class="todo">todo</span></a>
+     <dd><a href="https://www.w3.org/TR/PFE-evaluation/">https://www.w3.org/TR/PFE-evaluation/</a> -->
      <dt>Editor's Draft:
      <dd><a href="https://w3c.github.io/PFE-analysis/report/evaluation-report.html">https://w3c.github.io/PFE-analysis/report/evaluation-report.html</a>
      <!-- <dt>Previous Versions:
@@ -24,7 +24,7 @@
      <dt>Issue Tracking:
      <dd><a href="https://github.com/w3c/PFE-analysis/issues">GitHub</a>
      <dt class="editor">Editor:
-     <dd class="editor p-author h-card vcard" data-editor-id="1438"><a class="p-name fn u-email email" href="mailto:chris@w3.org">Chris Lilley</a> (<a class="p-org org" href="https://w3.org">W3C</a>)
+     <dd class="editor p-author h-card vcard" data-editor-id="1438"><a class="p-name fn u-email email" href="mailto:chris@w3.org">Chris Lilley</a> (<a class="p-org org" href="https://www.w3.org/">W3C</a>)
     </dl>
    </div>
    <div data-fill-with="warning"></div>
@@ -122,8 +122,8 @@ prior to standardization work.
             </p>
 
 
-<p data-deliverer="44556">This document was produced by a group operating under the <a href="https://www.w3.org/Consortium/Patent-Policy/">W3C Patent Policy</a>.</p>
-   <p>This document is governed by the <a href="https://www.w3.org/2019/Process-20190301/" id="w3c_process_revision">1 March 2019 W3C Process Document</a>.</p>
+<p data-deliverer="44556">This document was produced by a group operating under the <a href="https://www.w3.org/Consortium/Patent-Policy-20170801/">W3C Patent Policy</a>.</p>
+   <p>This document is governed by the <a href="https://www.w3.org/2020/Process-20200915/" id="w3c_process_revision">15 September 2020 W3C Process Document</a>.</p>
 
 
 </section>
@@ -156,7 +156,7 @@ prior to standardization work.
 
      </ol>
      <li>
-      <a href="#design"><span class="secno">3</span> <span class="content">Initial trials</span></a>
+      <a href="#trials"><span class="secno">3</span> <span class="content">Initial trials</span></a>
     <li>
      <a href="#design"><span class="secno">4</span> <span class="content">Study design</span></a>
      <ol class="toc">
@@ -164,7 +164,7 @@ prior to standardization work.
       <li><a href="#servtype"><span class="secno">4.2</span> <span class="content"> Server type: intelligent vs. simple</span></a>
         <ol class="toc">
           <li><a href="#patch-subset"><span class="secno">4.2.1</span> <span class="content"> Patch Subset</span></a>
-            <li><a href="#glyph-byterange"><span class="secno">4.2.2</span> <span class="content"> Range Request</span></a>
+            <li><a href="#range-request"><span class="secno">4.2.2</span> <span class="content"> Range Request</span></a>
         </ol>
       <li><a href="#cost"><span class="secno">4.3</span> <span class="content"> Cost function</span></a>
       <li><a href="#network"><span class="secno">4.4</span> <span class="content"> Network type - slow 2G to fast broadband</span></a>
@@ -194,7 +194,7 @@ prior to standardization work.
         <li><a href="#conclusions-shaping"><span class="secno">6.2</span> <span class="content"> Conclusions: Shaping</span></a>
         <li><a href="#conclusions-cjk"><span class="secno">6.3</span> <span class="content"> Conclusions: CJK</span></a>
         <li><a href="#conclusions-next"><span class="secno">6.4</span> <span class="content"> Conclusions: Further work</span></a>
-
+      </ol>
     <li>
      <a href="#references"><span class="secno">A</span> <span class="content"> References</span></a>
 
@@ -297,6 +297,7 @@ prior to standardization work.
         or <strong>complex subsetting requirements</strong>
         currently preclude their use.
       </p>
+   </section>
    </section>
 
    <section>
@@ -494,7 +495,7 @@ prior to standardization work.
             can be split into three subsets;
             typically only one will be downloaded.
             Google Fonts uses this approach extensively
-            [<a href="#ref-Google-scrpt-subsets">Google script subsets</a>],
+            [<a href="#ref-Google-script-subsets">Google script subsets</a>],
             and it works well for languages which use only a small number of glyphs.
         </p>
 
@@ -559,7 +560,7 @@ prior to standardization work.
         <figure>
             <figcaption>Usage of webfonts for CJK languages is close to zero</figcaption>
             <img src="images/httparchive-china-zero.png" alt="china zero webfonts"
-            style="filter: hue-rotate(220deg); width:80em; max-width:100%"">
+             style="filter: hue-rotate(220deg); width:80em; max-width:100%">
         </figure>
 
         <p>
@@ -638,10 +639,6 @@ prior to standardization work.
           the text doesn't just look <em>less beautiful</em>, it becomes <strong>unreadable</strong>.
         </p>
 
-        <!-- <p class="todo">add illustration of correct and incorrect rendering</p> -->
-
-        <!-- <p class="note">No mention in <a href="https://www.w3.org/TR/international-specs/">Internationalization Best Practices for Spec Developers</a>. Related <a href="https://lists.w3.org/Archives/Public/public-i18n-core/2018AprJun/0042.html">I18N-ACTION-721: Look into font subsetting for charmod-norm</a> but no mention in <a href="https://www.w3.org/TR/charmod-norm/">Character Model for the World Wide Web: String Matching</a>.</p> -->
-
        </section>
 
        <section>
@@ -684,11 +681,11 @@ prior to standardization work.
             and to run simulation experiments on the proposed solution space
             before undertaking standards-track work.
         </p>
-
+       </section>
    </section>
 
    <section>
-    <h2 class="heading settled" data-level="1" id="design"><span class="secno">3. </span><span class="content">Initial trials</span><a class="self-link" href="#trials"></a></h2>
+    <h2 class="heading settled" data-level="1" id="trials"><span class="secno">3. </span><span class="content">Initial trials</span><a class="self-link" href="#trials"></a></h2>
 
     <p>
       Adobe has already deployed a proprietary form of progressive font enrichment.
@@ -827,7 +824,7 @@ prior to standardization work.
     </section>
 
     <section>
-      <h4 class="heading settled" data-level="3" id="glyph-byterange"><span class="secno">4.2.2 </span><span class="content">Range Request</span><a class="self-link" href="#glyph-byterange"></a></h4>
+      <h4 class="heading settled" data-level="3" id="range-request"><span class="secno">4.2.2 </span><span class="content">Range Request</span><a class="self-link" href="#range-request"></a></h4>
 
       <p>
         In the second approach, <strong>Range Request</strong>,
@@ -907,6 +904,7 @@ prior to standardization work.
         Also, compared to WOFF2 which compresses redundant or duplicate data,
         there is no compression of redundant data between requests in this model.
       </p>
+    </section>
     </section>
   </section>
 
@@ -1231,7 +1229,7 @@ prior to standardization work.
 
         <p>
           The TrueType or OpenType fonts used for alphabetic languages had a median size of 17,660 bytes,
-          with a spread from 15,784 bytes (5th percentile) to 184,152 bytes (95th percentile). The median size once WOFF2 compressed was 8,360 bytes. [<a href="ref-PFE-font-sizes">PFE Font Sizes</a>]
+          with a spread from 15,784 bytes (5th percentile) to 184,152 bytes (95th percentile). The median size once WOFF2 compressed was 8,360 bytes. [<a href="#ref-PFE-font-sizes">PFE Font Sizes</a>]
         </p>
 
 
@@ -1251,7 +1249,7 @@ prior to standardization work.
 
         <p>
           The TrueType or OpenType fonts used for glyph shaping languages had a median size of 93,588 bytes,
-          with a spread from 15,784 bytes (5th percentile) to 459,600 bytes (95th percentile). The median size once WOFF2 compressed was 30,332 bytes. [<a href="ref-PFE-font-sizes">PFE Font Sizes</a>]
+          with a spread from 15,784 bytes (5th percentile) to 459,600 bytes (95th percentile). The median size once WOFF2 compressed was 30,332 bytes. [<a href="#ref-PFE-font-sizes">PFE Font Sizes</a>]
         </p>
 
         <p>
@@ -1272,7 +1270,7 @@ prior to standardization work.
 
         <p>
           The TrueType or OpenType fonts used for CJK languages had a median size of 1,834,496 bytes,
-          with a spread from 16,832 bytes (5th percentile) to 5,524,2080 bytes (95th percentile). The median size once WOFF2 compressed was 768,492 bytes. [<a href="ref-PFE-font-sizes">PFE Font Sizes</a>]
+          with a spread from 16,832 bytes (5th percentile) to 5,524,2080 bytes (95th percentile). The median size once WOFF2 compressed was 768,492 bytes. [<a href="#ref-PFE-font-sizes">PFE Font Sizes</a>]
         </p>
 
 
@@ -1338,7 +1336,7 @@ prior to standardization work.
           (using the same script subsets
           as are used for unicode-range subsetting
           by Google Fonts
-          [<a href="#ref-Google-scrpt-subsets">Google script subsets</a>]).
+          [<a href="#ref-Google-script-subsets">Google script subsets</a>]).
         </p>
 
         <p>
@@ -1482,9 +1480,11 @@ prior to standardization work.
       <dd>
         The fonts are split into multiple subsets,
         and woff2 compressed. Each subset is downloaded only if needed for a given page. The subset definitions used are those currently in use by the Google Fonts service
-        [<a href="#ref-Google-scrpt-subsets">Google script subsets</a>].
+        [<a href="#ref-Google-script-subsets">Google script subsets</a>].
         Unicode range is the current state of the art in partially transferring
-        fonts and is in widespread use today. It can result in incorrect rendering, as <a href="#fail-subset">noted earlier</a>.
+        fonts and is in widespread use today.
+        Segmentation is by glyph closure [<a href="#ref-cl-vs-la">Closure</a>].
+        This subsetting can result in incorrect rendering, as <a href="#fail-subset">noted earlier</a>.
       </dd>
       <dt>Patch Subset</dt>
       <dd>
@@ -1524,7 +1524,7 @@ prior to standardization work.
       For those who wish to graph the results differently,
       the numerical raw data <a href="https://docs.google.com/document/d/1wldVimEjofr1-IT5YfyZ_IN8VgYYii3xN0T1jFxfAIk/edit#heading=h.kgbhpvsdylo0">is
       available</a> [<a href="#ref-PFE-Results-07Aug2020">PFE Results 07 Aug 2020</a>]
-      and CSV files of these results are <a href="../results/07-08-2020/">attached to this report</a> and <a href="https://github.com/w3c/PFE-analysis/tree/master/results/07-08-2020">on GitHub</a>.
+      and CSV files of these results are <a href="07-08-2020/">attached to this report</a> and <a href="https://github.com/w3c/PFE-analysis/tree/master/results/07-08-2020">on GitHub</a>.
     </p>
 
     <section>
@@ -1730,7 +1730,7 @@ prior to standardization work.
       <h2 class="heading settled" data-level="2" id="analysis-cjk"><span class="secno">5.3 </span><span class="content">Analysis: CJK</span><a class="self-link" href="#analysis-cjk"></a></h2>
 
       <section>
-        <h3 class="heading settled" data-level="3" id="analysis-shaping-bytes"><span class="secno">5.3.1 </span><span class="content">Bytes Transferred</span><a class="self-link" href="#analysis-shaping-bytes"></a></h3>
+        <h3 class="heading settled" data-level="3" id="analysis-cjk-bytes"><span class="secno">5.3.1 </span><span class="content">Bytes Transferred</span><a class="self-link" href="#analysis-cjk-bytes"></a></h3>
 
 
       <p>
@@ -1806,7 +1806,7 @@ prior to standardization work.
       </section>
 
       <section>
-        <h3 class="heading settled" data-level="3" id="analysis-shaping-cost"><span class="secno">5.3.2 </span><span class="content">Cost</span><a class="self-link" href="#analysis-shaping-cost"></a></h3>
+        <h3 class="heading settled" data-level="3" id="analysis-cjk-cost"><span class="secno">5.3.2 </span><span class="content">Cost</span><a class="self-link" href="#analysis-cjk-cost"></a></h3>
 
         <!--
           needs better cost reduction graph for patch subset (only)
@@ -1875,6 +1875,7 @@ prior to standardization work.
     based on the script and client network capabilities.
   </p>
 
+    </section>
     </section>
 
     <section>
@@ -2063,7 +2064,7 @@ prior to standardization work.
 
     </section>
 
-
+    </section>
 
 
 
@@ -2140,13 +2141,13 @@ https://discuss.httparchive.org/t/how-does-web-font-usage-vary-by-country/1649
 
       </dd>
 
-        <dt id="cl-vs-la">CLOSURE</dt>
+        <dt id="cl-vs-la">Closure</dt>
         <dd><cite><a href="https://docs.google.com/presentation/d/1qczAiExsuxhtm-0WSlZ0eSiHVOuuq1agTKZTU-26n5k/edit?usp=sharing">Closure vs Layout
             </a>,
           Roderick Sheeter (author)</cite>
       </dd>
 
-      <dt id="ref-Codepoint-Prediction">Codepoint Prediction Results</dt>
+      <dt id="ref-codepoint-prediction">Codepoint Prediction Results</dt>
   <dd><cite><a href="https://docs.google.com/document/d/1u-05ztF9MqftHbMKB_KiqeUhZKiXNFE4TRSUWFAPXsk/edit">Progressive Font Enrichment: Codepoint Prediction Results
     </a>,
     Garret Rieger (author).
@@ -2232,6 +2233,15 @@ https://discuss.httparchive.org/t/how-does-web-font-usage-vary-by-country/1649
     URL: <a href="https://github.com/google/fonts">https://github.com/google/fonts</a>
     </dd>
 
+    <dt id="ref-Google-script-subsets">Google script subsets</dt>
+    <dd><cite><a href="https://www.unicodeconference.org/presentations-42/S5T3-Sheeter.pdf">Making the Korean and Japanese web beautiful &amp; fast</a>,
+      Roderick Sheeter (author).
+    </cite>
+    42nd Unicode Conference. <br/>
+    URL: <a href="https://www.unicodeconference.org/presentations-42/S5T3-Sheeter.pdf">https://www.unicodeconference.org/presentations-42/S5T3-Sheeter.pdf</a>
+
+  </dd>
+
       <dt id="ref-Indic-Intro">Indic-Intro</dt>
       <dd><cite><a href="">An Introduction to Indic Scripts</a>,
         Richard Ishida
@@ -2277,11 +2287,11 @@ https://discuss.httparchive.org/t/how-does-web-font-usage-vary-by-country/1649
   </dd>
 
   <dt id="ref-PFE-Results-07Aug2020">PFE Results 07 Aug 2020</dt>
-  <dd><cite><a href="https://docs.google.com/document/d/1wldVimEjofr1-IT5YfyZ_IN8VgYYii3xN0T1jFxfAIk/edit#heading=h.jczymrmidmhq">Progressive Font Enrichment, Simulation Results (August 7th, 2020 Data Set)</a>,
+  <dd><cite><a href="https://docs.google.com/document/d/1wldVimEjofr1-IT5YfyZ_IN8VgYYii3xN0T1jFxfAIk/edit">Progressive Font Enrichment, Simulation Results (August 7th, 2020 Data Set)</a>,
     Garret Rieger (author).
   </cite>
   17 Sep 2020. <br>
-  URL: <a href="https://docs.google.com/document/d/1wldVimEjofr1-IT5YfyZ_IN8VgYYii3xN0T1jFxfAIk/edit#heading=h.btkxzdhc7lyb">https://docs.google.com/document/d/1wldVimEjofr1-IT5YfyZ_IN8VgYYii3xN0T1jFxfAIk/edit#heading=h.btkxzdhc7lyb</a>
+  URL: <a href="https://docs.google.com/document/d/1wldVimEjofr1-IT5YfyZ_IN8VgYYii3xN0T1jFxfAIk/edit">https://docs.google.com/document/d/1wldVimEjofr1-IT5YfyZ_IN8VgYYii3xN0T1jFxfAIk/edit</a>
 </dd>
 
   <dt id="ref-PFErepo">PFE-analysis repo</dt>
@@ -2289,17 +2299,17 @@ https://discuss.httparchive.org/t/how-does-web-font-usage-vary-by-country/1649
   </dd>
 
   <dt id="ref-PFE-font-sizes">PFE Font Sizes</dt>
-  <dd><cite><a href="https://docs.google.com/spreadsheets/d/1KJvxQxeBtGNYmcSPFT4CAFEQU2hDBN2XwFIyqf8_ISY/edit#gid=0">Sizes of fonts used in the PFE simulation</a>,
+  <dd><cite><a href="https://docs.google.com/spreadsheets/d/1KJvxQxeBtGNYmcSPFT4CAFEQU2hDBN2XwFIyqf8_ISY/edit">Sizes of fonts used in the PFE simulation</a>,
     Garret Rieger (author)
   </cite>
-  URL: <a href="https://docs.google.com/spreadsheets/d/1KJvxQxeBtGNYmcSPFT4CAFEQU2hDBN2XwFIyqf8_ISY/edit#gid=0">https://docs.google.com/spreadsheets/d/1KJvxQxeBtGNYmcSPFT4CAFEQU2hDBN2XwFIyqf8_ISY/edit#gid=0</a>
+  URL: <a href="https://docs.google.com/spreadsheets/d/1KJvxQxeBtGNYmcSPFT4CAFEQU2hDBN2XwFIyqf8_ISY/edit">https://docs.google.com/spreadsheets/d/1KJvxQxeBtGNYmcSPFT4CAFEQU2hDBN2XwFIyqf8_ISY/edit</a>
 </dd>
 
   <dt id="ref-Sheeter-BigQuery">Sheeter BigQuery</dt>
-  <dd><cite>Analysis of <a href="https://github.com/HTTPArchive/almanac.httparchive.org/issues/902#issuecomment-662689190">HTTP Archive Web Almanac results</a>,
+  <dd><cite>Analysis of <a href="https://github.com/HTTPArchive/almanac.httparchive.org/issues/902">HTTP Archive Web Almanac results</a>,
     Roderick Sheeter
   </cite>
-  URL: <a href="https://docs.google.com/spreadsheets/d/1N5oaO5Sgod70VSplx521E7lkiPww97cOxd7iBD7GLkc/edit#gid=464027685">https://docs.google.com/spreadsheets/d/1N5oaO5Sgod70VSplx521E7lkiPww97cOxd7iBD7GLkc/edit#gid=464027685</a>
+  URL: <a href="https://docs.google.com/spreadsheets/d/1N5oaO5Sgod70VSplx521E7lkiPww97cOxd7iBD7GLkc/edit">https://docs.google.com/spreadsheets/d/1N5oaO5Sgod70VSplx521E7lkiPww97cOxd7iBD7GLkc/edit</a>
   </dd>
 
     <dt id="ref-Streamable-Fonts">Streamable Fonts</dt>
@@ -2365,7 +2375,7 @@ https://discuss.httparchive.org/t/how-does-web-font-usage-vary-by-country/1649
         URL: <a href="https://www.w3.org/TR/WOFF20ER/">https://www.w3.org/TR/WOFF20ER/</a>
     </dd>
 
-        <dt id="ref-UNICODE-RANGE">UNICODE-RANGE</dt>
+        <dt id="ref-unicode-range">Unicode Range</dt>
         <dd><cite><a href="https://www.w3.org/TR/css-fonts-4/#unicode-range-desc">Character
             range: the unicode-range descriptor</a></cite>. In
         <cite><a href="https://www.w3.org/TR/css-fonts-4/">CSS
@@ -2380,6 +2390,8 @@ https://discuss.httparchive.org/t/how-does-web-font-usage-vary-by-country/1649
 
     </dl>
    </section>
+
+   <p role="navigation" id="back-to-top"><a href="#title"><abbr title="Back to top">↑</abbr></a></p>
 
   <script>
     (function() {
