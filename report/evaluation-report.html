@@ -839,10 +839,12 @@ prior to standardization work.
       </p>
 
       <p>
-        In addition, the font must be pre-processed:</p>
+        In addition, the font must be pre-processed to move glyph outlines to the end of the file, and to ensure that the outlines are independent
+        [<a href="#ref-font-optimizer">Font Optimizer</a>].
+        Thus:</p>
 
-        <ul>
-          <li>Composite glyphs are flattened into the resulting outlines
+      <ul>
+        <li>Composite glyphs are flattened into the resulting outlines
         </li>
         <li>The <span class="sfnt">CFF</span> table, if present, is desubroutinized,
         charstrings (glyph outlines) moved to the end of the table
@@ -852,6 +854,18 @@ prior to standardization work.
           and thus, any glyphs there are always downloaded)
         </li>
       </ul>
+
+      <p>
+        Optionally, the preprocessor can sort the font file,
+        to keep glyphs that are commonly used close together.
+        This allows groups of glyph outlines to be served
+        with a single HTTP range request.
+        The font will still work with the <strong>Range Request</strong>
+        if this is not done, but performance will be less.
+        In this study, glyph sorting was done
+        using a simulated annealing algorithm
+        [<a href="#ref-font-optimizer">Font Optimizer</a>].
+      </p>
 
       <p>
         This preprocessing need only happen once,
@@ -1930,21 +1944,25 @@ prior to standardization work.
 
         <p>
           Further work is expected to refine the already impressive gains
-          noted in this report.
-          The simulation skipped the first stage of WOFF2 compression
-          (table rearrangement), which should give improved results.
-          Codepoint prediction could be further refined
-          and the dependence on network type further investigated.
-          HTTP/2 POST requests bypasses Web caches;
-          a solution which works with existing Web caches should be investigated.
-          Pushing <strong>Patch Subset</strong> to give better than 90% bye reductions
-          on CJK fonts will improve the chance of significant uptake.
-        </p>
+          noted in this report:</p>
+
+        <ul>
+          <li>The simulation skipped the first stage of WOFF2 compression
+            (table rearrangement), which should give improved results.</li>
+          <li>Codepoint prediction could be further refined
+            and the dependence on network type further investigated.</li>
+          <li>Additional sorting functions and fitness functions in the streaming font preprocessor could be investigated</li>
+          <li>HTTP/2 POST requests bypasses Web caches;
+            a solution which works with existing Web caches should be investigated.</li>
+          <li>Pushing <strong>Patch Subset</strong> to give better than 90% bye reductions
+            on CJK fonts will improve the chance of significant uptake.</li>
+        </ul>
 
         <p>
           The impressive results from this simulation study clearly indicate
           that standarization-track work to refine and develop Progressive Font Enrichment should be undertaken immediately.
-          This is expected to extend the localized success of Webfonts
+          This is expected to extend
+          the geographically localized success of Webfonts
           to the Global Web.
         </p>
 
@@ -2145,6 +2163,14 @@ https://discuss.httparchive.org/t/how-does-web-font-usage-vary-by-country/1649
       </cite>
       W3C Recommendation 20 September 2018<br>
       URL: <a href="https://www.w3.org/TR/css-fonts-3/">https://www.w3.org/TR/css-fonts-3/</a>
+    </dd>
+
+    <dt id="ref-font-optimizer">Font Optimizer</dt>
+    <dd><cite><a href="https://lists.w3.org/Archives/Public/public-webfonts-wg/2020Oct/0028.html">What the font optimizer does</a>,
+    Myles Maxfield.
+    </cite>
+    12 Oct 2020<br/>
+    URL: <a href="https://lists.w3.org/Archives/Public/public-webfonts-wg/2020Oct/0028.html">https://lists.w3.org/Archives/Public/public-webfonts-wg/2020Oct/0028.html</a>
     </dd>
 
       <dt id="ref-Indic-Intro">Indic-Intro</dt>
