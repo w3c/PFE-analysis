@@ -1,6 +1,9 @@
 Bytes remaining (as well as % bytes saved) for CJK
 
-can't multiply 2 medians together.
+DONE
+    File sizes graph
+
+Estimated bytes transferred graphs.
 
 missing "what is a glyph" diagram
 
