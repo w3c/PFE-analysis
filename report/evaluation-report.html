@@ -1565,8 +1565,27 @@ prior to standardization work.
       </p>
 
       <figure>
-        <figcaption>Savings in bytes transferred, alphabetic group of languages</figcaption>
+        <figcaption>Savings in bytes transferred, alphabetic group of languages.
+          Short bars with the median towards the right (greater percentage saving),
+          and no red, are better.
+        </figcaption>
         <img src="../results/07-08-2020/comparison.latin.sampled_1000.bytes.png" alt="" style="width:80em; max-width:100%"/>
+      </figure>
+
+      <p>
+        Applying these percentage byte savings
+        to the worst case (95th percentile) font size for alphabetic fonts
+        (184kb at TrueType or OpenType, 60kb as WOFF2), here are the total bytes transferred over a
+        <em>series of page views</em>
+        (not the amount transferred for a single page, which is smaller)
+        for each network class.
+        The 95th percentile is similar to the size of the complete WOFF2 font,
+        while the median is half that size.
+      </p>
+
+      <figure>
+        <figcaption>Total bytes transferred for worst-case font, alphabetic group of languages. Short bars with the median towards the left (smaller size) are better.</figcaption>
+        <img src="../results/07-08-2020/comparison.latin.sampled_1000.absolute_bytes.png" alt="" style="width:80em; max-width:100%"/>
       </figure>
 
       </section>
@@ -1614,7 +1633,10 @@ prior to standardization work.
       </p>
 
       <figure>
-        <figcaption>Savings (or losses) in cost function, alphabetic group of languages</figcaption>
+        <figcaption>Savings (or losses) in cost function, alphabetic group of languages.
+          Short bars with the median towards the right (greater percentage saving),
+          and no red, are better.
+        </figcaption>
         <img src="../results/07-08-2020/comparison.latin.sampled_1000.cost.png" alt="" style="width:80em; max-width:100%"/> <br/>
         <img src="../results/07-08-2020/comparison.latin.sampled_1000.2G.cost.png" alt="" style="width:80em; max-width:100%"/>
       </figure>
@@ -1664,6 +1686,33 @@ prior to standardization work.
       <figure>
         <figcaption>Savings in bytes transferred, shaping group of languages</figcaption>
         <img src="../results/07-08-2020/comparison.arabic_indic.sampled_500.bytes.png" alt="" style="width:80em; max-width:100%"/>
+      </figure>
+
+      <p>
+        Applying these percentage byte savings
+        to the worst case (95th percentile) font size for shaping fonts
+        (460kb as TrueType or OpenType, 119kb as WOFF2), here are the total bytes transferred over a
+        <em>series of page views</em>
+        (not the amount transferred for a single page, which is smaller)
+        for each network class.
+        <strong>Unicode Range</strong> and <strong>Range Request</strong>
+        have worst-case results that transfer more than the whole font as WOFF2.
+        Except on 2G networks, <strong>Patch Subset</strong> has worst-case results
+        around 60% the size of the whole font as WOFF2,
+        and the median number of bytes transferred
+        is around 42% of whle font, except on the 2G networks
+        where it is a little worse.
+      </p>
+
+      <p>
+        Taking into account the freedom from shaping breakage,
+        <strong>Patch Subset</strong> provides consistently better perforance
+        and also higher typographic rendering quality.
+      </p>
+
+      <figure>
+        <figcaption>Total bytes transferred for worst-case font, shaping group of languages. Short bars with the median towards the left (smaller size) are better.</figcaption>
+        <img src="../results/07-08-2020/comparison.arabic_indic.sampled_500.absolute_bytes.png" alt="" style="width:80em; max-width:100%"/>
       </figure>
 
       </section>
@@ -1759,9 +1808,6 @@ prior to standardization work.
         on all networks.
       </p>
 
-      <!--
-        wait these should be calculated relative to whle font WOFF2, right?
-      -->
       <p>
         To put these byte savings in context,
         the median size of font
@@ -1799,8 +1845,33 @@ prior to standardization work.
 
 
       <figure>
-        <figcaption>Savings in bytes transferred, CJK group of languages</figcaption>
+        <figcaption>Savings in bytes transferred, CJK group of languages.
+          Short bars with the median towards the right (greater percentage saving),
+          and no red, are better.
+        </figcaption>
         <img src="../results/07-08-2020/comparison.cjk.sampled_5000.bytes.png" alt="" style="width:80em; max-width:100%"/>
+      </figure>
+
+      <p>
+        Applying these percentage byte savings
+        to the worst case (95th percentile) font size for CJK fonts
+        (5.52Mb as TrueType or OpenType, 2.75Mb as WOFF2), here are the total bytes transferred over a
+        <em>series of page views</em>
+        (not the amount transferred for a single page, which is smaller)
+        for each network class.
+        <strong>Unicode Range</strong> transfers a median of 50% of the bytes for whole font as WOFF2,
+        but is clearly outperformed
+        by the two PFE methods.
+        Of those, <strong>Patch Subset</strong> gives the strongest performance
+        on all network types.
+        On all but 2G, the median bytes transferred are 20% of whole font as WOFF2;
+        for 2G, <strong>Range Request</strong>
+        does better than <strong>Patch Subset</strong>.
+      </p>
+
+      <figure>
+        <figcaption>Total bytes transferred for worst-case font, CJK group of languages. Short bars with the median towards the left (smaller size) are better.</figcaption>
+        <img src="../results/07-08-2020/comparison.cjk.sampled_5000.absolute_bytes.png" alt="" style="width:80em; max-width:100%"/>
       </figure>
 
       </section>
@@ -2021,6 +2092,9 @@ prior to standardization work.
             a solution which works with existing Web caches should be investigated.</li>
           <li>Pushing <strong>Patch Subset</strong> to give better than 90% bye reductions
             on CJK fonts will improve the chance of significant uptake.</li>
+          <li>Requesting a PFE-enabled font would likely require changes to CSS,
+            perhaps a new format string on the src descriptor.
+          </li>
         </ul>
 
         <p>
@@ -2033,7 +2107,7 @@ prior to standardization work.
           and validate the results reported here.
         </p>
 
-        <p>
+        <p class="advisement" id="call-to-action">
           The impressive results from this simulation study clearly indicate
           that standarization-track work to refine and develop Progressive Font Enrichment should be undertaken immediately.
           This is expected to extend

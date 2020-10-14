@@ -1,11 +1,11 @@
-Bytes remaining (as well as % bytes saved) for CJK
-
 DONE
     File sizes graph
 
-Estimated bytes transferred graphs.
+DONE
+    Estimated bytes transferred graphs.
 
-Percentage of CDN-hosted fonts
+DONE
+    Percentage of CDN-hosted fonts
 
 DONE
     Google fonts corpus
@@ -23,6 +23,9 @@ DONE
 DONE
     describe what the font optimizer does, which parts are mandatory and which optional
     https://lists.w3.org/Archives/Public/public-webfonts-wg/2020Oct/0028.html
+
+DONE
+    CSS changes in future work
 
 DONE
     Pubrules check
