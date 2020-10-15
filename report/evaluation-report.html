@@ -13,10 +13,10 @@
    <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">W3C Working Group Note, 15 October 2020</span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
-     <!-- <dt>This version:
+     <dt>This version:
      <dd><a class="u-url" href="https://www.w3.org/TR/2020/NOTE-PFE-evaluation-20201015/">https://www.w3.org/TR/2020/NOTE-PFE-evaluation-20201015/</a>
      <dt>Latest published version:
-     <dd><a href="https://www.w3.org/TR/PFE-evaluation/">https://www.w3.org/TR/PFE-evaluation/</a> -->
+     <dd><a href="https://www.w3.org/TR/PFE-evaluation/">https://www.w3.org/TR/PFE-evaluation/</a>
      <dt>Editor's Draft:
      <dd><a href="https://w3c.github.io/PFE-analysis/report/evaluation-report.html">https://w3c.github.io/PFE-analysis/report/evaluation-report.html</a>
      <!-- <dt>Previous Versions:
@@ -97,19 +97,19 @@
         </p>
 
         <p>
-            This is an (a draft) Evaluation Report
-as <a href="https://www.w3.org/Fonts/WG/webfonts-2018.html#ig-other-deliverables">required
-    by the charter</a> of the
-WebFonts Working Group.
-It has not yet been reviewed or approved by that group.
-It will eventually be presented to the public
-as a report on the investigative activities undertaken
-during 2019 and 2020,
-prior to standardization work.
+            This is an  Evaluation Report
+            as <a href="https://www.w3.org/Fonts/WG/webfonts-2018.html#ig-other-deliverables">required
+                by the charter</a> of the
+            WebFonts Working Group.
+            It has been approved by that group.
+            It is presented to the public
+            as a report on the investigative activities undertaken
+            during 2019 and 2020,
+            prior to standardization work.
         </p>
 
           <p>
-            This document was <em>(will be)</em> published by the <a href="https://www.w3.org/Fonts/WG/">WebFonts Working Group</a> as a Working Group Note.<br>
+            This document was published by the <a href="https://www.w3.org/Fonts/WG/">WebFonts Working Group</a> as a Working Group Note.<br>
 
               Please raise issues on this document on <a href="https://github.com/w3c/PFE-analysis/issues">GitHub</a>. All comments are welcome.
           </p>
@@ -122,7 +122,7 @@ prior to standardization work.
             </p>
 
 
-<p data-deliverer="44556">This document was produced by a group operating under the <a href="https://www.w3.org/Consortium/Patent-Policy-20170801/">W3C Patent Policy</a>.</p>
+<p data-deliverer="44556">This document was produced by a group operating under the <a href="https://www.w3.org/Consortium/Patent-Policy-20170801/">1 August 2017 W3C Patent Policy</a>.</p>
    <p>This document is governed by the <a href="https://www.w3.org/2020/Process-20200915/" id="w3c_process_revision">15 September 2020 W3C Process Document</a>.</p>
 
 
@@ -646,7 +646,7 @@ prior to standardization work.
 
         <p>
             Instead of downloading a static subset
-            (or, where static subsetting cannt work, downloading an entire font),
+            (or, where static subsetting canont work, downloading an entire font),
             this proposed solution uses a continuous process of dynamic subsetting.
             A small subsetted font is downloaded,
             which can display the content currently being browsed.
@@ -662,7 +662,7 @@ prior to standardization work.
         <p>
           This helps with single-language fonts for languages such as Chinese,
           and simplifies robust deployment of pan-Unicode fonts.
-          It avoids kerning and shaping breakage for comlex scripts.
+          It avoids kerning and shaping breakage for complex scripts.
         </p>
         <p>
             While this approach has been deployed experimentally
@@ -807,7 +807,7 @@ prior to standardization work.
       are both features of the standard Brotli library).
       The patches make use of the Brotli compression dictionary
       created to serve the initial font,
-      and thus the cost of an duplicated data is greatly reduced.
+      and thus the cost of any duplicated data is greatly reduced.
       This approach tends more closely towards
       the theoretical peak efficiency
       in terms of bytes transfered
@@ -944,7 +944,7 @@ prior to standardization work.
 
     <figure>
       <figcaption>The overall shape of the cost function is sigmoid</figcaption>
-      <img src="../results/07-08-2020/cost.png" alt="graph of cost equation" style="width:80em; max-width:100%"/>
+      <img src="../results/07-08-2020cost.png" alt="graph of cost equation" style="width:80em; max-width:100%"/>
     </figure>
 
    </section>
@@ -1161,7 +1161,7 @@ prior to standardization work.
 
        <figure>
          <figcaption>Breakdown of simple alphabetic languages</figcaption>
-         <img src="../results/07-08-2020/latin.lang_breakdown.png" alt="" style="width:80em; max-width:100%">
+         <img src="../results/07-08-2020latin.lang_breakdown.png" alt="" style="width:80em; max-width:100%">
        </figure>
 
        <p>
@@ -1178,7 +1178,7 @@ prior to standardization work.
 
        <figure>
         <figcaption>Breakdown of glyph-shaping languages</figcaption>
-        <img src="../results/07-08-2020/arabic_indic.lang_breakdown.png" alt="" style="width:80em; max-width:100%">
+        <img src="../results/07-08-2020arabic_indic.lang_breakdown.png" alt="" style="width:80em; max-width:100%">
       </figure>
 
       <p>
@@ -1189,7 +1189,7 @@ prior to standardization work.
 
       <figure>
         <figcaption>Breakdown of CJK languages</figcaption>
-        <img src="../results/07-08-2020/cjk.lang_breakdown.png" alt="" style="width:80em; max-width:100%">
+        <img src="../results/07-08-2020cjk.lang_breakdown.png" alt="" style="width:80em; max-width:100%">
       </figure>
 
       <p>
@@ -1276,7 +1276,7 @@ prior to standardization work.
 
         <figure>
           <figcaption>Distribution of font file sizes for fonts in the three linguistic categories.</figcaption>
-          <img src="../results/07-08-2020/file_sizes.png" alt="" style="width:80em; max-width:100%">
+          <img src="../results/07-08-2020file_sizes.png" alt="" style="width:80em; max-width:100%">
         </figure>
 
         <p class="note">
@@ -1569,7 +1569,7 @@ prior to standardization work.
           Short bars with the median towards the right (greater percentage saving),
           and no red, are better.
         </figcaption>
-        <img src="../results/07-08-2020/comparison.latin.sampled_1000.bytes.png" alt="" style="width:80em; max-width:100%"/>
+        <img src="../results/07-08-2020comparison.latin.sampled_1000.bytes.png" alt="" style="width:80em; max-width:100%"/>
       </figure>
 
       <p>
@@ -1585,7 +1585,7 @@ prior to standardization work.
 
       <figure>
         <figcaption>Total bytes transferred for worst-case font, alphabetic group of languages. Short bars with the median towards the left (smaller size) are better.</figcaption>
-        <img src="../results/07-08-2020/comparison.latin.sampled_1000.absolute_bytes.png" alt="" style="width:80em; max-width:100%"/>
+        <img src="../results/07-08-2020comparison.latin.sampled_1000.absolute_bytes.png" alt="" style="width:80em; max-width:100%"/>
       </figure>
 
       </section>
@@ -1637,8 +1637,8 @@ prior to standardization work.
           Short bars with the median towards the right (greater percentage saving),
           and no red, are better.
         </figcaption>
-        <img src="../results/07-08-2020/comparison.latin.sampled_1000.cost.png" alt="" style="width:80em; max-width:100%"/> <br/>
-        <img src="../results/07-08-2020/comparison.latin.sampled_1000.2G.cost.png" alt="" style="width:80em; max-width:100%"/>
+        <img src="../results/07-08-2020comparison.latin.sampled_1000.cost.png" alt="" style="width:80em; max-width:100%"/> <br/>
+        <img src="../results/07-08-2020comparison.latin.sampled_1000.2G.cost.png" alt="" style="width:80em; max-width:100%"/>
       </figure>
 
       </section>
@@ -1684,8 +1684,10 @@ prior to standardization work.
       </p>
 
       <figure>
-        <figcaption>Savings in bytes transferred, shaping group of languages</figcaption>
-        <img src="../results/07-08-2020/comparison.arabic_indic.sampled_500.bytes.png" alt="" style="width:80em; max-width:100%"/>
+        <figcaption>Savings in bytes transferred, shaping group of languages.
+          Short bars with the median towards the right (greater percentage saving), and no red, are better.
+        </figcaption>
+        <img src="../results/07-08-2020comparison.arabic_indic.sampled_500.bytes.png" alt="" style="width:80em; max-width:100%"/>
       </figure>
 
       <p>
@@ -1712,7 +1714,7 @@ prior to standardization work.
 
       <figure>
         <figcaption>Total bytes transferred for worst-case font, shaping group of languages. Short bars with the median towards the left (smaller size) are better.</figcaption>
-        <img src="../results/07-08-2020/comparison.arabic_indic.sampled_500.absolute_bytes.png" alt="" style="width:80em; max-width:100%"/>
+        <img src="../results/07-08-2020comparison.arabic_indic.sampled_500.absolute_bytes.png" alt="" style="width:80em; max-width:100%"/>
       </figure>
 
       </section>
@@ -1766,9 +1768,11 @@ prior to standardization work.
       </p>
 
       <figure>
-        <figcaption>Savings (or losses) in cost function, shaping group of languages</figcaption>
-        <img src="../results/07-08-2020/comparison.arabic_indic.sampled_500.cost.png" alt="" style="width:80em; max-width:100%"/> <br/>
-        <img src="../results/07-08-2020/comparison.arabic_indic.sampled_500.2G.cost.png" alt="" style="width:80em; max-width:100%"/>
+        <figcaption>Savings (or losses) in cost function, shaping group of languages.
+          Short bars with the median towards the right (greater percentage saving), and no red, are better.
+        </figcaption>
+        <img src="../results/07-08-2020comparison.arabic_indic.sampled_500.cost.png" alt="" style="width:80em; max-width:100%"/> <br/>
+        <img src="../results/07-08-2020comparison.arabic_indic.sampled_500.2G.cost.png" alt="" style="width:80em; max-width:100%"/>
       </figure>
 
       </section>
@@ -1849,7 +1853,7 @@ prior to standardization work.
           Short bars with the median towards the right (greater percentage saving),
           and no red, are better.
         </figcaption>
-        <img src="../results/07-08-2020/comparison.cjk.sampled_5000.bytes.png" alt="" style="width:80em; max-width:100%"/>
+        <img src="../results/07-08-2020comparison.cjk.sampled_5000.bytes.png" alt="" style="width:80em; max-width:100%"/>
       </figure>
 
       <p>
@@ -1871,7 +1875,7 @@ prior to standardization work.
 
       <figure>
         <figcaption>Total bytes transferred for worst-case font, CJK group of languages. Short bars with the median towards the left (smaller size) are better.</figcaption>
-        <img src="../results/07-08-2020/comparison.cjk.sampled_5000.absolute_bytes.png" alt="" style="width:80em; max-width:100%"/>
+        <img src="../results/07-08-2020comparison.cjk.sampled_5000.absolute_bytes.png" alt="" style="width:80em; max-width:100%"/>
       </figure>
 
       </section>
@@ -1907,9 +1911,11 @@ prior to standardization work.
         </p>
 
         <figure>
-          <figcaption>Savings (or losses) in cost function, CJK group of languages</figcaption>
-          <img src="../results/07-08-2020/comparison.cjk.sampled_5000.cost.png" alt="" style="width:80em; max-width:100%"/> <br/>
-          <img src="../results/07-08-2020/comparison.cjk.sampled_5000.2G.cost.png" alt="" style="width:80em; max-width:100%"/>
+          <figcaption>Savings (or losses) in cost function, CJK group of languages.
+            Short bars with the median towards the right (greater percentage saving), and no red, are better.
+          </figcaption>
+          <img src="../results/07-08-2020comparison.cjk.sampled_5000.cost.png" alt="" style="width:80em; max-width:100%"/> <br/>
+          <img src="../results/07-08-2020comparison.cjk.sampled_5000.2G.cost.png" alt="" style="width:80em; max-width:100%"/>
         </figure>
       </section>
 
@@ -2033,7 +2039,7 @@ prior to standardization work.
           is currently unable to use Webfonts
           due to the very large filesizes.
           A substantial reduction in filesize is needed,
-          without a significant increase in page loat times caused by multiple network requests.
+          without a significant increase in page load times caused by multiple network requests.
         </p>
 
         <p>
@@ -2109,7 +2115,7 @@ prior to standardization work.
 
         <p class="advisement" id="call-to-action">
           The impressive results from this simulation study clearly indicate
-          that standarization-track work to refine and develop Progressive Font Enrichment should be undertaken immediately.
+          that standardization-track work to refine and develop Progressive Font Enrichment should be undertaken immediately.
           This is expected to extend
           the geographically localized success of Webfonts
           to the Global Web.
