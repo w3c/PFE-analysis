@@ -1,0 +1,8 @@
+.loss {
+    color: hsl(271.15, 72.97%, 64.58%);
+	font-weight: bold;
+}
+.gain {
+	color: hsl(23.349, 54.899%, 31.801%);
+	font-weight: bold;
+}
