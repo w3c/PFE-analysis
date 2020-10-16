@@ -413,7 +413,7 @@ def main(argv):
       )
     # RangeRequest requires a modified version of the data set
     # and font library. Thus it must be simulated separately from
-    # all of the other methods
+    # all of the other methods.
     PFE_METHODS.extend([
         range_request_pfe_method,
     ])
