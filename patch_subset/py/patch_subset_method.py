@@ -97,7 +97,10 @@ class FontSession:
 
   def __init__(  # pylint: disable=too-many-arguments
       self, font_loader, font_id, page_view_count, config):
-    font_directory_c = c_char_p(font_loader.directory().encode("utf-8"))
+    font_dir = font_loader.directory()
+    if font_dir and not font_dir.endswith("/"):
+      font_dir += "/"
+    font_directory_c = c_char_p(font_dir.encode("utf-8"))
     if not font_id:
       font_id = font_loader.default_font() or ""
     font_id_c = c_char_p(font_id.encode("utf-8"))
