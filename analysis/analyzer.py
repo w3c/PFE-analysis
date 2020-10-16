@@ -368,16 +368,20 @@ def start_analysis():
   return results_proto
 
 
+def install_flags():
+  global FONT_DIRECTORY, DEFAULT_FONT_ID  # pylint: disable=global-statement
+  FONT_DIRECTORY = FLAGS.font_directory
+  DEFAULT_FONT_ID = FLAGS.default_font_id
+
+
 def main(argv):
   """Runs the analysis."""
-  global FONT_DIRECTORY, DEFAULT_FONT_ID  # pylint: disable=global-statement
   del argv  # Unused.
 
   # In some environments flags don't behave well
   # after a fork via the subprocess.Pool so save
   # flag values in globals.
-  FONT_DIRECTORY = FLAGS.font_directory
-  DEFAULT_FONT_ID = FLAGS.default_font_id
+  install_flags()
 
   if not FLAGS.simulate_range_request:
     PFE_METHODS.extend([
