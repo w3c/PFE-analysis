@@ -380,7 +380,7 @@ def main(argv):
 
   # In some environments flags don't behave well
   # after a fork via the subprocess.Pool so save
-  # flag values in globals.
+  # flag values in globals
   install_flags()
 
   if not FLAGS.simulate_range_request:
