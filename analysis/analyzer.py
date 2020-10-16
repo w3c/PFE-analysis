@@ -68,8 +68,13 @@ flags.DEFINE_string(
 
 flags.DEFINE_bool(
     "simulate_range_request", False,
-    "If set only simulation range request. If not set then simulates "
-    "everything except for range request.")
+    "If set, only simulate range requests. If not set, then simulate "
+    "everything except for range requests.")
+
+flags.DEFINE_bool(
+    "simulate_patch_subset", False,
+    "If set, only simulate patch subset requests. If not set then all non "
+    "range requests methods are simulated.")
 
 FONT_DIRECTORY = ""
 DEFAULT_FONT_ID = ""
@@ -380,15 +385,28 @@ def main(argv):
   DEFAULT_FONT_ID = FLAGS.default_font_id
 
   if not FLAGS.simulate_range_request:
-    PFE_METHODS.extend([
-        optimal_pfe_method,
-        optimal_one_font_method,
-        unicode_range_pfe_method,
-        whole_font_pfe_method,
-        combined_patch_subset_method.CombinedPatchSubsetMethod(
-            FLAGS.script_category),
-    ])
+    if FLAGS.simulate_patch_subset:
+      # Only do patch subset.
+      PFE_METHODS.extend([
+          combined_patch_subset_method.CombinedPatchSubsetMethod(
+              FLAGS.script_category)
+      ])
+    else:
+      # Do all the non-range-request methods.
+      PFE_METHODS.extend([
+          optimal_pfe_method,
+          optimal_one_font_method,
+          unicode_range_pfe_method,
+          whole_font_pfe_method,
+          combined_patch_subset_method.CombinedPatchSubsetMethod(
+              FLAGS.script_category),
+      ])
   else:
+    # Just do RangeRequest.
+    if FLAGS.simulate_patch_subset:
+      LOG.error(
+          "--simulate_range_request may not be used with --simulate_patch_subset"
+      )
     # RangeRequest requires a modified version of the data set
     # and font library. Thus it must be simulated separately from
     # all of the other methods.
