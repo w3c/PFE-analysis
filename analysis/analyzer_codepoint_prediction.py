@@ -30,6 +30,8 @@ def main(argv):
   """Runs the analysis."""
   del argv  # Unused.
 
+  analyzer.install_flags()
+
   analyzer.PFE_METHODS = [
       patch_subset_method.create_with_codepoint_remapping(),
       patch_subset_method.create_with_codepoint_prediction(
