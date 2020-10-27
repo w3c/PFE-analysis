@@ -24,6 +24,7 @@ cc_library(
         "noop_codepoint_predictor.h",
         "patch_subset_server_impl.cc",
         "simple_codepoint_mapper.cc",
+        "woff2_glyf_transformer.cc",
     ],
     hdrs = [
         "codepoint_mapper.h",
@@ -31,10 +32,12 @@ cc_library(
         "codepoint_mapping_checksum_impl.h",
         "codepoint_predictor.h",
         "frequency_codepoint_predictor.h",
+        "glyf_transformer.h",
         "harfbuzz_subsetter.h",
         "patch_subset_server_impl.h",
         "simple_codepoint_mapper.h",
         "subsetter.h",
+        "woff2_glyf_transformer.h",
     ],
     data = [
         "//analysis/pfe_methods/unicode_range_data:slicing_strategies",
@@ -52,6 +55,7 @@ cc_library(
         "@com_google_absl//absl/container:flat_hash_map",
         "@com_google_absl//absl/strings",
         "@harfbuzz",
+        "@woff2",
     ],
 )
 
@@ -153,6 +157,7 @@ cc_test(
         "server_integration_test.cc",
         "simple_codepoint_mapper_test.cc",
         "sparse_bit_set_test.cc",
+        "woff2_glyf_transformer_test.cc",
     ],
     data = [
         ":testdata",
