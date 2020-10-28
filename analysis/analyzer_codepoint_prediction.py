@@ -45,7 +45,7 @@ def main(argv):
   results_proto = analyzer.start_analysis()
 
   for method_result in results_proto.results:
-   net_result = method_result.results_by_network[0]
+    net_result = method_result.results_by_network[0]
 
     if "Prediction" not in method_result.method_name:
       optimal_bytes = (net_result.total_request_bytes +
