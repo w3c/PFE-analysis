@@ -56,4 +56,10 @@ TEST_F(Woff2GlyfTransformerTest, TransformModifiesGlyf) {
             transformed_font.FindTable(kGlyfTableTag)->length);
 }
 
+TEST_F(Woff2GlyfTransformerTest, TransformEmptyFont) {
+  FontData empty_font;
+  ASSERT_EQ(transformer_.Encode(&empty_font), StatusCode::kOk);
+  EXPECT_EQ(empty_font.size(), 0);
+}
+
 }  // namespace patch_subset

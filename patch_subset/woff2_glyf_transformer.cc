@@ -43,6 +43,12 @@ void SerializeFont(const Font& font, FontData* font_data /* OUT */) {
 
 StatusCode Woff2GlyfTransformer::Encode(
     FontData* font_data /* IN/OUT */) const {
+  if (!font_data->size()) {
+    // May be called on an empty font (ie. when patching against nothing)
+    // no action needed in this case.
+    return StatusCode::kOk;
+  }
+
   Font font;
   if (!woff2::ReadFont(reinterpret_cast<const uint8_t*>(font_data->data()),
                        font_data->size(), &font)) {
