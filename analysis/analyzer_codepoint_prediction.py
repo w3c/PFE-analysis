@@ -45,15 +45,16 @@ def main(argv):
   results_proto = analyzer.start_analysis()
 
   for method_result in results_proto.results:
+   net_result = method_result.results_by_network[0]
+
     if "Prediction" not in method_result.method_name:
-      optimal_bytes = (method_result.total_request_bytes +
-                       method_result.total_response_bytes)
+      optimal_bytes = (net_result.total_request_bytes +
+                       net_result.total_response_bytes)
       continue
 
-    prediction_bytes = (method_result.total_request_bytes +
-                        method_result.total_response_bytes)
-    for net_result in method_result.results_by_network:
-      prediction_cost = net_result.total_cost
+    prediction_bytes = (net_result.total_request_bytes +
+                        net_result.total_response_bytes)
+    prediction_cost = net_result.total_cost
 
   print("%s,%s" % (prediction_cost, prediction_bytes / optimal_bytes))
 

@@ -27,4 +27,5 @@ sequences: {
       codepoints: 12
     }
   }
+  language: "en"
 }
