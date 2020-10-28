@@ -18,6 +18,7 @@
 #include "patch_subset/mock_font_provider.h"
 #include "patch_subset/mock_hasher.h"
 #include "patch_subset/simple_codepoint_mapper.h"
+#include "patch_subset/mock_glyf_transformer.h"
 
 using ::absl::string_view;
 using ::google::protobuf::util::MessageDifferencer;
@@ -36,6 +37,17 @@ MATCHER_P(EqualsSet, other, "") { return hb_set_is_equal(arg, other); }
 
 StatusCode returnFontId(const std::string& id, FontData* out) {
   out->copy(id.c_str(), id.size());
+  return StatusCode::kOk;
+}
+
+StatusCode transform(FontData* out) {
+  if (!out->size()) {
+    return StatusCode::kOk;
+  }
+
+  std::string result(out->data(), out->size());
+  result.append(":transformed");
+  out->copy(result);
   return StatusCode::kOk;
 }
 
@@ -60,6 +72,7 @@ class PatchSubsetServerImplTestBase : public ::testing::Test {
         binary_diff_(new MockBinaryDiff()),
         hasher_(new MockHasher()),
         codepoint_predictor_(new MockCodepointPredictor()),
+        glyf_transformer_(new MockGlyfTransformer()),
         set_abcd_(make_hb_set_from_ranges(1, 0x61, 0x64)),
         set_ab_(make_hb_set_from_ranges(1, 0x61, 0x62)) {}
 
@@ -79,6 +92,12 @@ class PatchSubsetServerImplTestBase : public ::testing::Test {
     EXPECT_CALL(*hasher_, Checksum(value)).WillRepeatedly(Return(checksum));
   }
 
+  void DoTransform() {
+    EXPECT_CALL(*glyf_transformer_, Encode(_))
+        .Times(2)
+        .WillRepeatedly(Invoke(transform));
+  }
+
   void AddPredictedCodepoints(const hb_set_t* font_codepoints,
                               const hb_set_t* have_codepoints,
                               const hb_set_t* requested_codepoints,
@@ -94,6 +113,7 @@ class PatchSubsetServerImplTestBase : public ::testing::Test {
   MockBinaryDiff* binary_diff_;
   MockHasher* hasher_;
   MockCodepointPredictor* codepoint_predictor_;
+  MockGlyfTransformer* glyf_transformer_;
   hb_set_unique_ptr set_abcd_;
   hb_set_unique_ptr set_ab_;
 };
@@ -107,7 +127,8 @@ class PatchSubsetServerImplTest : public PatchSubsetServerImplTestBase {
                 std::unique_ptr<Hasher>(hasher_),
                 std::unique_ptr<CodepointMapper>(nullptr),
                 std::unique_ptr<CodepointMappingChecksum>(nullptr),
-                std::unique_ptr<CodepointPredictor>(codepoint_predictor_)) {}
+                std::unique_ptr<CodepointPredictor>(codepoint_predictor_),
+                std::unique_ptr<GlyfTransformer>(glyf_transformer_)) {}
 
   PatchSubsetServerImpl server_;
 };
@@ -124,7 +145,8 @@ class PatchSubsetServerImplWithCodepointRemappingTest
                 std::unique_ptr<CodepointMapper>(new SimpleCodepointMapper()),
                 std::unique_ptr<CodepointMappingChecksum>(
                     codepoint_mapping_checksum_),
-                std::unique_ptr<CodepointPredictor>(codepoint_predictor_)),
+                std::unique_ptr<CodepointPredictor>(codepoint_predictor_),
+                std::unique_ptr<GlyfTransformer>(glyf_transformer_)),
         set_abcd_encoded_(make_hb_set_from_ranges(1, 0, 3)),
         set_ab_encoded_(make_hb_set_from_ranges(1, 0, 1)) {}
 
@@ -152,9 +174,10 @@ class PatchSubsetServerImplWithCodepointRemappingTest
 TEST_F(PatchSubsetServerImplTest, NewRequest) {
   ExpectRoboto();
   ExpectDiff();
+  DoTransform();
 
   ExpectChecksum("Roboto-Regular.ttf", 42);
-  ExpectChecksum("Roboto-Regular.ttf:abcd", 43);
+  ExpectChecksum("Roboto-Regular.ttf:abcd:transformed", 43);
 
   PatchRequestProto request;
   PatchResponseProto response;
@@ -164,7 +187,7 @@ TEST_F(PatchSubsetServerImplTest, NewRequest) {
             StatusCode::kOk);
   EXPECT_EQ(response.original_font_fingerprint(), 42);
   EXPECT_EQ(response.type(), ResponseType::REBASE);
-  EXPECT_EQ(response.patch().patch(), "Roboto-Regular.ttf:abcd");
+  EXPECT_EQ(response.patch().patch(), "Roboto-Regular.ttf:abcd:transformed");
   EXPECT_EQ(response.patch().patched_fingerprint(), 43);
   EXPECT_EQ(response.patch().format(), PatchFormat::BROTLI_SHARED_DICT);
 
