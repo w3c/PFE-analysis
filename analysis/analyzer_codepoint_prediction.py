@@ -23,7 +23,7 @@ flags.DEFINE_float(
     "Minimum frequency for a codepoint to be add to the predicted set.")
 
 flags.DEFINE_string("network_model", "DESKTOP_FASTEST",
-                    "Name of the network model to use in the simulation.")
+                    "Name  of the network model to use in the simulation.")
 
 
 def main(argv):
