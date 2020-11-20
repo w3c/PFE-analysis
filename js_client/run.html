@@ -1,0 +1,10 @@
+<!doctype html>
+<html>
+  <script src="./hello-world-wasm.js"></script>
+  <script>
+    createModule().then(function(Module) {
+        console.log('1 + 2 = ' + Module.add(1, 2));
+    });
+  </script>
+
+</html>

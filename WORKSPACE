@@ -1,6 +1,10 @@
 workspace(name = "PFE_analysis")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+load("//js_client/toolchain:deps.bzl", "js_client_deps")
+
+js_client_deps()
+
 
 # Google Test
 http_archive(
