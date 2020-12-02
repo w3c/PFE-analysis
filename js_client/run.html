@@ -3,9 +3,13 @@
   <script src="./patch_subset_wasm.js"></script>
   <script>
     createModule().then(function(Module) {
+        cps = [41, 43, 47];
+
         console.log("Module loaded :)");
         state = new Module.State();
-        console.log(state.font_data());
+
+        state.extend(cps)
+
         state.delete();
     });
   </script>

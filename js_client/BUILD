@@ -11,6 +11,7 @@ DEFAULT_EMSCRIPTEN_LINKOPTS = [
     "-s MODULARIZE=1",  # Allows us to manually invoke the initialization of wasm
     "-s EXPORT_NAME=createModule",  # Not used, but good to specify
     "-s SINGLE_FILE=1",  # Pack all webassembly into base64
+    "-s FETCH=1",  # Enable fetch API
 ]
 
 ASMJS_LINKOPTS = [
@@ -23,9 +24,18 @@ WASM_LINKOPTS = [
 
 cc_binary(
     name = "patch_subset_wasm.js",
-    srcs = ["patch_subset_client.cc"],
+    srcs = [
+        "patch_subset_client.cc",
+        "remote_patch_subset_server.cc",
+        "remote_patch_subset_server.h",
+    ],
     linkopts = DEFAULT_EMSCRIPTEN_LINKOPTS + WASM_LINKOPTS,
     deps = [
+        "//common",
+        "//patch_subset:client",
+        "//patch_subset:common",
         "//patch_subset:patch_subset_cc_proto",
+        "@com_google_absl//absl/strings",
+        "@harfbuzz",
     ],
 )

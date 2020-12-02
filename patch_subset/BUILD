@@ -73,6 +73,7 @@ cc_library(
         "request_logger.h",
     ],
     visibility = [
+        "//js_client:__pkg__",
         "//patch_subset/py:__pkg__",
     ],
     deps = [
@@ -111,6 +112,7 @@ cc_library(
         "sparse_bit_set.h",
     ],
     visibility = [
+        "//js_client:__pkg__",
         "//patch_subset/py:__pkg__",
         "//util:__pkg__",
     ],
