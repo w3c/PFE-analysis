@@ -8,7 +8,7 @@ DEFAULT_EMSCRIPTEN_LINKOPTS = [
     "-s ALLOW_MEMORY_GROWTH=0",  # Our example doesn't need memory growth
     "-s USE_PTHREADS=0",  # Disable pthreads
     "-s ASSERTIONS=0",  # Turn off assertions
-    "-s MODULARIZE=1",  # Allows us to manually invoke the initializatio of wasm
+    "-s MODULARIZE=1",  # Allows us to manually invoke the initialization of wasm
     "-s EXPORT_NAME=createModule",  # Not used, but good to specify
     "-s SINGLE_FILE=1",  # Pack all webassembly into base64
 ]
@@ -22,7 +22,10 @@ WASM_LINKOPTS = [
 ]
 
 cc_binary(
-    name = "hello-world-wasm.js",
-    srcs = ["hello-world.cc"],
+    name = "patch_subset_wasm.js",
+    srcs = ["patch_subset_client.cc"],
     linkopts = DEFAULT_EMSCRIPTEN_LINKOPTS + WASM_LINKOPTS,
+    deps = [
+        "//patch_subset:patch_subset_cc_proto",
+    ],
 )

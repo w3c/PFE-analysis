@@ -9,6 +9,9 @@ proto_library(
 
 cc_proto_library(
     name = "patch_subset_cc_proto",
+    visibility = [
+        "//js_client:__pkg__",
+    ],
     deps = [":patch_subset_proto"],
 )
 
