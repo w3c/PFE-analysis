@@ -1,10 +1,12 @@
 <!doctype html>
 <html>
-  <script src="./hello-world-wasm.js"></script>
+  <script src="./patch_subset_wasm.js"></script>
   <script>
     createModule().then(function(Module) {
-        console.log('1 + 2 = ' + Module.add(1, 2));
+        console.log("Module loaded :)");
+        state = new Module.State();
+        console.log(state.font_data());
+        state.delete();
     });
   </script>
-
 </html>
