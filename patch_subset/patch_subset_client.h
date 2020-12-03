@@ -31,6 +31,12 @@ class PatchSubsetClient {
 
   StatusCode Extend(const hb_set_t& additional_codepoints, ClientState* state);
 
+  StatusCode CreateRequest(const hb_set_t& additional_codepoints,
+                           const ClientState& state,
+                           PatchRequestProto* request);
+
+  StatusCode AmendState(const PatchResponseProto& response, ClientState* state);
+
  private:
   StatusCode EncodeCodepoints(const ClientState& state,
                               hb_set_t* codepoints_have,
@@ -45,8 +51,6 @@ class PatchSubsetClient {
 
   StatusCode ComputePatched(const PatchResponseProto& response,
                             const ClientState& state, FontData* patched);
-
-  StatusCode AmendState(const PatchResponseProto& response, ClientState* state);
 
   PatchSubsetServer* server_;
   RequestLogger* request_logger_;

@@ -19,6 +19,10 @@ namespace patch_subset {
 
 static const int kBitsPerByte = 8;
 
+bool CompressedSet::IsEmpty(const CompressedSetProto& set) {
+  return !set.sparse_bit_set().size() && !set.range_deltas_size();
+}
+
 StatusCode CompressedSet::Decode(const CompressedSetProto& set, hb_set_t* out) {
   if (set.range_deltas_size() % 2 != 0) {
     LOG(WARNING) << "Invalid compressed set proto. Wrong number of deltas.";
