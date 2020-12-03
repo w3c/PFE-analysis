@@ -26,8 +26,6 @@ cc_binary(
     name = "patch_subset_wasm.js",
     srcs = [
         "patch_subset_client.cc",
-        "remote_patch_subset_server.cc",
-        "remote_patch_subset_server.h",
     ],
     linkopts = DEFAULT_EMSCRIPTEN_LINKOPTS + WASM_LINKOPTS,
     deps = [
