@@ -6,11 +6,13 @@
         cps = [41, 43, 47];
 
         console.log("Module loaded :)");
-        state = new Module.State();
+        var state = new Module.State();
 
-        state.extend(cps)
-
-        state.delete();
+        state.extend(cps, function(result) {
+            console.log("Result = " + result);
+            console.log(state.font_data())
+            state.delete();
+        });
     });
   </script>
 </html>
