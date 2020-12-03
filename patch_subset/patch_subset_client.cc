@@ -20,17 +20,18 @@ void CodepointsInFont(const std::string& font_data, hb_set_t* codepoints) {
   hb_face_destroy(face);
 }
 
-StatusCode PatchSubsetClient::Extend(const hb_set_t& additional_codepoints,
-                                     ClientState* state) {
+StatusCode PatchSubsetClient::CreateRequest(const hb_set_t& additional_codepoints,
+                                            const ClientState& state,
+                                            PatchRequestProto* request) {
   hb_set_unique_ptr existing_codepoints = make_hb_set();
-  CodepointsInFont(state->font_data(), existing_codepoints.get());
+  CodepointsInFont(state.font_data(), existing_codepoints.get());
 
   hb_set_unique_ptr new_codepoints = make_hb_set();
   hb_set_union(new_codepoints.get(), &additional_codepoints);
   hb_set_subtract(new_codepoints.get(), existing_codepoints.get());
 
   StatusCode result =
-      EncodeCodepoints(*state, existing_codepoints.get(), new_codepoints.get());
+      EncodeCodepoints(state, existing_codepoints.get(), new_codepoints.get());
   if (result != StatusCode::kOk) {
     return result;
   }
@@ -40,8 +41,17 @@ StatusCode PatchSubsetClient::Extend(const hb_set_t& additional_codepoints,
     return StatusCode::kOk;
   }
 
+  CreateRequest(*existing_codepoints, *new_codepoints, state, request);
+  return StatusCode::kOk;
+}
+
+StatusCode PatchSubsetClient::Extend(const hb_set_t& additional_codepoints,
+                                     ClientState* state) {
   PatchRequestProto request;
-  CreateRequest(*existing_codepoints, *new_codepoints, *state, &request);
+  StatusCode result = CreateRequest(additional_codepoints, *state, &request);
+  if (result != StatusCode::kOk || CompressedSet::IsEmpty(request.codepoints_needed())) {
+    return result;
+  }
 
   PatchResponseProto response;
   result = server_->Handle(state->font_id(), request, &response);
