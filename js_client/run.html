@@ -1,18 +1,45 @@
 <!doctype html>
 <html>
-  <script src="./patch_subset_wasm.js"></script>
-  <script>
-    createModule().then(function(Module) {
-        cps = [41, 43, 47];
+  <head>
+    <script src="./patch_subset_wasm.js"></script>
+    <script>
 
-        console.log("Module loaded :)");
-        var state = new Module.State();
+      function patch_codepoints(cps) {
+          window.state.extend(cps, async function(result) {
+              console.log("patch complete.");
+              font = state.font_data();
 
-        state.extend(cps, function(result) {
-            console.log("Result = " + result);
-            console.log(state.font_data())
-            state.delete();
-        });
-    });
-  </script>
+              font = new FontFace("Roboto Patch", font);
+              await font.load();
+              document.fonts.add(font);
+          });
+      }
+
+      createModule().then(function(Module) {
+          console.log("patch subset module loaded.");
+          window.state = new Module.State();
+          patch_codepoints([97, 98, 99, 100, 101, 102]);
+      });
+
+      window.addEventListener('DOMContentLoaded', function() {
+          button = document.getElementById("get_more");
+          button.addEventListener("click", function() {
+              patch_codepoints([103, 104, 105]);
+          });
+      });
+    </script>
+    <style>
+      p {
+          font-family: "Roboto Patch", cursive;
+          font-size: 5em;
+      }
+      input {
+          font-size: 3em;
+      }
+    </style>
+  </head>
+  <body>
+    <p>abc fi def ghi</p>
+    <input type="button" value="Get More" id="get_more"/>
+  </body>
 </html>
