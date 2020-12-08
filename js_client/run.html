@@ -37,21 +37,24 @@
       var page_index = 0;
       var states = {};
 
-      function update_all_fonts() {
-          update_fonts(document.getElementById("title"),
-                       SENTENCES[page_index],
-                       "Roboto-Thin.ttf",
-                       "R Thin");
-          update_fonts(document.getElementById("paragraph"),
-                       PARAGRAPHS[page_index],
-                       "Roboto-Regular.ttf",
-                       "R Regular");
+      async function update_all_fonts() {
+          p1 = update_fonts(SENTENCES[page_index],
+                            "Roboto-Thin.ttf",
+                            "R Thin");
+          p2 = update_fonts(PARAGRAPHS[page_index],
+                            "Roboto-Regular.ttf",
+                            "R Regular");
+
+          await p1;
+          await p2;
+          document.getElementById("title").textContent = SENTENCES[page_index];
+          document.getElementById("paragraph").textContent = PARAGRAPHS[page_index];
 
           document.getElementById("prev").disabled = (page_index == 0);
           document.getElementById("next").disabled = (page_index == PARAGRAPHS.length - 1);
       }
 
-      function update_fonts(element, text, font_id, font_face) {
+      function update_fonts(text, font_id, font_face) {
           cps = new Set()
           for (var i = 0; i < text.length; i++) {
               cps.add(text.charCodeAt(i));
@@ -62,20 +65,26 @@
               cps_array.push(cp);
           }
 
-          patch_codepoints(element, text, font_id, font_face, cps_array);
+          return patch_codepoints(font_id, font_face, cps_array);
       }
 
-      function patch_codepoints(element, text, font_id, font_face, cps) {
+      function patch_codepoints(font_id, font_face, cps) {
           if (!states[font_face]) {
               states[font_face] = new window.Module.State(font_id);
           }
           var state = states[font_face];
-          state.extend(cps, async function(result) {
-              font = state.font_data();
-              font = new FontFace(font_face, font);
-              document.fonts.add(font);
-              await font.load();
-              element.textContent = text;
+          return new Promise(resolve => {
+              state.extend(cps, async function(result) {
+                  if (!result) {
+                      resolve(result);
+                      return;
+                  }
+                  font = state.font_data();
+                  font = new FontFace(font_face, font);
+                  document.fonts.add(font);
+                  await font.load();
+                  resolve(result);
+              });
           });
       }
 
