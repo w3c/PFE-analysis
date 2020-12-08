@@ -3,7 +3,6 @@
   <head>
     <script src="./patch_subset_wasm.js"></script>
     <script>
-
       const SENTENCES = [
           ['apache/roboto/Roboto-Thin.ttf', 'Almost before we knew it, we had left the ground.'],
           ['apache/roboto/Roboto-Thin.ttf', 'All their equipment and instruments are alive.'],
@@ -88,24 +87,33 @@
            + '一样。'],
       ];
 
-      var page_index = 0;
+      var page_index = -1;
       var states = {};
+      var incxfer = true;
 
       async function update_all_fonts() {
+          if (page_index < 0) return;
+
           title_font = SENTENCES[page_index][0];
           title_text = SENTENCES[page_index][1]
-          p1 = update_fonts(title_text,
-                            title_font,
-                            "Title Font");
-
           paragraph_font = PARAGRAPHS[page_index][0];
           paragraph_text = PARAGRAPHS[page_index][1];
-          p2 = update_fonts(paragraph_text,
-                            paragraph_font,
-                            "Paragraph Font");
 
-          await p1;
-          await p2;
+          if (incxfer) {
+              p1 = update_fonts(title_text,
+                                title_font,
+                                "Title Font");
+              p2 = update_fonts(paragraph_text,
+                                paragraph_font,
+                                "Paragraph Font");
+              await p1;
+              await p2;
+          }
+
+          class_name = incxfer ? "pfe" : "ur";
+          document.getElementById("title").className = class_name;
+          document.getElementById("paragraph").className = class_name;
+
           document.getElementById("title").textContent = title_text;
           document.getElementById("paragraph").textContent = paragraph_text;
 
@@ -149,7 +157,6 @@
 
       createModule().then(function(Module) {
           window.Module = Module;
-          update_all_fonts();
       });
 
       window.addEventListener('DOMContentLoaded', function() {
@@ -165,30 +172,58 @@
               if (page_index >= PARAGRAPHS.length) page_index = PARAGRAPHS.length - 1;
               update_all_fonts();
           });
+          document.getElementById("incxfer").addEventListener("change", function(e) {
+              incxfer = e.target.checked;
+              update_all_fonts();
+          });
       });
     </script>
     <style>
       h1 {
-          font-family: "Title Font", cursive;
           font-size: 3em;
       }
+
       p {
-          font-family: "Paragraph Font", cursive;
           font-size: 2em;
       }
-      input {
+
+      h1.pfe {
+          font-family: "Title Font", serif;
+      }
+
+      p.pfe {
+          font-family: "Paragraph Font", serif;
+      }
+
+      h1.ur {
+          font-family: "Roboto", "Noto Serif SC";
+          font-weight: 100;
+      }
+
+      p.ur {
+          font-family: "Roboto", "Noto Sans SC";
+      }
+
+      input, label {
+          font-family: sans-serif;
           font-size: 1.5em;
       }
     </style>
+    <link href="//fonts.googleapis.com/css?family=Roboto:100,400|Noto+Serif+SC:200|Noto+Sans+SC:400" type="text/css" rel="stylesheet" />
   </head>
   <body>
     <div>
-      <input type="button" value="Previous" id="prev"/>
+      <input type="button" value="Previous" id="prev" disabled="true" />
       <input type="button" value="Next" id="next"/>
+      <input type="checkbox" id="incxfer" name="incxfer" checked/>
+      <label for="incxfer">Use incremental font transfer</label>
     </div>
     <h1 id="title">
+      Incremental Font Transfer Demo
     </h1>
     <p id="paragraph">
+      This demonstrates the use of the patch subset progressive font enrichment protocol
+      to load fonts for a variety of languages.
     </p>
   </body>
 </html>
