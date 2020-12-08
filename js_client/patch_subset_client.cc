@@ -70,7 +70,7 @@ void RequestFailed(emscripten_fetch_t* fetch) {
 
 class State {
  public:
-  State()
+  State(const std::string& font_id)
       : _state(),
         _logger(),
         _client(nullptr, &_logger,
@@ -78,7 +78,7 @@ class State {
                     new patch_subset::BrotliBinaryPatch()),
                 std::unique_ptr<patch_subset::Hasher>(
                     new patch_subset::FarmHasher())) {
-    _state.set_font_id("Roboto-Regular.ttf");
+    _state.set_font_id(font_id);
   }
 
   void init_from(std::string buffer) { _state.ParseFromString(buffer); }
@@ -144,7 +144,7 @@ class State {
 
 EMSCRIPTEN_BINDINGS(patch_subset) {
   class_<State>("State")
-      .constructor()
+      .constructor<std::string>()
       .function("font_data", &State::font_data)
       .function("extend", &State::extend);
 }
