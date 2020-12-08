@@ -37,17 +37,13 @@
       var page_index = 0;
       var states = {};
 
-      function goto_page(index) {
-          document.getElementById("title").textContent = SENTENCES[index];
-          document.getElementById("paragraph").textContent = PARAGRAPHS[index];
-          update_all_fonts();
-      }
-
       function update_all_fonts() {
           update_fonts(document.getElementById("title"),
+                       SENTENCES[page_index],
                        "Roboto-Thin.ttf",
                        "R Thin");
           update_fonts(document.getElementById("paragraph"),
+                       PARAGRAPHS[page_index],
                        "Roboto-Regular.ttf",
                        "R Regular");
 
@@ -55,8 +51,7 @@
           document.getElementById("next").disabled = (page_index == PARAGRAPHS.length - 1);
       }
 
-      function update_fonts(element, font_id, font_face) {
-          text = element.textContent;
+      function update_fonts(element, text, font_id, font_face) {
           cps = new Set()
           for (var i = 0; i < text.length; i++) {
               cps.add(text.charCodeAt(i));
@@ -67,10 +62,10 @@
               cps_array.push(cp);
           }
 
-          patch_codepoints(font_id, font_face, cps_array);
+          patch_codepoints(element, text, font_id, font_face, cps_array);
       }
 
-      function patch_codepoints(font_id, font_face, cps) {
+      function patch_codepoints(element, text, font_id, font_face, cps) {
           if (!states[font_face]) {
               states[font_face] = new window.Module.State(font_id);
           }
@@ -78,14 +73,14 @@
           state.extend(cps, async function(result) {
               font = state.font_data();
               font = new FontFace(font_face, font);
-              await font.load();
               document.fonts.add(font);
+              await font.load();
+              element.textContent = text;
           });
       }
 
       createModule().then(function(Module) {
           window.Module = Module;
-          goto_page(page_index);
           update_all_fonts();
       });
 
@@ -94,13 +89,13 @@
           prev.addEventListener("click", function() {
               page_index--;
               if (page_index < 0) page_index = 0;
-              goto_page(page_index);
+              update_all_fonts();
           });
           next = document.getElementById("next");
           next.addEventListener("click", function() {
               page_index++;
               if (page_index >= PARAGRAPHS.length) page_index = PARAGRAPHS.length - 1;
-              goto_page(page_index);
+              update_all_fonts();
           });
       });
     </script>
