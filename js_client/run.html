@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
   <head>
+    <title>Progressive Font Enrichment Demo</title>
     <script src="./patch_subset_wasm.js"></script>
     <script>
       const SENTENCES = [
@@ -108,6 +109,7 @@
       var page_index = -1;
       var states = {};
       var also_load_unicode_range = false;
+      var show_unicode_range = false;
 
       async function update_all_fonts() {
           if (page_index < 0) {
@@ -140,6 +142,22 @@
           document.getElementById("next").disabled = (page_index == PARAGRAPHS.length - 1);
 
           update_transfer_bars();
+          update_sample_toggle();
+      }
+
+      function update_sample_toggle() {
+          document.getElementById("sample_toggle").style.visibility =
+              (page_index >= 0 && also_load_unicode_range) ? "visible" : "hidden";
+          document.getElementById("sample_toggle").value =
+              show_unicode_range ? "Show progressive font enrichment" : "Show unicode range";
+
+          if (show_unicode_range) {
+              document.getElementById("pfe_sample").classList.add("hide");
+              document.getElementById("ur_sample").classList.remove("hide");
+          } else {
+              document.getElementById("pfe_sample").classList.remove("hide");
+              document.getElementById("ur_sample").classList.add("hide");
+          }
       }
 
       function update_fonts(text, font_id, font_face) {
@@ -227,7 +245,15 @@
           });
           document.getElementById("also_ur").addEventListener("change", function(e) {
               also_load_unicode_range = e.target.checked;
+              if (!also_load_unicode_range) {
+                  sample_toggle = false;
+              }
               update_all_fonts();
+              update_sample_toggle();
+          });
+          document.getElementById("sample_toggle").addEventListener("click", e => {
+              show_unicode_range = !show_unicode_range;
+              update_sample_toggle();
           });
       });
       document.fonts.addEventListener('loadingdone', function() {
@@ -317,6 +343,12 @@
       #ur_byte_counter {
           visibility: hidden;
       }
+
+      .type {
+          font-size: 0.8em;
+          font-color: #BBBBBB;
+          font-family: sans-serif;
+      }
     </style>
     <link href="fonts.css" type="text/css" rel="stylesheet" />
   </head>
@@ -324,27 +356,31 @@
     <div class="controls">
       <input type="button" value="Previous" id="prev" disabled="true" />
       <input type="button" value="Next" id="next"/>
+      <input type="button" value="Show Unicode Range" id="sample_toggle" style="visibility: hidden;" />
+      <br/>
       <input type="checkbox" id="also_ur" name="also_ur" />
       <label for="also_ur">Also load fonts via unicode range.</label>
     </div>
     <div class="text_and_metrics">
       <div id="pfe_sample" class="sample_text">
-        <h1 id="title_pfe" class="pfe">Incremental Font Transfer Demo</h1>
+        <div class="type">Progressive Font Enrichment</div>
+        <h1 id="title_pfe" class="pfe">Progressive Font Enrichment Demo</h1>
         <p id="paragraph_pfe" class="pfe">
           This demonstrates the use of the patch subset progressive font enrichment protocol
           to load fonts for a variety of languages.
         </p>
       </div>
       <div id="ur_sample" class="sample_text hide">
+        <div class="type">Unicode range</div>
         <h1 id="title_ur" class="ur"></h1>
         <p id="paragraph_ur" class="ur"></p>
       </div>
       <div class="metrics">
         <div class="metrics_inner">
-          <span>Incremental Transfer:</span>
+          <span>Progressive enrichment transferred:</span>
           <div id="pfe_bar" class="bar"></div>
           <div id="ur_byte_counter">
-            <span>Unicode Range:</span>
+            <span>Unicode range transferred:</span>
             <div id="ur_bar" class="bar"></div>
           </div>
         </div>
