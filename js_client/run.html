@@ -192,11 +192,15 @@
           var total = Math.max(Math.max(pfe_total, ur_total), 1);
           document.getElementById("pfe_bar").style.width =
               ((pfe_total / total) * 100) + "%";
-          document.getElementById("pfe_bar").textContent = pfe_total.toLocaleString() + " bytes";
+          document.getElementById("pfe_bar").textContent = as_string(pfe_total);
 
           document.getElementById("ur_bar").style.width =
               ((ur_total / total) * 100) + "%";
-          document.getElementById("ur_bar").textContent = ur_total.toLocaleString() + " bytes";
+          document.getElementById("ur_bar").textContent = as_string(ur_total);
+      }
+
+      function as_string(byte_count) {
+          return Math.round(byte_count / 1000).toLocaleString() + " kb";
       }
 
       createModule().then(function(Module) {
