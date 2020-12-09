@@ -11,7 +11,13 @@
           ['apache/roboto/Roboto-Thin.ttf', 'A shining crescent far beneath the flying vessel.'],
           ['apache/roboto/Roboto-Thin.ttf', 'It was going to be a lonely trip back.'],
           ['apache/roboto/Roboto-Thin.ttf', 'Mist enveloped the ship three hours out from port.'],
-          ['apache/roboto/Roboto-Thin.ttf', 'My two natures had memory in common.'],
+
+          ['apache/roboto/Roboto-Thin.ttf', 'Bầu trời trong xanh thăm thẳm, không một gợn mây.'],
+
+          ['apache/roboto/Roboto-Thin.ttf', 'Алая вспышка осветила силуэт зазубренного крыла.'],
+          ['apache/roboto/Roboto-Thin.ttf', 'В вечернем свете волны отчаянно бились о берег.'],
+          ['apache/roboto/Roboto-Thin.ttf', 'Возвращаться назад предстояло в одиночку.'],
+
           ['ofl/notoserifsc/NotoSerifSC-ExtraLight.otf', '他们所有的设备和仪器彷佛都是有生命的。'],
           ['ofl/notoserifsc/NotoSerifSC-ExtraLight.otf', '红色火光映出锯齿形机翼的轮廓。'],
           ['ofl/notoserifsc/NotoSerifSC-ExtraLight.otf', '我看着暴风雨，美不胜收却也惊心动魄。'],
@@ -54,11 +60,23 @@
            + 'and each must do his duty to the security and well-being of the Redoubt. Yet, for all '
            + 'that I have set down, we travelled much, always; but there were so many millions, '
            + 'and so few years.'],
-          ['apache/roboto/Roboto-Regular.ttf', 'What looked like a small patch of purple grass, above five feet '
-           + 'square, was moving across the sand in their direction. When it came near enough he '
-           + 'perceived that it was not grass; there were no blades, but only purple roots. The '
-           + 'roots were revolving, for each small plant in the whole patch, like the spokes of '
-           + 'a rimless wheel.'],
+
+          ['apache/roboto/Roboto-Regular.ttf', 'Chúng tôi đã đạt tới độ cao rất lớn trong khí quyển '
+           + 'vì bầu trời tối đen và các vì sao không còn lấp lánh. Ảo giác về đường chân trời khiến '
+           + 'đám mây ảm đạm bên dưới lõm xuống và chiếc xe như trôi bồng bềnh giữa quả cầu khổng lồ '
+           + 'tăm tối.'],
+
+          ['apache/roboto/Roboto-Regular.ttf', 'Высокая гравитация выматывала его, но мышцы изо '
+           + 'всех сил пытались приспособиться. Обессиленный, он уже не валился в постель сразу '
+           + 'после занятий. Кошмары, не покидавшие его, стали только хуже.'],
+          ['apache/roboto/Roboto-Regular.ttf', 'Лишь один взгляд на далекую планету может возвысить '
+           + 'и очистить наши мысли не хуже духовной музыки, прекрасной картины или поэтических '
+           + 'строк. Это приносит человеку несомненную пользу.'],
+          ['apache/roboto/Roboto-Regular.ttf', 'Мелкие детали значительно замедлили бы работу, '
+           + 'поэтому, вопреки моему первоначальному намерению, я решил создать существо огромного '
+           + 'размера: мощное, около двух с половиной метров ростом. Потратив несколько месяцев на '
+           + 'сбор материалов, я приступил к делу.'],
+
           ['ofl/notosanssc/NotoSansSC-Regular.otf', '远方的星体犹如圣乐、名画或伟大诗人的诗句，一眼瞬'
            + '间就能让我们的思想升华与净化。它总是能给人带来积极的影响。'],
           ['ofl/notosanssc/NotoSansSC-Regular.otf', '显然，我们已到达大气层中极高的位置，天空是一片'
@@ -148,6 +166,9 @@
                   }
                   font = state.font_data();
                   font = new FontFace(font_face, font);
+                  if (font_face == "Title Font") {
+                      font.weight = 100;
+                  }
                   document.fonts.add(font);
                   await font.load();
                   resolve(result);
@@ -189,6 +210,7 @@
 
       h1.pfe {
           font-family: "Title Font", serif;
+          font-weight: 100;
       }
 
       p.pfe {
@@ -209,7 +231,7 @@
           font-size: 1.5em;
       }
     </style>
-    <link href="//fonts.googleapis.com/css?family=Roboto:100,400|Noto+Serif+SC:200|Noto+Sans+SC:400" type="text/css" rel="stylesheet" />
+    <link href="fonts.css" type="text/css" rel="stylesheet" />
   </head>
   <body>
     <div>
