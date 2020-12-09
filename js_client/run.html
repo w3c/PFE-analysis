@@ -137,6 +137,8 @@
 
           document.getElementById("prev").disabled = (page_index == 0);
           document.getElementById("next").disabled = (page_index == PARAGRAPHS.length - 1);
+
+          update_transfer_bars();
       }
 
       function update_fonts(text, font_id, font_face) {
@@ -176,8 +178,30 @@
           });
       }
 
+      function update_transfer_bars() {
+          var pfe_total = 0;
+          var ur_total = 0;
+          for (let r of performance.getEntriesByType("resource")) {
+              if (r.name.includes("/experimental/patch_subset")) {
+                  pfe_total += r.transferSize;
+              }
+              if (r.name.includes("/s/")) {
+                  ur_total += r.transferSize;
+              }
+          }
+          var total = pfe_total + ur_total + 1;
+          document.getElementById("pfe_bar").style.width =
+              ((pfe_total / total) * 100) + "%";
+          document.getElementById("pfe_bar").textContent = pfe_total + " bytes";
+
+          document.getElementById("ur_bar").style.width =
+              ((ur_total / total) * 100) + "%";
+          document.getElementById("ur_bar").textContent = ur_total + " bytes";
+      }
+
       createModule().then(function(Module) {
           window.Module = Module;
+          update_transfer_bars();
       });
 
       window.addEventListener('DOMContentLoaded', function() {
@@ -197,6 +221,9 @@
               incxfer = e.target.checked;
               update_all_fonts();
           });
+      });
+      document.fonts.addEventListener('loadingdone', function() {
+          update_transfer_bars();
       });
     </script>
     <style>
@@ -230,6 +257,22 @@
           font-family: sans-serif;
           font-size: 1.5em;
       }
+
+      .sample_text {
+          display: inline-block;
+          width: 50em;
+      }
+
+      .metrics {
+          display: inline-block;
+          width: 30em;
+      }
+
+      .bar {
+          height: 1.2em;
+          white-space: nowrap;
+          background-color: grey;
+      }
     </style>
     <link href="fonts.css" type="text/css" rel="stylesheet" />
   </head>
@@ -240,12 +283,24 @@
       <input type="checkbox" id="incxfer" name="incxfer" checked/>
       <label for="incxfer">Use incremental font transfer</label>
     </div>
-    <h1 id="title">
-      Incremental Font Transfer Demo
-    </h1>
-    <p id="paragraph">
-      This demonstrates the use of the patch subset progressive font enrichment protocol
-      to load fonts for a variety of languages.
-    </p>
+    <div class="sample_text">
+      <h1 id="title">
+        Incremental Font Transfer Demo
+      </h1>
+      <p id="paragraph">
+        This demonstrates the use of the patch subset progressive font enrichment protocol
+        to load fonts for a variety of languages.
+      </p>
+    </div>
+    <div class="metrics">
+      <div>
+        Incremental Transfer:
+      </div>
+      <div id="pfe_bar" class="bar"></div>
+      <div>
+        Unicode Range:
+      </div>
+      <div id="ur_bar" class="bar"></div>
+    </div>
   </body>
 </html>
