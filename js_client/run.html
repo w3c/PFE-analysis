@@ -189,14 +189,14 @@
                   ur_total += r.transferSize;
               }
           }
-          var total = pfe_total + ur_total + 1;
+          var total = Math.max(Math.max(pfe_total, ur_total), 1);
           document.getElementById("pfe_bar").style.width =
               ((pfe_total / total) * 100) + "%";
-          document.getElementById("pfe_bar").textContent = pfe_total + " bytes";
+          document.getElementById("pfe_bar").textContent = pfe_total.toLocaleString() + " bytes";
 
           document.getElementById("ur_bar").style.width =
               ((ur_total / total) * 100) + "%";
-          document.getElementById("ur_bar").textContent = ur_total + " bytes";
+          document.getElementById("ur_bar").textContent = ur_total.toLocaleString() + " bytes";
       }
 
       createModule().then(function(Module) {
@@ -258,49 +258,75 @@
           font-size: 1.5em;
       }
 
+      .sample_text, .metrics, .controls {
+          padding: 1em;
+          margin: 0.3em;
+      }
+
+      .sample_text, .metrics {
+          border: 1px solid #AAAAAA;
+          border-radius: 0.3em;
+          height: 100%;
+      }
+
+      .text_and_metrics {
+          height: 40em;
+      }
+
       .sample_text {
           display: inline-block;
-          width: 50em;
+          width: 45em;
       }
 
       .metrics {
           display: inline-block;
-          width: 30em;
+          width: 25em;
+          vertical-align: top;
+      }
+
+      .metrics_inner {
+          font-family: sans-serif;
+          font-size: 1.5em;
+      }
+
+      .metrics_inner span, .metrics_inner div {
+          margin: 0.3em 0;
       }
 
       .bar {
-          height: 1.2em;
           white-space: nowrap;
-          background-color: grey;
+          background-color: #1999d4;
+          padding: 0.25em 0 0.25em 0.2em;
+          border-radius: 2px;
       }
     </style>
     <link href="fonts.css" type="text/css" rel="stylesheet" />
   </head>
   <body>
-    <div>
+    <div class="controls">
       <input type="button" value="Previous" id="prev" disabled="true" />
       <input type="button" value="Next" id="next"/>
       <input type="checkbox" id="incxfer" name="incxfer" checked/>
       <label for="incxfer">Use incremental font transfer</label>
     </div>
-    <div class="sample_text">
-      <h1 id="title">
-        Incremental Font Transfer Demo
-      </h1>
-      <p id="paragraph">
-        This demonstrates the use of the patch subset progressive font enrichment protocol
-        to load fonts for a variety of languages.
-      </p>
-    </div>
-    <div class="metrics">
-      <div>
-        Incremental Transfer:
+    <div class="text_and_metrics">
+      <div class="sample_text">
+        <h1 id="title">
+          Incremental Font Transfer Demo
+        </h1>
+        <p id="paragraph">
+          This demonstrates the use of the patch subset progressive font enrichment protocol
+          to load fonts for a variety of languages.
+        </p>
       </div>
-      <div id="pfe_bar" class="bar"></div>
-      <div>
-        Unicode Range:
+      <div class="metrics">
+        <div class="metrics_inner">
+          <span>Incremental Transfer:</span>
+          <div id="pfe_bar" class="bar"></div>
+          <span>Unicode Range:</span>
+          <div id="ur_bar" class="bar"></div>
+        </div>
       </div>
-      <div id="ur_bar" class="bar"></div>
     </div>
   </body>
 </html>
