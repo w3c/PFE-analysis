@@ -107,33 +107,34 @@
 
       var page_index = -1;
       var states = {};
-      var incxfer = true;
+      var also_load_unicode_range = false;
 
       async function update_all_fonts() {
-          if (page_index < 0) return;
+          if (page_index < 0) {
+              update_transfer_bars();
+              return;
+          }
 
           title_font = SENTENCES[page_index][0];
           title_text = SENTENCES[page_index][1]
           paragraph_font = PARAGRAPHS[page_index][0];
           paragraph_text = PARAGRAPHS[page_index][1];
 
-          if (incxfer) {
-              p1 = update_fonts(title_text,
-                                title_font,
-                                "Title Font");
-              p2 = update_fonts(paragraph_text,
-                                paragraph_font,
-                                "Paragraph Font");
-              await p1;
-              await p2;
+          p1 = update_fonts(title_text,
+                            title_font,
+                            "Title Font");
+          p2 = update_fonts(paragraph_text,
+                            paragraph_font,
+                            "Paragraph Font");
+          await p1;
+          await p2;
+
+          document.getElementById("title_pfe").textContent = title_text;
+          document.getElementById("paragraph_pfe").textContent = paragraph_text;
+          if (also_load_unicode_range) {
+              document.getElementById("title_ur").textContent = title_text;
+              document.getElementById("paragraph_ur").textContent = paragraph_text;
           }
-
-          class_name = incxfer ? "pfe" : "ur";
-          document.getElementById("title").className = class_name;
-          document.getElementById("paragraph").className = class_name;
-
-          document.getElementById("title").textContent = title_text;
-          document.getElementById("paragraph").textContent = paragraph_text;
 
           document.getElementById("prev").disabled = (page_index == 0);
           document.getElementById("next").disabled = (page_index == PARAGRAPHS.length - 1);
@@ -197,6 +198,9 @@
           document.getElementById("ur_bar").style.width =
               ((ur_total / total) * 100) + "%";
           document.getElementById("ur_bar").textContent = as_string(ur_total);
+
+          document.getElementById("ur_byte_counter").style.visibility =
+              (also_load_unicode_range ? "visible" : "hidden");
       }
 
       function as_string(byte_count) {
@@ -221,8 +225,8 @@
               if (page_index >= PARAGRAPHS.length) page_index = PARAGRAPHS.length - 1;
               update_all_fonts();
           });
-          document.getElementById("incxfer").addEventListener("change", function(e) {
-              incxfer = e.target.checked;
+          document.getElementById("also_ur").addEventListener("change", function(e) {
+              also_load_unicode_range = e.target.checked;
               update_all_fonts();
           });
       });
@@ -303,6 +307,16 @@
           padding: 0.25em 0 0.25em 0.2em;
           border-radius: 2px;
       }
+
+      .hide {
+          position: absolute;
+          top: 0;
+          left: -10000px;
+      }
+
+      #ur_byte_counter {
+          visibility: hidden;
+      }
     </style>
     <link href="fonts.css" type="text/css" rel="stylesheet" />
   </head>
@@ -310,25 +324,29 @@
     <div class="controls">
       <input type="button" value="Previous" id="prev" disabled="true" />
       <input type="button" value="Next" id="next"/>
-      <input type="checkbox" id="incxfer" name="incxfer" checked/>
-      <label for="incxfer">Use incremental font transfer</label>
+      <input type="checkbox" id="also_ur" name="also_ur" />
+      <label for="also_ur">Also load fonts via unicode range.</label>
     </div>
     <div class="text_and_metrics">
-      <div class="sample_text">
-        <h1 id="title">
-          Incremental Font Transfer Demo
-        </h1>
-        <p id="paragraph">
+      <div id="pfe_sample" class="sample_text">
+        <h1 id="title_pfe" class="pfe">Incremental Font Transfer Demo</h1>
+        <p id="paragraph_pfe" class="pfe">
           This demonstrates the use of the patch subset progressive font enrichment protocol
           to load fonts for a variety of languages.
         </p>
+      </div>
+      <div id="ur_sample" class="sample_text hide">
+        <h1 id="title_ur" class="ur"></h1>
+        <p id="paragraph_ur" class="ur"></p>
       </div>
       <div class="metrics">
         <div class="metrics_inner">
           <span>Incremental Transfer:</span>
           <div id="pfe_bar" class="bar"></div>
-          <span>Unicode Range:</span>
-          <div id="ur_bar" class="bar"></div>
+          <div id="ur_byte_counter">
+            <span>Unicode Range:</span>
+            <div id="ur_bar" class="bar"></div>
+          </div>
         </div>
       </div>
     </div>
