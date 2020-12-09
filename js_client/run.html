@@ -265,8 +265,8 @@
           font-size: 3em;
       }
 
-      p {
-          font-size: 2em;
+      div.pfe, div.ur {
+          font-size: 1.5em;
       }
 
       h1.pfe {
@@ -274,7 +274,7 @@
           font-weight: 100;
       }
 
-      p.pfe {
+      div.pfe {
           font-family: "Paragraph Font", serif;
       }
 
@@ -283,7 +283,7 @@
           font-weight: 100;
       }
 
-      p.ur {
+      div.ur {
           font-family: "Roboto", "Noto Sans SC";
       }
 
@@ -304,7 +304,7 @@
       }
 
       .text_and_metrics {
-          height: 40em;
+          height: 50em;
       }
 
       .sample_text {
@@ -365,15 +365,35 @@
       <div id="pfe_sample" class="sample_text">
         <div class="type">Progressive Font Enrichment</div>
         <h1 id="title_pfe" class="pfe">Progressive Font Enrichment Demo</h1>
-        <p id="paragraph_pfe" class="pfe">
+        <div id="paragraph_pfe" class="pfe">
           This demonstrates the use of the patch subset progressive font enrichment protocol
-          to load fonts for a variety of languages.
-        </p>
+          to incrementaly load fonts for a variety of languages.
+          <br/><br/>
+          Instructions:
+          <ul>
+            <li>Next/Previous will switch between text samples. Switching to a new sample will use
+            PFE to load any additional font data needed for it.</li>
+            <li>If "Also load fonts via unicode range" is selected then fonts will be
+              loaded via the Google Fonts API (using unicode range) in parallel to
+              the progressive font enrichment.</li>
+            <li><b>Disable caching (via dev console) or force refresh the page (ctrl+shift+r) before
+              starting. If caching is enabled the unicode range font loading may be served from
+              the cache which will make the bytes transferred incorrect.</b></li>
+            <li>If unicode range loading is enabled you can switch the displayed text
+              sample between the two methods using the "Show unicode range" button.</li>
+          </ul>
+          Interesting things to try:
+          <ul>
+            <li>Switching between the unicode range and pfe text for the cyrillic and vietnamese
+              samples demonstrates how unicode range breaks kerning between characters in different
+              subsets</li>
+          </ul>
+        </div>
       </div>
       <div id="ur_sample" class="sample_text hide">
         <div class="type">Unicode range</div>
         <h1 id="title_ur" class="ur"></h1>
-        <p id="paragraph_ur" class="ur"></p>
+        <div id="paragraph_ur" class="ur"></div>
       </div>
       <div class="metrics">
         <div class="metrics_inner">
