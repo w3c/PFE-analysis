@@ -22,7 +22,13 @@ jobs:
 
       - name: Test
         run: |
-          "${GITHUB_WORKSPACE}/bin/bazel" test //... --test_output=all
+          "${GITHUB_WORKSPACE}/bin/bazel" test //analysis/... //common/... //patch_subset/... //tools/... //util/... //woff2_py/... --test_output=all
+        env:
+          CC: gcc-9
+
+      - name: Build Webassembly
+        run: |
+          "${GITHUB_WORKSPACE}/bin/bazel" build --copt=-Os --config=wasm js_client:patch_subset_wasm.js
         env:
           CC: gcc-9
 
@@ -34,12 +40,15 @@ jobs:
 
       - name: Install bazel
         run: |
-          curl -L -O "https://github.com/bazelbuild/bazel/releases/download/1.1.0/bazel-1.1.0-installer-darwin-x86_64.sh"
-          chmod a+x ./bazel-1.1.0-installer-darwin-x86_64.sh
-          ./bazel-1.1.0-installer-darwin-x86_64.sh
+          curl -L -O "https://github.com/bazelbuild/bazel/releases/download/3.7.1/bazel-3.7.1-installer-darwin-x86_64.sh"
+          chmod a+x ./bazel-3.7.1-installer-darwin-x86_64.sh
+          ./bazel-3.7.1-installer-darwin-x86_64.sh
 
-      - name: run
-        run: bazel test //... --test_output=all
+      - name: Run Tests
+        run: bazel test //analysis/... //common/... //patch_subset/... //tools/... //util/... //woff2_py/... --test_output=all
+
+      - name: Build WebAssembly
+        run: bazel build --copt=-Os --config=wasm js_client:patch_subset_wasm.js
     
   check_formatting:
     name: Check Formatting
