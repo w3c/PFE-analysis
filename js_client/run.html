@@ -108,7 +108,7 @@
 
       var page_index = -1;
       var states = {};
-      var also_load_unicode_range = false;
+      var also_load_unicode_range = true;
       var show_unicode_range = false;
 
       async function update_all_fonts() {
@@ -358,7 +358,7 @@
       <input type="button" value="Next" id="next"/>
       <input type="button" value="Show Unicode Range" id="sample_toggle" style="visibility: hidden;" />
       <br/>
-      <input type="checkbox" id="also_ur" name="also_ur" />
+      <input type="checkbox" id="also_ur" name="also_ur" checked />
       <label for="also_ur">Also load fonts via unicode range.</label>
     </div>
     <div class="text_and_metrics">
