@@ -46,9 +46,6 @@ jobs:
 
       - name: Run Tests
         run: bazel test //analysis/... //common/... //patch_subset/... //tools/... //util/... //woff2_py/... --test_output=all
-
-      - name: Build WebAssembly
-        run: bazel build --copt=-Os --config=wasm js_client:patch_subset_wasm.js
     
   check_formatting:
     name: Check Formatting
