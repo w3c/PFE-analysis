@@ -34,6 +34,9 @@ for f in $(find ./ -name "*.py"); do
   if [[ $f = */range_request_* ]]; then
     continue
   fi
+  if [[ $f = */emscripten_toolchain* ]]; then
+    continue
+  fi
   
   yapf --style="{based_on_style: google, indent_width: 2}" -d $f \    
   if [ $? -ne 0 ]; then
