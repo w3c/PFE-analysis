@@ -126,6 +126,9 @@ Accept-Patch: <list of patch formats>
 
 #### Cons:
 
+*  Custom headers will likely trip a requirement for a CORS preflight request. This would
+   add an exrta round trip to the first request if the fonts are not hosted on the same domain as
+   the content. See [Preflight Requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#Preflighted_requests).
 *  Custom headers may be stripped by intermediate proxies. Can mostly be mitigated by requiring HTTPS
    for requests, which we also likely want to do for privacy reasons.
 *  Custom headers may need to be registered with the appropriate standards bodies (outside of the
