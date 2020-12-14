@@ -20,16 +20,16 @@
 #include "patch_subset/patch_subset.pb.h"
 
 using namespace emscripten;
-using google::protobuf::io::ArrayInputStream;
-using patch_subset::ClientState;
-using patch_subset::CompressedSet;
-using patch_subset::hb_set_unique_ptr;
-using patch_subset::make_hb_set;
-using patch_subset::NullRequestLogger;
-using patch_subset::PatchRequestProto;
-using patch_subset::PatchResponseProto;
-using patch_subset::PatchSubsetClient;
-using patch_subset::StatusCode;
+using ::google::protobuf::io::ArrayInputStream;
+using ::patch_subset::ClientState;
+using ::patch_subset::CompressedSet;
+using ::patch_subset::hb_set_unique_ptr;
+using ::patch_subset::make_hb_set;
+using ::patch_subset::NullRequestLogger;
+using ::patch_subset::PatchRequestProto;
+using ::patch_subset::PatchResponseProto;
+using ::patch_subset::PatchSubsetClient;
+using ::patch_subset::StatusCode;
 
 struct RequestContext {
   RequestContext(val& _callback, std::unique_ptr<std::string> _payload)
