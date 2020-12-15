@@ -201,7 +201,8 @@
           var pfe_total = 0;
           var ur_total = 0;
           for (let r of performance.getEntriesByType("resource")) {
-              if (r.name.includes("/experimental/patch_subset")) {
+              if (r.name.includes("/experimental/patch_subset")
+                  && (r.name.endsWith(".ttf") || r.name.endsWith(".otf"))) {
                   pfe_total += r.transferSize;
               }
               if (r.name.includes("/s/")) {
