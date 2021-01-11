@@ -35,6 +35,9 @@ class ServerConfig {
   // Location of the font library.
   std::string font_directory = "";
 
+  // Location of unicode range data files
+  std::string unicode_data_directory = "";
+
   // Maximum number of predicted codepoints to add to each request.
   int max_predicted_codepoints = 0;
 
@@ -64,8 +67,15 @@ class ServerConfig {
           new NoopCodepointPredictor());
     }
 
-    CodepointPredictor* predictor = reinterpret_cast<CodepointPredictor*>(
-        FrequencyCodepointPredictor::Create(prediction_frequency_threshold));
+    CodepointPredictor* predictor = nullptr;
+    if (unicode_data_directory.empty()) {
+      predictor = reinterpret_cast<CodepointPredictor*>(
+          FrequencyCodepointPredictor::Create(prediction_frequency_threshold));
+    } else {
+      predictor = reinterpret_cast<CodepointPredictor*>(
+          FrequencyCodepointPredictor::Create(prediction_frequency_threshold,
+                                              unicode_data_directory));
+    }
 
     if (predictor) {
       return predictor;
