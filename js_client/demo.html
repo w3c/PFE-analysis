@@ -110,6 +110,7 @@
       var states = {};
       var also_load_unicode_range = true;
       var show_unicode_range = false;
+      var use_prediction = false;
 
       async function update_all_fonts() {
           if (page_index < 0) {
@@ -175,6 +176,9 @@
       }
 
       function patch_codepoints(font_id, font_face, cps) {
+          if (use_prediction) {
+              font_id = "with_prediction/" + font_id;
+          }
           if (!states[font_id]) {
               states[font_id] = new window.Module.State(font_id);
           }
@@ -251,6 +255,9 @@
               }
               update_all_fonts();
               update_sample_toggle();
+          });
+          document.getElementById("prediction").addEventListener("change", function(e) {
+              use_prediction = e.target.checked;
           });
           document.getElementById("sample_toggle").addEventListener("click", e => {
               show_unicode_range = !show_unicode_range;
@@ -360,7 +367,9 @@
       <input type="button" value="Show Unicode Range" id="sample_toggle" style="visibility: hidden;" />
       <br/>
       <input type="checkbox" id="also_ur" name="also_ur" checked />
-      <label for="also_ur">Also load fonts via unicode range.</label>
+      <label for="also_ur">Also load fonts via unicode range.</label><br/>
+      <input type="checkbox" id="prediction" name="prediction" />
+      <label for="prediction">Use codepoint prediction.</label>
     </div>
     <div class="text_and_metrics">
       <div id="pfe_sample" class="sample_text">
