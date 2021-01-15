@@ -1,5 +1,5 @@
 Author: Garret Rieger  
-Date: January 14th, 2021__
+Date: January 14th, 2021  
 
 # Changes from V1
 
@@ -37,14 +37,14 @@ Variable length signed int, uses zig zag encoding.
 
 TODO(garretrieger): more details.
 
-## ArrayOf<Type>
+## ArrayOf\<Type\>
 
-Length delimited list of <Type>
+Length delimited list of `Type`
 
 ```
 struct {
   UIntBase128 length;
-  <Type> values[length];
+  Type values[length];
 };
 ```
 
@@ -66,14 +66,14 @@ byte field_0[];
 byte field_n[];
 ```
 
-In present_fields if bit M is set to 0 that implies that data for the
+In present_fields if bit M is set to 1 that implies that data for the
 field with ID = M is present.
 
 ## Request
 
   | ID | Field Name             | Type                 |
   | -- | ---------------------- | -------------------- |
-  | 0  | protocol_versio        | UIntBase128          |
+  | 0  | protocol_version       | UIntBase128          |
   | 1  | original_font_checksum | Uint64               |
   | 2  | base_checksum          | Uint64               |
   | 3  | patch_format           | ArrayOf<UIntBase128> |
@@ -85,9 +85,9 @@ field with ID = M is present.
 
 patch_format can include the following values:
 
-  | Patch Format             | Value |
-  | ------------------------ | ----- |
-  | Brotli Shared Dictionary | 0     |
+  | Value | Patch Format             |
+  | ----- | ------------------------ |
+  | 0     | Brotli Shared Dictionary |
 
 ## Response
 
@@ -103,11 +103,11 @@ patch_format can include the following values:
 
 response_type can be one of the following values:
 
-  | Response Type            | Value |
-  | ------------------------ | ----- |
-  | PATCH                    | 0     |
-  | REBASE                   | 1     |
-  | REINDEX                  | 2     |
+  | Value | Response Type            |
+  | ----- | ------------------------ |
+  | 0     | PATCH                    |
+  | 1     | REBASE                   |
+  | 2     | REINDEX                  |
   
 
 ## CompressedList
