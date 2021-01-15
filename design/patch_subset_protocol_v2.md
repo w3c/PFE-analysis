@@ -86,17 +86,28 @@ Layer 2 - `byte 1 = 00000010`: Tells us we have the value '2'.
 
 ## UInt64
 
-unsigned 64 bit integer. Exactly 4 bytes.
+Unsigned 64 bit integer. Uses 4 bytes and stored in big-endian order.
 
 ## UIntBase128
 
-Variable length unsigned int, see WOFF2 specfication.´
+A variable length encoding of unsigned integers,  suitable for values up to
+2³²-1. See [WOFF2 specfication](https://www.w3.org/TR/WOFF2/#DataTypes) for
+more details.
 
 ## IntBase128
 
-Variable length signed int, uses zig zag encoding.
+A variable length encoding of signed integers. Uses a zig zag encoding to
+map a signed value to an unsigned value. The unsigned value is then encoded
+as an UIntBase128.
 
-TODO(garretrieger): more details.
+| Signed Original | Encoded As |
+| --------------- | ---------- |
+| 0               | 0          |
+| -1              | 1          |
+| 1               | 2          |
+| -2              | 3          |
+| 2147483647      | 4294967294 |
+| -2147483648     | 4294967295 |
 
 ## ArrayOf\<Type\>
 
