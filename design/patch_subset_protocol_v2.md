@@ -1,6 +1,8 @@
 Author: Garret Rieger  
 Date: January 14th, 2021__
 
+# Changes from V1
+
 # Overview
 
 TODO(garretrieger): fill in.
@@ -28,6 +30,12 @@ unsigned 64 bit integer. Exactly 4 bytes.
 ## UIntBase128
 
 Variable length unsigned int, see WOFF2 specfication.
+
+## SIntBase128
+
+Variable length signed int, uses zig zag encoding.
+
+TODO(garretrieger): more details.
 
 ## ArrayOf<Type>
 
@@ -65,16 +73,42 @@ field with ID = M is present.
 
   | ID | Field Name             | Type                 |
   | -- | ---------------------- | -------------------- |
-  | 0  | original_font_checksum | Uint64               |
-  | 1  | base_checksum          | Uint64               |
-  | 2  | patch_format           | ArrayOf<UIntBase128> |
-  | 3  | codepoints_have        | CompressedSet        |
-  | 4  | codepoints_needed      | CompressedSet        |
-  | 5  | index_checksum         | Uint64               |
-  | 6  | indices_have           | CompressedSet        |
-  | 7  | indices_needed         | CompressedSet        |
+  | 0  | protocol_versio        | UIntBase128          |
+  | 1  | original_font_checksum | Uint64               |
+  | 2  | base_checksum          | Uint64               |
+  | 3  | patch_format           | ArrayOf<UIntBase128> |
+  | 4  | codepoints_have        | CompressedSet        |
+  | 5  | codepoints_needed      | CompressedSet        |
+  | 6  | index_checksum         | Uint64               |
+  | 7  | indices_have           | CompressedSet        |
+  | 8  | indices_needed         | CompressedSet        |
+
+patch_format can include the following values:
+
+  | Patch Format             | Value |
+  | ------------------------ | ----- |
+  | Brotli Shared Dictionary | 0     |
 
 ## Response
+
+  | ID | Field Name             | Type                 |
+  | -- | ---------------------- | -------------------- |
+  | 0  | response_type          | UIntBase128          |
+  | 1  | original_font_checksum | Uint64               |
+  | 2  | patch_format           | UIntBase128          |
+  | 3  | patch                  | ArrayOf<byte>        |
+  | 4  | patched_checksum       | Uint64               |
+  | 5  | codepoint_ordering     | CompressedList       |
+  | 5  | ordering_checksum      | Uint64               |
+
+response_type can be one of the following values:
+
+  | Response Type            | Value |
+  | ------------------------ | ----- |
+  | PATCH                    | 0     |
+  | REBASE                   | 1     |
+  | REINDEX                  | 2     |
+  
 
 ## CompressedList
 
