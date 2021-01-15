@@ -30,17 +30,37 @@ of the client and server.
 
 ## VarBitSet
 
-A variable length bit set. Occupies one or more bytes. The length of the
-bit set is determined by reading bytes until encountering one where the
-most significant bit set to zero. For each byte the remaining 7 bits are
-used as a bit set.
+A variable length bit set which occupies one or more bytes. The length of
+the bit set is determined by reading bytes until encountering one where the
+most significant bit set to zero. The remaining 7 bits of each read byte is 
+then concatanted to produce the bit set. Bits in the set are number from 0
+to N going from the LSB to the MSB.
 
-For example the bytes:
+For example the two bytes:
 b10000100, b01100000
 
 Encodes the bitset:
 
 00001001100000
+
+Which has the numbering:
+
+| Bit Number | Value |
+| ---------- | ----- |
+| 0          | 0     |
+| 1          | 0     |
+| 2          | 0     |
+| 3          | 0     |
+| 4          | 0     |
+| 5          | 1     |
+| 6          | 1     |
+| 7          | 0     |
+| 8          | 0     |
+| 9          | 1     |
+| 10         | 0     |
+| 11         | 0     |
+| 12         | 0     |
+| 13         | 0     |
 
 ## UInt64
 
