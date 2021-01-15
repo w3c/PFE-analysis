@@ -23,6 +23,7 @@ of the client and server.
 | Data Type       | Description                                           |
 | --------------- | ----------------------------------------------------- |
 | VarBitSet       | Variable length bit set.                              |
+| SparseBitSet    | Sparse bit set.                                       |
 | UInt64          | Unsigned 64 bit integer. Stored big-endian.           | 
 | UIntBase128     | Variable-length encoding of 32-bit unsigned integers. |
 | IntBase128      | Variable-length encoding of 32-bit signed integers.   |
@@ -61,6 +62,27 @@ Which has the numbering:
 | 11         | 0     |
 | 12         | 0     |
 | 13         | 0     |
+
+## SparseBitSet
+
+A data structure which represents a set of non negative integers using a
+bit set tree. This gives the compactness of a bit set, but needs far less
+bytes when dealing with a set that has large gaps between members.
+
+Each single byte is a node in the tree. Each bit in the byte indicates if
+there is a child node at that position. For leaf nodes bits are used to
+indicate that the corresponding value is present in the set.
+ 
+To illustrate we can represent the set {2, 63} with a tree of depth 2 using
+3 bytes.
+ 
+Layer 1 - `byte 0 = 10000001`: This tells us there are two children in the
+next layer. Since this is a two layer tree each bit points  to a child node
+that can contain 8 possible values. In this example the two nodes cover the
+range 0 - 7 and 56 - 63.
+ 
+Layer 2 - `byte 1 = 00000010`: Tells us we have the value '2'.
+`byte 2 = 10000000`: tells us we have the value '63'.
 
 ## UInt64
 
