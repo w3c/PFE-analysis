@@ -1,13 +1,32 @@
 Author: Garret Rieger  
 Date: January 14th, 2021  
+Document Version: 2  
 
-# Changes from V1
+# Changes from Version 1
+
+* Changed binary protocol to use a custom encoding which replaces protobuf.
 
 # Overview
 
-TODO(garretrieger): fill in.
+This document describes a protocol which  allows a client to retrieve a
+subset of a font and then augment it by expanding the subset with
+subsequent requests. Requests are sent to a server via HTTP POST requests.
+Request information is encoded into the body of the POST request using a
+custom binary encoding.
 
-# Primitive Data Types
+The following sections first describe the encoding for the request and
+response payload. Then subsequent sections discuss the expected behaviour
+of the client and server.
+
+# Basic Data Types
+
+| Data Type       | Description                                           |
+| --------------- | ----------------------------------------------------- |
+| VarBitSet       | Variable length bit set.                              |
+| UInt64          | Unsigned 64 bit integer. Stored big-endian.           | 
+| UIntBase128     | Variable-length encoding of 32-bit unsigned integers. |
+| IntBase128      | Variable-length encoding of 32-bit signed integers.   |
+| ArrayOf\<Type\> | Length delimited array of another `Type`.             |
 
 ## VarBitSet
 
@@ -23,15 +42,15 @@ Encodes the bitset:
 
 00001001100000
 
-## Uint64
+## UInt64
 
 unsigned 64 bit integer. Exactly 4 bytes.
 
 ## UIntBase128
 
-Variable length unsigned int, see WOFF2 specfication.
+Variable length unsigned int, see WOFF2 specfication.´
 
-## SIntBase128
+## IntBase128
 
 Variable length signed int, uses zig zag encoding.
 
@@ -125,4 +144,6 @@ response_type can be one of the following values:
   | 1  | range_deltas           | ArrayOf<UIntBase128> |
 
 # Request Behaviour
+
+# Response Behaviour
 
