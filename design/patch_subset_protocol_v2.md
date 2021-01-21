@@ -106,6 +106,7 @@ as an UIntBase128.
 | -1              | 1          |
 | 1               | 2          |
 | -2              | 3          |
+| ...             | ...        |
 | 2147483647      | 4294967294 |
 | -2147483648     | 4294967295 |
 
@@ -139,21 +140,23 @@ byte field_n[];
 ```
 
 In present_fields if bit M is set to 1 that implies that data for the
-field with ID = M is present.
+field with ID = M is present. The length of each field is variable and
+is determined by decoding that field with using the specified deconding
+for the particular type.
 
 ## Request
 
-  | ID | Field Name             | Type                 |
-  | -- | ---------------------- | -------------------- |
-  | 0  | protocol_version       | UIntBase128          |
-  | 1  | original_font_checksum | Uint64               |
-  | 2  | base_checksum          | Uint64               |
-  | 3  | patch_format           | ArrayOf<UIntBase128> |
-  | 4  | codepoints_have        | CompressedSet        |
-  | 5  | codepoints_needed      | CompressedSet        |
-  | 6  | index_checksum         | Uint64               |
-  | 7  | indices_have           | CompressedSet        |
-  | 8  | indices_needed         | CompressedSet        |
+  | ID | Field Name             | Type                   |
+  | -- | ---------------------- | ---------------------- |
+  | 0  | protocol_version       | UIntBase128            |
+  | 1  | original_font_checksum | Uint64                 |
+  | 2  | base_checksum          | Uint64                 |
+  | 3  | patch_format           | ArrayOf\<UIntBase128\> |
+  | 4  | codepoints_have        | CompressedSet          |
+  | 5  | codepoints_needed      | CompressedSet          |
+  | 6  | index_checksum         | Uint64                 |
+  | 7  | indices_have           | CompressedSet          |
+  | 8  | indices_needed         | CompressedSet          |
 
 patch_format can include the following values:
 
@@ -168,7 +171,7 @@ patch_format can include the following values:
   | 0  | response_type          | UIntBase128          |
   | 1  | original_font_checksum | Uint64               |
   | 2  | patch_format           | UIntBase128          |
-  | 3  | patch                  | ArrayOf<byte>        |
+  | 3  | patch                  | ArrayOf\<byte\>      |
   | 4  | patched_checksum       | Uint64               |
   | 5  | codepoint_ordering     | CompressedList       |
   | 5  | ordering_checksum      | Uint64               |
@@ -184,17 +187,32 @@ response_type can be one of the following values:
 
 ## CompressedList
 
-  | ID | Field Name             | Type                 |
-  | -- | ---------------------- | -------------------- |
-  | 0  | value_deltas           | ArrayOf<IntBase128>  |
-  | 1  | range_deltas           | ArrayOf<UIntBase128> |
+Encodes a list of unsigned integers. The set is ordered and allows
+duplicate values. Values are encoded as a list of deltas where each delta
+the difference between the current and previous value in the list. The list
+\[2, 2, 5, 1, 3, 7\] would be encoded as \[2, 0, 3, -4, 2, 4\].
+
+
+  | ID | Field Name             | Type                   |
+  | -- | ---------------------- | ---------------------- |
+  | 0  | value_deltas           | ArrayOf\<IntBase128\>  |
 
 ## CompressedSet
 
-  | ID | Field Name             | Type                 |
-  | -- | ---------------------- | -------------------- |
-  | 0  | sparse_bit_set         | ArrayOf<Uint8>       |
-  | 1  | range_deltas           | ArrayOf<UIntBase128> |
+Encodes a set of unsigned integers. The set is not ordered and does not
+allow duplicates. Members of the set are encoded into either a sparse bit
+set or a list of ranges. To obtain the final set the members of the sparse
+bit set and the list of ranges are unioned together.
+
+The list of ranges is encoded as a series of deltas. For example the ranges
+
+\[3, 10\], \[13, 15\], \[17, 17\] would be encoded as \[3, 7, 3, 2, 2, 0\].
+
+  | ID | Field Name             | Type                   |
+  | -- | ---------------------- | ---------------------- |
+  | 0  | sparse_bit_set         | SparseBitSet           |
+  | 1  | range_deltas           | ArrayOf\<UIntBase128\> |
+
 
 # Request Behaviour
 
