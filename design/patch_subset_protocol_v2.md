@@ -86,7 +86,7 @@ Layer 2 - `byte 1 = 00000010`: Tells us we have the value '2'.
 
 ## UInt64
 
-Unsigned 64 bit integer. Uses 4 bytes and stored in big-endian order.
+Unsigned 64 bit integer. Uses 8 bytes and stored in big-endian order.
 
 ## UIntBase128
 
