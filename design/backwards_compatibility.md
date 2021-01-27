@@ -28,8 +28,8 @@ The parameter and header names used in this doc are not meant to be final, these
 
 ```css
 @font-face {
-  src: url(https://foo.bar/the_font.ttf) format(‘incremental’),
-       url(https://foo.bar/the_font.woff2) format('woff2');
+  src: url(https://foo.bar/the_font.woff2) format('woff2');
+  src: url(https://foo.bar/the_font.ttf) format(truetype supports incremental);
 }
 ```
 
@@ -53,6 +53,9 @@ The parameter and header names used in this doc are not meant to be final, these
                 <li>Response back to client looks like a normal static file, so client switches to
                     using HTTP ranges for incremental transfer (if font is TTF/OTF and glyph table
                     is at the end).</li>
+                <li>The client can identify the response as a static file by inspecting the first 4 bytes
+                    of the response which will be 'OTTO' for an opentype file, or 0x00010000 for a truetype
+                    file.</li>
             </ul>
         </td>
     </tr>
@@ -70,6 +73,8 @@ The parameter and header names used in this doc are not meant to be final, these
                 <li>Client sends request with patch/subset parameters.</li>
                 <li>Server recognizes it and sends appropriate response using patch/subset
                     protocol.</li>
+                <li>Client identifies the response as coming from an incremental transfer capable server
+                    by inspecting the first 4 bytes of the response (identifying value TBD).</li>
                 <li>Further enrichment requests are sent using non-backwards compatible patch/subset
                     specific protocol.</li>
             </ul>
