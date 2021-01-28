@@ -57,28 +57,59 @@ the corresponding CBOR data item for that value.
 
 The ordering of the key value pairs in the encoding is not specified.
 
-## Sparse Bit Set
+## SparseBitSet
 
 A data structure which represents a set of non negative integers using a
 bit set tree. This gives the compactness of a bit set, but needs far less
 bytes when dealing with a set that has large gaps between members.
 
-Each single byte is a node in the tree. Each bit in the byte indicates if
-there is a child node at that position. For leaf nodes bits are used to
-indicate that the corresponding value is present in the set.
- 
-To illustrate we can represent the set {2, 63} with a tree of depth 2 using
-3 bytes.
- 
-Layer 1 - `byte 0 = 10000001`: This tells us there are two children in the
-next layer. Since this is a two layer tree each bit points  to a child node
-that can contain 8 possible values. In this example the two nodes cover the
-range 0 - 7 and 56 - 63.
- 
-Layer 2 - `byte 1 = 00000010`: Tells us we have the value '2'.
-`byte 2 = 10000000`: tells us we have the value '63'.
+A tree of height N can encode any set which contains values between 0 and
+8^N - 1.
 
-TODO(garretrieger): replace this with the longer more detailed writeup.
+Each node in the tree corresponds to an interval of values. The root
+node covers the internal [0, 8^N-1]. A node subdivides the interval it
+covers into 8 equal length intervals. It may have up to 8 children, where
+each child node corresponds to one of the 8 sub intervals. If a child node
+covering an interval is present this implies that there is at least one
+set member within that interval. This subdivision continues until the
+bottom of the tree is reached where leaf nodes represent an interval
+covering 8 values.
+
+Each node is encoded as a single byte. Each of the 8 bits in the byte
+represent each of the 8 sub intervals covered by the node. If a bit is
+set it indicates that a child node is present which covers that interval.
+
+The tree can then be serialized to a byte array by placing each node's byte
+into the array in layer order.
+
+For example, the set {2, 33, 323} can be encoded as a tree of
+height 3 (A tree of height 2 can encode [0, 63], height 3 can encode
+[0, 511]).
+
+```
+|- layer 1 -|------ layer 2 --------|----------- layer 3 ---------------|
+[ 0b10000100, 0b10001000, 0b10000000, 0b00100000, 0b01000000, 0b00010000]
+```
+
+The first byte `0b10000100` is the root node. Two bits are set which
+indicates that there are two children. The first child covers all values
+between 0 and 63 and the second between 320 and 383.
+
+The next two bytes, `0b10001000` and `0b10000000`, are the two children
+of the root node: 
+
+* `0b10001000` indicates that it has children covering values in [0, 7]
+  and in [32, 39].
+  
+* `0b10000000` indicates that it has a single child covering values in
+  [320 - 327]
+  
+Finally the last 3 bytes `0b00100000, 0b01000000, 0b00010000` represent
+the third layer of the tree:
+
+* `0b00100000` indicates that value 2 is in the set.
+* `0b01000000` indicates that value 32 + 1 = 33 is in the set.
+* `0b00010000` inidcates that value 320 + 3 = 323 is in the set.
 
 ### COBR Encoding
 
