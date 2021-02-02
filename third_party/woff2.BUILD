@@ -19,6 +19,8 @@ cc_library(
         "include/woff2/decode.h",
         "include/woff2/encode.h",
         "include/woff2/output.h",
+	"src/transform.h",
+	"src/font.h",
     ],
     copts = [
         "-Wno-unused-variable",
@@ -27,6 +29,7 @@ cc_library(
     ],
     includes = [
         "include/",
+	"src/",
     ],
     visibility = ["//visibility:public"],
     deps = [
