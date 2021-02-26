@@ -108,5 +108,6 @@ class CombinedPatchSubsetMethodTest(unittest.TestCase):
         desktop_session_normal.get_request_graphs()[0].total_response_bytes(),
         desktop_session_auto.get_request_graphs()[0].total_response_bytes())
 
+
 if __name__ == '__main__':
   unittest.main()
