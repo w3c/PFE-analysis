@@ -33,6 +33,7 @@ py_test(
     deps = [
         ":pfe_methods",
         "//analysis:common",
+        "@io_abseil_py//absl/testing:flagsaver",
     ],
 )
 
