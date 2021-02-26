@@ -4,9 +4,9 @@ Simulates the patch subset PFE method but picks the optimal codepoint prediction
 parameters based on the network conditions.
 """
 
+import sys
 from absl import flags
 from patch_subset.py import patch_subset_method
-import sys
 
 FLAGS = flags.FLAGS
 
@@ -239,8 +239,6 @@ def optimal_settings(network_model, script_category):
       "latin_mobile_wifi_slowest": 0.005772,
   }
   key = script_category + "_" + network_model.name
-  v1 = max_cp_map.get(key)
-  v2 = freq_thresh_map.get(key)
   return max_cp_map.get(key), freq_thresh_map.get(key)
 
 
