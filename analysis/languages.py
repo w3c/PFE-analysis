@@ -68,7 +68,7 @@ def language_filter():
   """Returns the set of languages to filter sequences against.
 
   The filter set is based on the 'script_category' and 'filter_languages'
-  flags. If 'script_category' is set it takes precendent.
+  flags. If 'script_category' is set it takes precedence.
   """
   if FLAGS.script_category:
     if FLAGS.script_category in SCRIPT_CATEGORIES:
