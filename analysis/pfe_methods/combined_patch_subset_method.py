@@ -45,7 +45,7 @@ def pick_method(network_model, script_category):  # pylint: disable=too-many-ret
   # TODO(garretrieger): should use the font being extended to determine the script category.
   if FLAGS.auto_settings:
     if not network_model:
-     sys.stderr.write("MISSING NETWORK MODEL\n")
+      sys.stderr.write("MISSING NETWORK MODEL\n")
     elif not script_category:
       sys.stderr.write("MISSING SCRIPT CATEGORY\n")
     else:
