@@ -28,6 +28,8 @@
           ['ofl/notoserifsc/NotoSerifSC-ExtraLight.otf', '船只离开港口后，就在薄雾的笼罩下航行了'
            + '三小时。'],
           ['ofl/notoserifsc/NotoSerifSC-ExtraLight.otf', '我的两种人格拥有共同的记忆。'],
+
+          ['apache/roboto/Roboto-Thin.ttf', 'Emoji Test'],
       ];
 
       const PARAGRAPHS = [
@@ -104,6 +106,9 @@
            + '面积在 5 平方英尺以上，正穿过沙地朝着他们移动。当它靠得足够近时，他才发现这不是草，'
            + '没有叶子，只有紫色的根。这一整片中的每株小植物的紫色根都在旋转，就像无边缘轮轴的辐条'
            + '一样。'],
+
+          ['apache/notocoloremojicompat/NotoColorEmojiCompat-Regular.ttf',
+           '🤛🏻🤛🏼🤛🏽🤛🏿🧔🏿👨🏻‍🦰👨🏼‍🦰👨🏽‍🦰👨🏾‍🦰🧑🏻‍🦰🧑🏼‍🦰🧑🏽‍🦰🧑🏾‍🦰🧑🏿‍🦰👩🏻‍🦱👩🏼‍🦱👩🏽‍🦱👩🏾‍🦱🥬🥦🧄🧅🥜🍞🥐🚔🚖🚙🛻🚛'],
       ];
 
       var page_index = -1;
@@ -163,8 +168,8 @@
 
       function update_fonts(text, font_id, font_face) {
           cps = new Set()
-          for (var i = 0; i < text.length; i++) {
-              cps.add(text.charCodeAt(i));
+          for (var i = 0; text.codePointAt(i); i++) {
+              cps.add(text.codePointAt(i));
           }
 
           cps_array = []
@@ -292,7 +297,7 @@
       }
 
       div.ur {
-          font-family: "Roboto", "Noto Sans SC";
+          font-family: "Roboto", "Noto Sans SC", "Noto Color Emoji Compat";
       }
 
       input, label {
