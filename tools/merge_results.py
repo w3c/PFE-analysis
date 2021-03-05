@@ -3,6 +3,7 @@
 import functools
 
 from absl import app
+from google.protobuf import text_format
 from analysis import result_pb2
 
 
@@ -38,9 +39,17 @@ def remove_failed_sequences(sequences, proto_path, other_proto_paths):
 
 
 def main(argv):
+  assert len(argv) > 2, "Usage: merge_results in [in...] out"
   result_path = argv.pop()
+  print("Merging results")
+  result = merge(argv[1:])
+  print("Writing binary results to %s ..." % result_path)
   with open(result_path, 'wb') as out:
-    out.write(merge(argv[1:]))
+    out.write(result.SerializeToString())
+  print("Writing text results to %s.text ..." % result_path)
+  with open(result_path + ".text", 'w') as out:
+    out.write(text_format.MessageToString(result))
+  print("Done.")
 
 
 def update_sequence_values(values, path, paths):
@@ -55,15 +64,19 @@ def merge(paths):
   protos = dict()
   for path in paths:
     with open(path, "rb") as input_data_file:
+      print("Reading %s ..." % path)
       contents = input_data_file.read()
 
     proto = result_pb2.AnalysisResultProto()
-    proto.ParseFromString(contents)
+    print("  Parsing %s ..." % path)
+    text_format.Parse(contents, proto)
+    # proto.ParseFromString(contents)
     protos[path] = proto
 
   merged = result_pb2.AnalysisResultProto()
   method = None
   for path, proto in protos.items():
+    print("Merging %s ..." % path)
     for method in proto.results:
       for cat in method.results_by_network_category:
         update_sequence_values(cat.cost_per_sequence, path, paths)
@@ -71,7 +84,7 @@ def merge(paths):
 
       merged.results.append(method)
 
-  return merged.SerializeToString()
+  return merged
 
 
 if __name__ == "__main__":
