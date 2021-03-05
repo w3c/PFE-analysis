@@ -3,8 +3,13 @@
 import functools
 
 from absl import app
+from absl import flags
 from google.protobuf import text_format
 from analysis import result_pb2
+
+FLAGS = flags.FLAGS
+flags.DEFINE_bool("binary", True,
+                  "If true, will parse the input file as a binary proto.")
 
 
 @functools.lru_cache(maxsize=None)
@@ -69,8 +74,10 @@ def merge(paths):
 
     proto = result_pb2.AnalysisResultProto()
     print("  Parsing %s ..." % path)
-    text_format.Parse(contents, proto)
-    # proto.ParseFromString(contents)
+    if FLAGS.binary:
+      proto.ParseFromString(contents)
+    else:
+      text_format.Parse(contents, proto)
     protos[path] = proto
 
   merged = result_pb2.AnalysisResultProto()

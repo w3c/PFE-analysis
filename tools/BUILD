@@ -65,5 +65,7 @@ py_test(
     data = glob(["testdata/**"]),
     deps = [
         ":merge_results",
+        "@io_abseil_py//absl/testing:absltest",
+        "@io_abseil_py//absl/testing:flagsaver",
     ],
 )
