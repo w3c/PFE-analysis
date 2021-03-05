@@ -44,6 +44,7 @@ def remove_failed_sequences(sequences, proto_path, other_proto_paths):
 
 
 def main(argv):
+  "Merge outputs of multiple runs together."
   assert len(argv) > 2, "Usage: merge_results in [in...] out"
   result_path = argv.pop()
   print("Merging results")
