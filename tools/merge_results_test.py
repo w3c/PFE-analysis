@@ -28,10 +28,10 @@ class MergeResultsTest(absltest.TestCase):
     text_format.Merge(expected, expected_proto)
 
     actual_proto = merge_results.merge([
-            "tools/testdata/proto1.pb",
-            "tools/testdata/proto2.pb",
-            "tools/testdata/proto3.pb",
-        ])
+        "tools/testdata/proto1.pb",
+        "tools/testdata/proto2.pb",
+        "tools/testdata/proto3.pb",
+    ])
 
     self.assertEqual(expected_proto, actual_proto)
 
