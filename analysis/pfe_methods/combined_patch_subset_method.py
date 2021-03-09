@@ -14,11 +14,17 @@ flags.DEFINE_bool(
     "auto_settings", False, "Should the max codepoints and frequency "
     "threshold be auto-chosen using optimized values.")
 
+flags.DEFINE_bool(
+    "no_opt", False, "No optimizations, sets max codepoints and frequency "
+    "threshold to 0.")
+
 
 class CombinedPatchSubsetMethod:
   """Patch subset with automatic codepoint prediction based on network."""
 
   def __init__(self, script_category):
+    assert (not (FLAGS.auto_settings and FLAGS.no_opt),
+            "Can't use --auto_settings and --no_opt at the same time!")
     self.script = script_category
 
   def name(self):  # pylint: disable=no-self-use
@@ -43,9 +49,14 @@ def pick_method(network_model, script_category):  # pylint: disable=too-many-ret
   # further improved with more fine grained tuning based on RTT.
   #
   # TODO(garretrieger): should use the font being extended to determine the script category.
-  if FLAGS.auto_settings:
+  if FLAGS.no_opt:
+    # No prediction.
+    return patch_subset_method.create_with_codepoint_remapping()
+  elif FLAGS.auto_settings:
     if not network_model:
-      sys.stderr.write("MISSING NETWORK MODEL")
+      sys.stderr.write("MISSING NETWORK MODEL\n")
+    elif not script_category:
+      sys.stderr.write("MISSING SCRIPT CATEGORY\n")
     else:
       vals = optimal_settings(network_model, script_category)
       if vals[0] is not None and vals[1] is not None:
