@@ -20,7 +20,7 @@ bazel test ...
 bazel run analysis:analyzer -- --input_data=$(pwd)/analysis/sample/english_sequence.textproto --input_form=text --font_directory=$(pwd)/patch_subset/testdata/ --default_font_id=Ahem.optimized.ttf > /tmp/pfe-analysis-results.textproto
 
 # Inspect the results
-bazel run tools:summarize_results --  --input_file=/tmp/pfe-analysis-results.textproto cost_summary
+bazel run tools:summarize_results -- --input_file=/tmp/pfe-analysis-results.textproto cost_summary
 ```
 
 ## Test one PFE method
