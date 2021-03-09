@@ -52,7 +52,7 @@ def pick_method(network_model, script_category):  # pylint: disable=too-many-ret
   if FLAGS.no_opt:
     # No prediction.
     return patch_subset_method.create_with_codepoint_remapping()
-  elif FLAGS.auto_settings:
+  if FLAGS.auto_settings:
     if not network_model:
       sys.stderr.write("MISSING NETWORK MODEL\n")
     elif not script_category:
