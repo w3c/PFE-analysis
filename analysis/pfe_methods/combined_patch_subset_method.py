@@ -65,6 +65,15 @@ def pick_method(network_model, script_category):  # pylint: disable=too-many-ret
       # Should not happen. Fall through to non-auto behavior.
       sys.stderr.write("MISSING KEY FOR " + network_model.name + " " +
                        script_category)
+  return pick_method_semiopt(network_model, script_category)
+
+
+def pick_method_semiopt(network_model, script_category):  # pylint: disable=too-many-return-statements
+  """Select best method based on the clients rtt and the script.
+
+  Picks the best set of codepoint prediction parameters for patch subset
+  based on the script being simulated and the clients round trip time.
+  """
   rtt = network_model.rtt
   if script_category == "latin":
     if 350 <= rtt <= 650:
