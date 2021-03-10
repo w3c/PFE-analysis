@@ -23,8 +23,7 @@ class CombinedPatchSubsetMethod:
   """Patch subset with automatic codepoint prediction based on network."""
 
   def __init__(self, script_category):
-    assert not (FLAGS.auto_settings and FLAGS.no_opt),
-            "Can't use --auto_settings and --no_opt at the same time!"
+    assert not (FLAGS.auto_settings and FLAGS.no_opt), "Can't use --auto_settings and --no_opt at the same time!"
     self.script = script_category
 
   def name(self):  # pylint: disable=no-self-use
