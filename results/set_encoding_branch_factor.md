@@ -102,8 +102,8 @@ CompressedSet w/ Branch Factor 8 was used as a basline against which everything 
 
 ### Chinese
 
-Smallest encoding of SparseBitSet w/ Intervals, Branch Factor 4, 8, or 16 vs CompressedSet with Branch
-Factor 8:
+**Smallest encoding of SparseBitSet with Intervals, Branch Factor 4, 8, or 16 vs CompressedSet with
+Branch Factor 8:**
 
 
 | max set size |           | w/ Brotli | w/ Remapping | w/ Remapping + Brotli |
@@ -115,6 +115,22 @@ Factor 8:
 | 8,000        | 92.7%     | 99.8%     | 97.0%        | 96.7%                 |
 | 15,000       | 98.6%     | 99.4%     | 93.5%        | 99.4%                 |
 
+This shows that it's advantageous to use SparseBitSet's with varying branch factors and intervals
+instead of CompressetSet's for all but one case.
+
+**SparseBitSet with Intervals and Branch Factor 4 vs CompressedSet with Branch Factor 4:**
+
+| max set size |           | w/ Brotli | w/ Remapping | w/ Remapping + Brotli |
+| ------------ | --------- | --------- | ------------ | --------------------- |
+| 300          | 99.2%     | 98.5%     | 99.0%        | 98.3%                 |
+| 1,000        | 99.7%     | 99.3%     | 99.6%        | 99.0%                 |
+| 2,000        | 99.8%     | 99.6%     | 99.8%        | 99.4%                 |
+| 4,000	       | 99.9%     | 99.8%     | 99.8%	      | 99.6%                 |
+| 8,000        | 99.9%	   | 99.8%	   | 99.9%	      | 99.8%                 |
+| 15,000       | 99.9%	   | 99.9%	   | 99.9%        | 99.8%                 |
+
+This compares the effect of using CompressedSet's or SparseBitSet's to encode intervals. Here we
+see that for all cases SparseBitSet's with intervals are smaller.
 
 ### Korean
 
