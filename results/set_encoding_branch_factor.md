@@ -81,62 +81,92 @@ on the specific situation. For the full set of simulations I used these 3 branch
 
 ## Full Simulation Results
 
-The full simulations tested:
 
-*  CompressedSet w/ Branch Factor 4
+
+The full simulation runs tested:
+
 *  CompressedSet w/ Branch Factor 8
-*  CompressedSet w/ Branch Factor 16
-*  SparseBitSet w/ Intervals, Branch Factor 4
-*  SparseBitSet w/ Intervals, Branch Factor 8
-*  SparseBitSet w/ Intervals, Branch Factor 16
+*  Minimum of CompressedSet w/ Branch Factor 4, 8, or 16
+*  Minimum of SparseBitSet w/ Intervals and Branch Factor 4, 8, or 16
 
-against:
+in the four scenarios of interest:
 
 *  No codepoint remapping, no brotli post compression.
 *  No codepoint remapping, brotli post compression.
 *  Codepoint remapping, no brotli post compression.
 *  Codepoint remapping, brotli post compression.
 
-CompressedSet w/ Branch Factor 8 was used as a basline against which everything else was compared.
-
-
 ### Chinese
+
+To see if a variable branch factor could reduce encoding size, the minimum of CompressedSet w/
+branch factor 4, 8, or 16 was compared to encoding with only branch factor of 8:
+
+| Max Set Size | Reduction in bytes | w/ Brotli | w/ Remapping | w/ Remapping + Brotli |
+| ------------ | ------------------ | --------- | ------------ | --------------------- |
+| 300          | 19.3%              | 2.7%      | 18.0%        | 2.0%                  |
+| 1,000        | 17.5%              | 3.8%      | 15.3%        | 5.5%                  |
+| 2,000        | 15.1%              | 2.4%      | 12.1%        | 3.5%                  |
+| 4,000        | 12.3%              | 0.3%      | 7.5%         | 2.4%                  |
+| 8,000        | 7.2%               | 0.3%      | 3.7%         | 0.7%                  |
+| 15,000       | 1.5%               | 1.7%      | 6.4%         | 0.0%                  |
+
+Varying the branch factor produces reduction in encoded bytes for nearly all set sizes and different
+encoding scenarios compared to using only branch factor 8.
+
+Next, to see if using intervals in SparseBitSet's is smaller then using CompressedSet's, the minimum
+of SparseBitSet w/ branch factor 4, 8, or 16 was compared to the minimum of CompressedSet w/
+branch factor 4, 8, or 16:
+
+| Max Set Size | Reduction in bytes | w/ Brotli | w/ Remapping | w/ Remapping + Brotli |
+| ------------ | ------------------ | --------- | ------------ | --------------------- |
+| 300 | 0.8% | 1.5% | 1.0% | 1.7% |
+| 1,000 | 0.3% | 0.7% | 0.4% | 0.8% |
+| 2,000 | 0.2% | 0.3% | 0.2% | 0.5% |
+| 4,000 | 0.1% | 0.1% | 0.2% | 0.5% |
+| 8,000 | 0.1% | 0.1% | 0.1% | 2.6% |
+| 15,000 | 0.1% | -0.5% | 0.1% | 0.7% |
+
+Here we see much more modest gains typically less then a percent.
+
+### Korean
 
 **Smallest encoding of SparseBitSet with Intervals, Branch Factor 4, 8, or 16 vs CompressedSet with
 Branch Factor 8:**
 
-
 | max set size |           | w/ Brotli | w/ Remapping | w/ Remapping + Brotli |
 | ------------ | --------- | --------- | ------------ | --------------------- |
-| 300          | 80.1%     | 96.0%     | 81.3%        | 96.9%                 | 
-| 1,000        | 82.2%     | 95.5%     | 84.4%        | 93.9%                 |
-| 2,000        | 84.8%     | 97.5%     | 87.8%        | 95.9%                 |
-| 4,000        | 87.6%     | 100.2%    | 92.2%        | 97.6%                 |
-| 8,000        | 92.7%     | 99.8%     | 97.0%        | 96.7%                 |
-| 15,000       | 98.6%     | 99.4%     | 93.5%        | 99.4%                 |
-
-This shows that it's advantageous to use SparseBitSet's with varying branch factors and intervals
-instead of CompressetSet's for all but one case.
 
 **SparseBitSet with Intervals and Branch Factor 4 vs CompressedSet with Branch Factor 4:**
 
 | max set size |           | w/ Brotli | w/ Remapping | w/ Remapping + Brotli |
 | ------------ | --------- | --------- | ------------ | --------------------- |
-| 300          | 99.2%     | 98.5%     | 99.0%        | 98.3%                 |
-| 1,000        | 99.7%     | 99.3%     | 99.6%        | 99.0%                 |
-| 2,000        | 99.8%     | 99.6%     | 99.8%        | 99.4%                 |
-| 4,000	       | 99.9%     | 99.8%     | 99.8%	      | 99.6%                 |
-| 8,000        | 99.9%	   | 99.8%	   | 99.9%	      | 99.8%                 |
-| 15,000       | 99.9%	   | 99.9%	   | 99.9%        | 99.8%                 |
 
-This compares the effect of using CompressedSet's or SparseBitSet's to encode intervals. Here we
-see that for all cases SparseBitSet's with intervals are smaller.
-
-### Korean
 
 ### Japanese
 
+**Smallest encoding of SparseBitSet with Intervals, Branch Factor 4, 8, or 16 vs CompressedSet with
+Branch Factor 8:**
+
+| max set size |           | w/ Brotli | w/ Remapping | w/ Remapping + Brotli |
+| ------------ | --------- | --------- | ------------ | --------------------- |
+
+**SparseBitSet with Intervals and Branch Factor 4 vs CompressedSet with Branch Factor 4:**
+
+| max set size |           | w/ Brotli | w/ Remapping | w/ Remapping + Brotli |
+| ------------ | --------- | --------- | ------------ | --------------------- |
+
 ### Latin
+
+**Smallest encoding of SparseBitSet with Intervals, Branch Factor 4, 8, or 16 vs CompressedSet with
+Branch Factor 8:**
+
+| max set size |           | w/ Brotli | w/ Remapping | w/ Remapping + Brotli |
+| ------------ | --------- | --------- | ------------ | --------------------- |
+
+**SparseBitSet with Intervals and Branch Factor 4 vs CompressedSet with Branch Factor 4:**
+
+| max set size |           | w/ Brotli | w/ Remapping | w/ Remapping + Brotli |
+| ------------ | --------- | --------- | ------------ | --------------------- |
 
 
 
