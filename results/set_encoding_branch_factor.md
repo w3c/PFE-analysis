@@ -1,6 +1,18 @@
 Author: Garret Rieger  
 Date: March 8th, 2021  
 
+# Executive Summary
+
+This document investigates the effect of using a variable branch factor and intervals encoded directly
+in SparseBitSet's on the size of encoded sets. Simulations were ran to determine the reduction or
+increase in encoded sizes. The results show that a variable branch factor universally reduces sizes
+with reductions as large as 19%. However, intervals encoded into SparseBitSet's resulted in much
+smaller reductions, and in some cases increases for large sets.
+
+Based on the results it's recommended to incorporate variable branch factor and intervals into
+the SparseBitSet specification, but still retain range delta lists as an option for encoding
+intervals.
+
 # Improvements to Sparse Bit Set Encoding
 
 Sparse Bit Set's (described [here](https://github.com/w3c/PFE-analysis/blob/main/design/patch_subset_protocol_v3.md#sparsebitset)) are currently used in the patch subset protcol as an efficient means
@@ -141,7 +153,8 @@ Here we see much more modest reductions, typically less then a percent.
 | 8,000 | 4.9% | 1.0% | 4.8% | 2.0% |
 | 15,000 | 0.2% | 0.2% | 5.3% | 0.7% |
 
-TODO describe results
+There's a reduction in bytes across the board with the largest gains for non-brotli compressed
+sets.
 
 **Minimum of SparseBitSet w/ branch factor 4, 8, or 16 versus Minimum of CompressedSet w/
 branch factor 4, 8, or 16:**
@@ -155,9 +168,9 @@ branch factor 4, 8, or 16:**
 | 8,000 | 0.2% | 0.4% | -1.2% | -1.0% |
 | 15,000 | -0.3% | 0.3% | -4.0% | -3.8% |
 
-
-TODO describe results
-
+Here there's very small reductions for small sets (1000 or less codepoints), but for larger sets things
+get slightly worse.
+ 
 ### Korean
 
 **Minimum of CompressedSet w/ branch factor 4, 8, or 16 versus CompressedSet w/ branch factor 8:**
@@ -171,7 +184,8 @@ TODO describe results
 | 8,000 | 5.9% | 0.5% | 3.6% | 0.6% |
 | 15,000 | 0.8% | 1.6% | 1.0% | 0.9% |
 
-TODO describe results
+There's a reduction in bytes across the board with the largest gains for non-brotli compressed
+sets.
 
 **Minimum of SparseBitSet w/ branch factor 4, 8, or 16 versus Minimum of CompressedSet w/
 branch factor 4, 8, or 16:**
@@ -185,29 +199,48 @@ branch factor 4, 8, or 16:**
 | 8,000 | 0.4% | 0.4% | -2.1% | -2.1% |
 | 15,000 | -0.2% | 0.4% | -4.2% | -1.6% |
 
-TODO describe results
-
+For remapped sets there are very small reductions for small sets (1000 or less codepoints), but for
+larger sets things get slightly worse. For non-remapped sets there's slight reductions for all set
+sizes (except for the largest).
 
 ### Latin
-
 
 **Minimum of CompressedSet w/ branch factor 4, 8, or 16 versus CompressedSet w/ branch factor 8:**
 
 | Max Set Size | Reduction in bytes | w/ Brotli | w/ Remapping | w/ Remapping + Brotli |
 | ------------ | ------------------ | --------- | ------------ | --------------------- |
+| 100 | 7.9% | 6.9% | 3.0% | 2.5% |
+| 300 | 10.8% | 10.1% | 1.3% | 1.1% |
 
-TODO describe results
+For latin sets there is always reductions in encoding size for all xases when using variable branch
+factor.
 
 **Minimum of SparseBitSet w/ branch factor 4, 8, or 16 versus Minimum of CompressedSet w/
 branch factor 4, 8, or 16:**
 
 | Max Set Size | Reduction in bytes | w/ Brotli | w/ Remapping | w/ Remapping + Brotli |
 | ------------ | ------------------ | --------- | ------------ | --------------------- |
+| 100 | 8.6% | 7.5% | 10.8% | 9.0% |
+| 300 | 3.3% | 3.1% | 16.2% | 13.1% |
 
+Unlike for CJK using SparseBitSet's with intervals for latin produced reductions for all of the
+scenarios.
 
-TODO describe results
+# Conclusions
 
+## Variable Branch Factor
 
+The simulation results show that using a variable branch factor will result in reductions in encoded
+sizes for nearly all cases. So we should introduce variable branch factor into the specification for
+SparseBitSet's.
 
+## SparseBitSet's with Intervals
 
+For CJK using SparseBitSet's with intervals showed only very small reductions (<1%) and in most cases
+only for small set sizes. For larger set sizes it caused small regressions. However, for latin there
+were large reductions across the board.
 
+Given that there are some situations where it can be a useful to reduce encoding sizes versus
+CompressedSet's it's likely we'll also want to add this to the specification. However, we should
+also retain the existing delta range list functionality from CompressedSet's as it's still the
+most efficient means of encoding large intervals.
