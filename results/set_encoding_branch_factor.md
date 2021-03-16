@@ -51,16 +51,14 @@ There are four situations that are of interest to us:
 4. encoding a set with post compression applied and with codepoint remapping used.
 
 The no codepoint remapping situation is of interest because the first request to start a patch subset
-session will not use codepoint remapping. The no post compression case if of interest because we
+session will not use codepoint remapping. The no post compression case is of interest because we
 cannot guarantee which content encoding (if any) the browser will apply to request bodies.
 
-For those 4 situations we want to answer three questions:
+For those 4 situations we want to answer two questions:
 
-1. Does a branch factor other than 8 produce a smaller encoding than existing CompressedSets?
-2. Does encoding intervals using a 0 byte produce a smaller encoding than existing CompressedSets?
-3. Does a branch factor other than 8 and encoding intervals using a 0 byte produce a smaller
-   encoding than CompressedSets or CompressedSets with a different branch factor?
-   
+1. Does varying the branch factor used in encoding SparseBitSet's produce a smaller encoding than
+   existing CompressedSets?
+2. Does encoding intervals using a zero byte produce a smaller encoding than existing CompressedSets?
    
 Furthermore we're interested on the effect of the encoding changes across a variety of languages
 (Chinese, Japanese, and Korean are of highest importance due to the large set sizes needed) and
@@ -68,12 +66,12 @@ set sizes.
 
 # The Results
 
-## Finding the best Branch Factor
+## Finding the Best Branch Factor
 
 To start out I set off to determine what the ideal branch factor would be. I ran the set simulations
 against sparse bit set encodings for CJK with branch factors varying from 2 to 16. The results were
 consistent across the languages. Here's an example graph showing the bits needed to encode each
-codepoint as set size changes for Japanese:
+codepoint as set size changes for Chinese:
 
 ![Encoding Efficiency for Chinese Codepoint Sets with Varying Branch Factor](varying_bf_for_chinese.png)
 
@@ -89,7 +87,7 @@ The results showed that a branch factor of 4 produces the smallest encoding for 
 ~5,000 codepoints beyond that a branch factor of 16 produces the smallest encoding.
 
 Based on these results using a branch factor of 4, 8, or 16 produces the smallest encodings depending
-on the specific situation. For the full set of simulations I used these 3 branch factors.
+on the specific situation. For the full set of simulations I used only these 3 branch factors.
 
 ## Full Simulation Results
 
@@ -107,6 +105,8 @@ in the four scenarios of interest:
 *  No codepoint remapping, brotli post compression.
 *  Codepoint remapping, no brotli post compression.
 *  Codepoint remapping, brotli post compression.
+
+against sets of Chinese, Japanese, Korean, and Latin codepoint sets.
 
 ### Chinese
 
