@@ -31,6 +31,10 @@ flags.DEFINE_string(
     "input_file", "-",
     "Path to a file containing an analysis result proto or '-' to read from stdin."
 )
+flags.DEFINE_string(
+    "output_file", "-",
+    "Path to write results to, '-' to use stdout. Default is -."
+)
 
 flags.DEFINE_bool("binary", False,
                   "If true, will parse the input file as a binary proto.")
@@ -76,14 +80,6 @@ MODE_FUNCTIONS = {
 
 
 def main(argv):  # pylint: disable=missing-function-docstring
-  result_proto = result_pb2.AnalysisResultProto()
-  if not FLAGS.binary:
-    input_file_contents = read_input(FLAGS.input_file)
-    text_format.Merge(input_file_contents, result_proto)
-  else:
-    input_file_contents = read_binary_input(FLAGS.input_file)
-    result_proto.ParseFromString(input_file_contents)
-
   if len(argv) < 2:
     return print_usage()
 
@@ -91,6 +87,21 @@ def main(argv):  # pylint: disable=missing-function-docstring
   argv = argv[2:]
   if mode not in MODE_FUNCTIONS:
     return print_usage()
+
+  result_proto = result_pb2.AnalysisResultProto()
+  if FLAGS.input_file == "-":
+    print("Reading from stdin...")
+  else:
+    print("Reading %s..." % FLAGS.input_file)
+  if not FLAGS.binary:
+    input_file_contents = read_input(FLAGS.input_file)
+    print("Parsing...")
+    text_format.Merge(input_file_contents, result_proto)
+  else:
+    input_file_contents = read_binary_input(FLAGS.input_file)
+    print("Parsing...")
+    result_proto.ParseFromString(input_file_contents)
+  print("Done.")
 
   return MODE_FUNCTIONS[mode](argv, result_proto)
 
@@ -116,8 +127,10 @@ def find_method_result(method, result_proto):
       if method_proto.method_name == method
   ]
 
-  if len(matches) != 1:
+  if len(matches) < 1:
     raise MethodResultNotFound("Cannot find method result %s." % method)
+  if len(matches) > 1:
+    raise MethodResultNotFound("More than one method result %s." % method)
 
   return matches[0]
 
@@ -154,8 +167,10 @@ def find_network_category_result(method, network_category, result_proto):
 
 
 def print_distribution(distribution_proto):
+  lines = []
   for bucket in distribution_proto.buckets:
-    print("{}, {}".format(bucket.end, bucket.count))
+    lines.append("{}, {}".format(bucket.end, bucket.count))
+  write_lines(lines)
 
 
 def print_usage():  # pylint: disable=missing-function-docstring
@@ -168,13 +183,15 @@ def print_cost_summary(result_proto):
 
   method name, network model name, total cost
   """
+  lines = []
   for method_proto in result_proto.results:
     for net_proto in method_proto.results_by_network:
-      print("{}, {}, {:.1f}".format(
+      lines.append("{}, {}, {:.1f}".format(
           method_proto.method_name,
           net_proto.network_model_name,
           net_proto.total_cost,
       ))
+  write_lines(lines)
 
 
 def print_comparison_report(methods, result_proto):
@@ -182,7 +199,8 @@ def print_comparison_report(methods, result_proto):
 
   method name, network category, cost change (median), bytes change (median)
   """
-  print("method name, network category, "
+  lines = []
+  lines.append("method name, network category, "
         "cost change (5th), cost change (25th), cost change (median), "
         "cost change (75th), cost change (95th), bytes change (5th), "
         "bytes change (25th), bytes change (median), bytes change (75th), "
@@ -199,7 +217,7 @@ def print_comparison_report(methods, result_proto):
       normalized_bytes = normalize_list(baseline.bytes_per_sequence,
                                         net.bytes_per_sequence)
 
-      print("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s" % (
+      lines.append("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s" % (
           method_proto.method_name,
           net.network_category,
           statistics.quantiles(normalized_costs, n=20)[0],
@@ -213,6 +231,7 @@ def print_comparison_report(methods, result_proto):
           statistics.quantiles(normalized_bytes, n=4)[2],
           statistics.quantiles(normalized_bytes, n=20)[18],
       ))
+  write_lines(lines)
 
 
 def normalize_list(baseline_values, values):
@@ -229,7 +248,8 @@ def print_summary_report(result_proto):
 
   method name, network model name, total cost
   """
-  print("Method, Network, Cost, Wait (ms), Number of Requests, Request Bytes, "
+  lines = []
+  lines.append("Method, Network, Cost, Wait (ms), Number of Requests, Request Bytes, "
         "Response Bytes, Bytes, % of Optimal Bytes")
   optimal_bytes = None
   for method_proto in result_proto.results:
@@ -241,7 +261,7 @@ def print_summary_report(result_proto):
     for net_proto in method_proto.results_by_network:
       total_bytes = (net_proto.total_request_bytes +
                      net_proto.total_response_bytes)
-      print("{}, {}, {:.0f}, {:.0f}, {}, {}, {}, {}, {:.2f}".format(
+      lines.append("{}, {}, {:.0f}, {:.0f}, {}, {}, {}, {}, {:.2f}".format(
           method_proto.method_name,
           net_proto.network_model_name,
           net_proto.total_cost,
@@ -252,6 +272,7 @@ def print_summary_report(result_proto):
           total_bytes,
           total_bytes / optimal_bytes if optimal_bytes else 0,
       ))
+  write_lines(lines)
 
 
 def read_input(input_file_path):
@@ -271,6 +292,16 @@ def read_binary_input(input_file_path):
   with open(input_file_path, 'rb') as input_data_file:
     return input_data_file.read()
 
+
+def write_lines(lines):
+  """Writes to destination file or stdout."""
+  if FLAGS.output_file == "-":
+    print("\n".join(lines))
+  else:
+    print("Writing results to %s" % FLAGS.output_file)
+    with open(FLAGS.output_file, "w") as out:
+      out.write("\n".join(lines))
+      out.write("\n")
 
 if __name__ == '__main__':
   app.run(main)
