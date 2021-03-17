@@ -33,8 +33,7 @@ flags.DEFINE_string(
 )
 flags.DEFINE_string(
     "output_file", "-",
-    "Path to write results to, '-' to use stdout. Default is -."
-)
+    "Path to write results to, '-' to use stdout. Default is -.")
 
 flags.DEFINE_bool("binary", False,
                   "If true, will parse the input file as a binary proto.")
@@ -200,11 +199,12 @@ def print_comparison_report(methods, result_proto):
   method name, network category, cost change (median), bytes change (median)
   """
   lines = []
-  lines.append("method name, network category, "
-        "cost change (5th), cost change (25th), cost change (median), "
-        "cost change (75th), cost change (95th), bytes change (5th), "
-        "bytes change (25th), bytes change (median), bytes change (75th), "
-        "bytes change (95th)")
+  lines.append(
+      "method name, network category, "
+      "cost change (5th), cost change (25th), cost change (median), "
+      "cost change (75th), cost change (95th), bytes change (5th), "
+      "bytes change (25th), bytes change (median), bytes change (75th), "
+      "bytes change (95th)")
   for method in sorted(methods):
     method_proto = find_method_result(method, result_proto)
     for net in method_proto.results_by_network_category:
@@ -249,8 +249,9 @@ def print_summary_report(result_proto):
   method name, network model name, total cost
   """
   lines = []
-  lines.append("Method, Network, Cost, Wait (ms), Number of Requests, Request Bytes, "
-        "Response Bytes, Bytes, % of Optimal Bytes")
+  lines.append(
+      "Method, Network, Cost, Wait (ms), Number of Requests, Request Bytes, "
+      "Response Bytes, Bytes, % of Optimal Bytes")
   optimal_bytes = None
   for method_proto in result_proto.results:
     if method_proto.method_name == "Optimal":
@@ -302,6 +303,7 @@ def write_lines(lines):
     with open(FLAGS.output_file, "w") as out:
       out.write("\n".join(lines))
       out.write("\n")
+
 
 if __name__ == '__main__':
   app.run(main)
