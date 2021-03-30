@@ -31,6 +31,7 @@ message PageViewSequenceProto {
   repeated PageViewProto page_views = 1;
   // BCP47 Language tag, for which language the majority of the page views are.
   string language = 2;
+  int32 id = 3;
 }
 
 message DataSetProto {
