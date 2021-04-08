@@ -12,7 +12,8 @@ GraphTotal = collections.namedtuple(
     "GraphTotal",
     ["total_time", "request_bytes", "response_bytes", "num_requests"])
 
-SequenceTotals = collections.namedtuple("SequenceTotals", ["totals"])
+SequenceTotals = collections.namedtuple("SequenceTotals",
+                                        ["totals", "sequence_id"])
 
 # Bandwidth is in bytes per ms, RTT is ms
 NetworkModel = collections.namedtuple(
@@ -63,16 +64,18 @@ def simulate_all(sequences,
       for method in pfe_methods:
 
         if not is_network_sensitive(method):
-          graphs = simulate_sequence(sequence, method, None, a_font_loader)
+          graphs = simulate_sequence(sequence.page_views, method, None,
+                                     a_font_loader)
 
         network_results = sequence_results[method.name()]
         for network_model in network_models:
           if is_network_sensitive(method):
-            graphs = simulate_sequence(sequence, method, network_model,
-                                       a_font_loader)
+            graphs = simulate_sequence(sequence.page_views, method,
+                                       network_model, a_font_loader)
 
           network_results[network_model.name].append(
-              SequenceTotals(totals_for_network(graphs, network_model)))
+              SequenceTotals(
+                  totals_for_network(graphs, network_model), sequence.id))
 
       merge_results_by_method(sequence_results, results_by_method)
 

@@ -37,6 +37,7 @@ message NetworkCategoryResultProto {
   string network_category = 1;
   repeated double cost_per_sequence = 2;
   repeated double bytes_per_sequence = 3;
+  repeated int32 sequence_ids = 4;
 }
 
 message DistributionProto {

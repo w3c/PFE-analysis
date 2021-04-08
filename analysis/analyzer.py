@@ -162,6 +162,9 @@ def to_network_category_protos(network_totals, cost_function):  # pylint: disabl
   for category in sorted(categories):
     category_costs = [0.0] * num_totals
     category_bytes = [0.0] * num_totals
+    category_sequence_ids = [
+        seq_total.sequence_id for seq_total in categories[category][1][1]
+    ]
     for category_totals in categories[category]:
       weight = category_totals[0]
       for i in range(len(category_totals[1])):
@@ -175,6 +178,7 @@ def to_network_category_protos(network_totals, cost_function):  # pylint: disabl
     category_proto.network_category = category
     category_proto.cost_per_sequence.extend(category_costs)
     category_proto.bytes_per_sequence.extend(category_bytes)
+    category_proto.sequence_ids.extend(category_sequence_ids)
     result.append(category_proto)
 
   return result
@@ -296,7 +300,7 @@ def do_analysis(serialized_sequences):
 
   Takes the sequences serialized, so that they may be passed down to another process."""
   sequences = [
-      page_view_sequence_pb2.PageViewSequenceProto.FromString(s).page_views
+      page_view_sequence_pb2.PageViewSequenceProto.FromString(s)
       for s in serialized_sequences
   ]
   return simulation.simulate_all(sequences, PFE_METHODS, NETWORK_MODELS,
