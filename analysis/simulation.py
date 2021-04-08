@@ -74,8 +74,8 @@ def simulate_all(sequences,
                                        network_model, a_font_loader)
 
           network_results[network_model.name].append(
-              SequenceTotals(
-                  totals_for_network(graphs, network_model), sequence.id))
+              SequenceTotals(totals_for_network(graphs, network_model),
+                             sequence.id))
 
       merge_results_by_method(sequence_results, results_by_method)
 
