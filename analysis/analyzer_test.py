@@ -17,7 +17,7 @@ def sr(values, failed_indices=None):  # pylint: disable=invalid-name
 
 
 def s(values):  # pylint: disable=invalid-name
-  return simulation.SequenceTotals(values)
+  return simulation.SequenceTotals(values, 42)
 
 
 def g(time, request, response):  # pylint: disable=invalid-name
@@ -83,6 +83,7 @@ class AnalyzerTest(unittest.TestCase):
     self.assertEqual(result[0].bytes_per_sequence[1], 125)
 
   def test_result_to_protos(self):
+    self.maxDiff = None  # pylint: disable=invalid-name
     method_proto = result_pb2.MethodResultProto()
     method_proto.method_name = "Fake_PFE"
 
@@ -92,6 +93,7 @@ class AnalyzerTest(unittest.TestCase):
     network_category_proto.cost_per_sequence.append(0.0)
     network_category_proto.bytes_per_sequence.append(3000.0)
     network_category_proto.bytes_per_sequence.append(0.0)
+    network_category_proto.sequence_ids.append(42)
     method_proto.results_by_network_category.append(network_category_proto)
 
     network_category_proto = result_pb2.NetworkCategoryResultProto()
@@ -100,6 +102,8 @@ class AnalyzerTest(unittest.TestCase):
     network_category_proto.cost_per_sequence.append(10.0)
     network_category_proto.bytes_per_sequence.append(1500.0)
     network_category_proto.bytes_per_sequence.append(1500.0)
+    network_category_proto.sequence_ids.append(42)
+    network_category_proto.sequence_ids.append(43)
     method_proto.results_by_network_category.append(network_category_proto)
 
     network_proto = result_pb2.NetworkResultProto()
@@ -144,14 +148,14 @@ class AnalyzerTest(unittest.TestCase):
                         simulation.SequenceTotals([
                             simulation.GraphTotal(2100, 1000, 2000, 5),
                             simulation.GraphTotal(2100, 1000, 2000, 7)
-                        ]),
+                        ], 42),
                     ],
                     "desktop_median": [
                         simulation.SequenceTotals([
                             simulation.GraphTotal(200, 1000, 2000, 5),
-                        ]),
+                        ], 42),
                         simulation.SequenceTotals(
-                            [simulation.GraphTotal(200, 1000, 2000, 7)]),
+                            [simulation.GraphTotal(200, 1000, 2000, 7)], 43),
                     ]
                 }
             }, mock_cost), [method_proto])

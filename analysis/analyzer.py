@@ -163,7 +163,7 @@ def to_network_category_protos(network_totals, cost_function):  # pylint: disabl
     category_costs = [0.0] * num_totals
     category_bytes = [0.0] * num_totals
     category_sequence_ids = [
-        seq_total.sequence_id for seq_total in categories[category][1][1]
+        seq_total.sequence_id for seq_total in categories[category][0][1]
     ]
     for category_totals in categories[category]:
       weight = category_totals[0]
