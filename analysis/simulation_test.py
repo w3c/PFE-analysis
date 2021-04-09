@@ -55,6 +55,13 @@ def sequence(views):
   return result
 
 
+def pv_sequence(sequence):
+  page_view_sequence = page_view_sequence_pb2.PageViewSequenceProto()
+  page_view_sequence.page_views.extend(sequence)
+  page_view_sequence.id = 42;
+  return page_view_sequence
+
+
 class SimulationTest(unittest.TestCase):
 
   # pylint: disable=too-many-instance-attributes
@@ -102,17 +109,18 @@ class SimulationTest(unittest.TestCase):
         return_value=[self.graph_1])
 
     self.page_view_sequence = sequence([
-        {
-            "roboto": [1, 2, 3],
-            "open_sans": [4, 5, 6]
-        },
-        {
-            "roboto": [7, 8, 9]
-        },
-        {
-            "open_sans": [10, 11, 12]
-        },
-    ])
+            {
+                "roboto": [1, 2, 3],
+                "open_sans": [4, 5, 6]
+            },
+            {
+                "roboto": [7, 8, 9]
+            },
+            {
+                "open_sans": [10, 11, 12]
+            },
+        ])
+
 
   def test_total_time_for_request_graph(self):
     r_1 = request_graph.Request(100, 200)
@@ -175,16 +183,16 @@ class SimulationTest(unittest.TestCase):
     self.assertEqual(
         simulation.simulate_all(
             [
-                sequence([{
+                pv_sequence(sequence([{
                     "roboto": [1]
                 }, {
                     "roboto": [2]
-                }]),
-                sequence([{
+                }])),
+                pv_sequence(sequence([{
                     "roboto": [1]
                 }, {
                     "roboto": [2]
-                }]),
+                }])),
             ],
             [
                 self.mock_pfe_method,
@@ -199,12 +207,12 @@ class SimulationTest(unittest.TestCase):
         simulation.SimulationResults(
             {
                 "Mock_PFE_1": {
-                    "slow": [simulation.SequenceTotals([graph2])] * 2,
-                    "fast": [simulation.SequenceTotals([graph])] * 2,
+                    "slow": [simulation.SequenceTotals([graph2], 42)] * 2,
+                    "fast": [simulation.SequenceTotals([graph], 42)] * 2,
                 },
                 "Mock_PFE_2": {
-                    "slow": [simulation.SequenceTotals([graph2] * 2)] * 2,
-                    "fast": [simulation.SequenceTotals([graph] * 2)] * 2,
+                    "slow": [simulation.SequenceTotals([graph2] * 2, 42)] * 2,
+                    "fast": [simulation.SequenceTotals([graph] * 2, 42)] * 2,
                 },
             }, []))
 
@@ -215,16 +223,16 @@ class SimulationTest(unittest.TestCase):
     self.assertEqual(
         simulation.simulate_all(
             [
-                sequence([{
+                pv_sequence(sequence([{
                     "roboto": [1]
                 }, {
                     "robto": [2]
-                }]),
-                sequence([
+                }])),
+                pv_sequence(sequence([
                     {
                         "does_not_exist": [1]
                     },
-                ]),
+                ])),
             ],
             [
                 self.mock_pfe_method,
@@ -239,12 +247,12 @@ class SimulationTest(unittest.TestCase):
         simulation.SimulationResults(
             {
                 "Mock_PFE_1": {
-                    "slow": [simulation.SequenceTotals([graph2])],
-                    "fast": [simulation.SequenceTotals([graph])],
+                    "slow": [simulation.SequenceTotals([graph2], 42)],
+                    "fast": [simulation.SequenceTotals([graph], 42)],
                 },
                 "Mock_PFE_2": {
-                    "slow": [simulation.SequenceTotals([graph2] * 2)],
-                    "fast": [simulation.SequenceTotals([graph] * 2)],
+                    "slow": [simulation.SequenceTotals([graph2] * 2, 42)],
+                    "fast": [simulation.SequenceTotals([graph] * 2, 42)],
                 },
             }, [1]))
 
