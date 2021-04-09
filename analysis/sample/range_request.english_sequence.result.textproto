@@ -2707,26 +2707,31 @@ results {
     network_category: "2G"
     cost_per_sequence: 4754.6032675024035
     bytes_per_sequence: 4576.0
+    sequence_ids: 42
   }
   results_by_network_category {
     network_category: "3G"
     cost_per_sequence: 315.9608615035354
     bytes_per_sequence: 4576.0
+    sequence_ids: 42
   }
   results_by_network_category {
     network_category: "4G"
     cost_per_sequence: 15.709421946583431
     bytes_per_sequence: 4576.0
+    sequence_ids: 42
   }
   results_by_network_category {
     network_category: "desktop"
     cost_per_sequence: 7.3112715863446915
     bytes_per_sequence: 4576.0
+    sequence_ids: 42
   }
   results_by_network_category {
     network_category: "wifi"
     cost_per_sequence: 9.700654773497343
     bytes_per_sequence: 4576.0
+    sequence_ids: 42
   }
 }
 
