@@ -121,7 +121,6 @@ class SimulationTest(unittest.TestCase):
         },
     ])
 
-
   def test_total_time_for_request_graph(self):
     r_1 = request_graph.Request(100, 200)
     r_2 = request_graph.Request(200, 300)
