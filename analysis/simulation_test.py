@@ -55,9 +55,9 @@ def sequence(views):
   return result
 
 
-def pv_sequence(sequence):
+def pv_sequence(a_sequence):
   page_view_sequence = page_view_sequence_pb2.PageViewSequenceProto()
-  page_view_sequence.page_views.extend(sequence)
+  page_view_sequence.page_views.extend(a_sequence)
   page_view_sequence.id = 42
   return page_view_sequence
 
