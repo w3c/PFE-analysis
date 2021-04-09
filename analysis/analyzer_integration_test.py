@@ -50,9 +50,11 @@ class AnalyzerTest(unittest.TestCase):
                      msg=error_message)
 
   def test_integration(self):
+    self.maxDiff = None  # pylint: disable=invalid-name
     self.check_analyzer_against_golden(False, GOLDEN_FILE)
 
   def test_integration_range_request(self):
+    self.maxDiff = None  # pylint: disable=invalid-name
     self.check_analyzer_against_golden(True, RANGE_REQUEST_GOLDEN_FILE)
 
 
