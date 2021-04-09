@@ -58,7 +58,7 @@ def sequence(views):
 def pv_sequence(sequence):
   page_view_sequence = page_view_sequence_pb2.PageViewSequenceProto()
   page_view_sequence.page_views.extend(sequence)
-  page_view_sequence.id = 42;
+  page_view_sequence.id = 42
   return page_view_sequence
 
 
@@ -109,17 +109,17 @@ class SimulationTest(unittest.TestCase):
         return_value=[self.graph_1])
 
     self.page_view_sequence = sequence([
-            {
-                "roboto": [1, 2, 3],
-                "open_sans": [4, 5, 6]
-            },
-            {
-                "roboto": [7, 8, 9]
-            },
-            {
-                "open_sans": [10, 11, 12]
-            },
-        ])
+        {
+            "roboto": [1, 2, 3],
+            "open_sans": [4, 5, 6]
+        },
+        {
+            "roboto": [7, 8, 9]
+        },
+        {
+            "open_sans": [10, 11, 12]
+        },
+    ])
 
 
   def test_total_time_for_request_graph(self):
