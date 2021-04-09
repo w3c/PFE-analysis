@@ -4,10 +4,12 @@ results: {
     network_category: "slow"
     cost_per_sequence: [0, 2, 3, 4, 5, 6, 7]
     bytes_per_sequence: [0, 20, 30, 40, 50, 60, 70]
+    sequence_ids: [2, 3, 4, 5, 6, 7, 8]
   }
   results_by_network_category: {
     network_category: "fast"
     cost_per_sequence: [0.0, 0.2, 0.3,  0.4, 0.5, 0.6, 0.7]
     bytes_per_sequence: [0, 20, 30, 40, 50, 60, 70]
+    sequence_ids: [2, 3, 4, 5, 6, 7, 8]
   }
 }
