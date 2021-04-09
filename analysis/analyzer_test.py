@@ -89,21 +89,16 @@ class AnalyzerTest(unittest.TestCase):
 
     network_category_proto = result_pb2.NetworkCategoryResultProto()
     network_category_proto.network_category = "2G"
-    network_category_proto.cost_per_sequence.append(210.0)
-    network_category_proto.cost_per_sequence.append(0.0)
-    network_category_proto.bytes_per_sequence.append(3000.0)
-    network_category_proto.bytes_per_sequence.append(0.0)
+    network_category_proto.cost_per_sequence.extend([210.0, 0.0])
+    network_category_proto.bytes_per_sequence.extend([3000.0, 0.0])
     network_category_proto.sequence_ids.append(42)
     method_proto.results_by_network_category.append(network_category_proto)
 
     network_category_proto = result_pb2.NetworkCategoryResultProto()
     network_category_proto.network_category = "desktop"
-    network_category_proto.cost_per_sequence.append(10.0)
-    network_category_proto.cost_per_sequence.append(10.0)
-    network_category_proto.bytes_per_sequence.append(1500.0)
-    network_category_proto.bytes_per_sequence.append(1500.0)
-    network_category_proto.sequence_ids.append(42)
-    network_category_proto.sequence_ids.append(43)
+    network_category_proto.cost_per_sequence.extend([10.0, 10.0])
+    network_category_proto.bytes_per_sequence.extend([1500.0, 1500.0])
+    network_category_proto.sequence_ids.extend([42, 43])
     method_proto.results_by_network_category.append(network_category_proto)
 
     network_proto = result_pb2.NetworkResultProto()
