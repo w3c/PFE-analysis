@@ -75,7 +75,7 @@ def read_input_files(proto_paths):
 
 def read_failed_sequences(proto_paths):
   "Returns a map from filename to set of integer ids of failures."
-  failures_per_path = dict();
+  failures_per_path = dict()
   for path in proto_paths:
     failures_per_path[path] = load_failed_sequences(path)
   return failures_per_path

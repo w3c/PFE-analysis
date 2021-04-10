@@ -10,31 +10,36 @@ from tools import merge_results
 class MergeResultsTest(absltest.TestCase):
 
   def test_remove_elements(self):
-    self.assertEqual(['a0', 'b1', 'c2', 'd3', 'g6', 'h7'],
-                     merge_results.remove_elements(
-                         ['a0', 'b1', 'c2', 'd3', 'g6', 'h7'],
-                         {4, 5},  # c2 and d3 already removed.
-                         {}))  # Nothing else needs to be removed.
-    self.assertEqual(['a0', 'b1', 'c2', 'd3', 'e4', 'f5', 'g6', 'h7'],
-                     merge_results.remove_elements(
-                         ['a0', 'b1', 'c2', 'd3', 'e4', 'f5', 'g6', 'h7'],
-                         {},  # Nothing already removed.
-                         {}))  # Nothing else needs to be removed.
-    self.assertEqual(['a0', 'b1', 'c2', 'd3'],
-                     merge_results.remove_elements(
-                         ['a0', 'b1', 'c2', 'd3', 'g6', 'h7'],
-                         {4, 5},  # c2 and d3 already removed.
-                         {6, 7}))  # g6 and h7 need to be removed.
-    self.assertEqual([],
-                     merge_results.remove_elements(
-                         ['a0', 'b1', 'c2', 'd3', 'g6', 'h7'],
-                         {},  # Nothing already removed.
-                         {0, 1, 2, 3, 4, 5, 6, 7}))  # Remove all.
-    self.assertEqual([],
-                     merge_results.remove_elements(
-                         ['a0', 'b1'],
-                         {},  # Nothing already removed.
-                         {0, 1}))  # a0 and b1 need to be removed.
+    self.assertEqual(
+        ['a0', 'b1', 'c2', 'd3', 'g6', 'h7'],
+        merge_results.remove_elements(
+            ['a0', 'b1', 'c2', 'd3', 'g6', 'h7'],
+            {4, 5},  # c2 and d3 already removed.
+            {}))  # Nothing else needs to be removed.
+    self.assertEqual(
+        ['a0', 'b1', 'c2', 'd3', 'e4', 'f5', 'g6', 'h7'],
+        merge_results.remove_elements(
+            ['a0', 'b1', 'c2', 'd3', 'e4', 'f5', 'g6', 'h7'],
+            {},  # Nothing already removed.
+            {}))  # Nothing else needs to be removed.
+    self.assertEqual(
+        ['a0', 'b1', 'c2', 'd3'],
+        merge_results.remove_elements(
+            ['a0', 'b1', 'c2', 'd3', 'g6', 'h7'],
+            {4, 5},  # c2 and d3 already removed.
+            {6, 7}))  # g6 and h7 need to be removed.
+    self.assertEqual(
+        [],
+        merge_results.remove_elements(
+            ['a0', 'b1', 'c2', 'd3', 'g6', 'h7'],
+            {},  # Nothing already removed.
+            {0, 1, 2, 3, 4, 5, 6, 7}))  # Remove all.
+    self.assertEqual(
+        [],
+        merge_results.remove_elements(
+            ['a0', 'b1'],
+            {},  # Nothing already removed.
+            {0, 1}))  # a0 and b1 need to be removed.
     self.assertEqual([], merge_results.remove_elements([], {}, {}))
 
   @flagsaver.flagsaver(binary=True)
