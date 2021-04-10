@@ -1,6 +1,6 @@
-"""Merge two DataSetProto's into a single one."""
+"""Merge multiple AnalysisResultProto files into a single one."""
 
-import functools
+import os
 
 from absl import app
 from absl import flags
@@ -12,35 +12,16 @@ flags.DEFINE_bool("binary", True,
                   "If true, will parse the input file as a binary proto.")
 
 
-@functools.lru_cache(maxsize=None)
 def load_failed_sequences(proto_path):
+  """Returns a set of indicies.
+  These elements are not present in the input files: they have been skipped."""
   path = "%s.failures" % proto_path
-  with open(path, "r") as failures:
-    return {int(line) for line in failures.readlines()}
-
-
-def remove_failed_sequences(sequences, proto_path, other_proto_paths):
-  """Remove sequence values which failed in other protos."""
-  my_failed_sequences = load_failed_sequences(proto_path)
-  other_failed_sequences = set()
-  for the_path in other_proto_paths:
-    other_failed_sequences.update(load_failed_sequences(the_path))
-
-  i = 0
-  global_i = 0
-  result = []
-  while i < len(sequences):
-    if global_i in my_failed_sequences:
-      global_i += 1
-      continue
-
-    if global_i not in other_failed_sequences:
-      result.append(sequences[i])
-
-    i += 1
-    global_i += 1
-
-  return result
+  if (os.path.exists(proto_path)):
+    print("Reading %s..." % path)
+    with open(path, "r") as failures:
+      return {int(line) for line in failures.readlines()}
+  else:
+    return set()
 
 
 def main(argv):
@@ -58,17 +39,25 @@ def main(argv):
   print("Done.")
 
 
-def update_sequence_values(values, path, paths):
-  new_values = remove_failed_sequences(values, path,
-                                       [p for p in paths if p != path])
-  del values[:]
-  values.extend(new_values)
+def validateResults(analysis_result):
+  assert len(analysis_result.results) > 0, "Empty results!"
+  network_category_result = \
+  analysis_result.results[0].results_by_network_category[0]
+  expected_len = len(network_category_result.cost_per_sequence)
+  assert expected_len > 0, "Empty net results!"
+  expected_sequence_ids = network_category_result.sequence_ids
+  for method_result in analysis_result.results:
+    for network_category_result in method_result.results_by_network_category:
+      assert len(network_category_result.cost_per_sequence) == expected_len
+      assert len(network_category_result.bytes_per_sequence) == expected_len
+      assert len(network_category_result.sequence_ids) == expected_len
+      assert network_category_result.sequence_ids == expected_sequence_ids
 
 
-def merge(paths):
-  """Merge the result protos into a single result."""
-  protos = dict()
-  for path in paths:
+def read_input_files(proto_paths):
+  "Returns a map from filename to AnalysisResultProto."
+  results_per_path = dict()
+  for path in proto_paths:
     with open(path, "rb") as input_data_file:
       print("Reading %s ..." % path)
       contents = input_data_file.read()
@@ -79,20 +68,74 @@ def merge(paths):
       proto.ParseFromString(contents)
     else:
       text_format.Parse(contents, proto)
-    protos[path] = proto
+    validateResults(proto)
+    results_per_path[path] = proto
+  return results_per_path
 
-  merged = result_pb2.AnalysisResultProto()
-  method = None
-  for path, proto in protos.items():
-    print("Merging %s ..." % path)
-    for method in proto.results:
-      for cat in method.results_by_network_category:
-        update_sequence_values(cat.cost_per_sequence, path, paths)
-        update_sequence_values(cat.bytes_per_sequence, path, paths)
 
-      merged.results.append(method)
+def read_failed_sequences(proto_paths):
+  "Returns a map from filename to set of integer ids of failures."
+  failures_per_path = dict();
+  for path in proto_paths:
+    failures_per_path[path] = load_failed_sequences(path)
+  return failures_per_path
 
-  return merged
+
+def remove_failures(analysis_result, existing_failures, new_failures):
+  for method_result in analysis_result.results:
+    for network_category_result in method_result.results_by_network_category:
+      network_category_result.cost_per_sequence[:] = remove_elements(
+          network_category_result.cost_per_sequence, existing_failures,
+          new_failures)
+      network_category_result.bytes_per_sequence[:] = remove_elements(
+          network_category_result.bytes_per_sequence, existing_failures,
+          new_failures)
+      network_category_result.sequence_ids[:] = remove_elements(
+          network_category_result.sequence_ids, existing_failures, new_failures)
+
+
+def remove_elements(things, existing_failures, new_failures):
+  "Removes elements from a list, where some elements are already missing."
+  results = []
+  things_index = 0
+  i = 0
+  while things_index < len(things):
+    if i in existing_failures:
+      # This index was already removed from the results.
+      # Move on to next index, but don't advance the things pointer.
+      i += 1
+      continue
+    if not i in new_failures:
+      # Good element. Copy it over.
+      results.append(things[things_index])
+    # If i was in new_failures, then skip over / ignore this element.
+    things_index += 1
+    i += 1
+  return results
+
+
+def merge(proto_paths):
+  "Merge the result protos into a single result."
+  results_per_path = read_input_files(proto_paths)
+  failures_per_path = read_failed_sequences(proto_paths)
+
+  global_failures = set()
+  for path in proto_paths:
+    global_failures = global_failures.union(failures_per_path[path])
+
+  for path in proto_paths:
+    print("Cleaning %s ..." % path)
+    other_file_failures = global_failures - failures_per_path[path]  # Set diff.
+    remove_failures(results_per_path[path], failures_per_path[path],
+                    other_file_failures)
+
+  print("Merging...")
+  merged_results = result_pb2.AnalysisResultProto()
+  for path in proto_paths:
+    merged_results.results.extend(results_per_path[path].results)
+  validateResults(merged_results)
+
+  return merged_results
 
 
 if __name__ == "__main__":
