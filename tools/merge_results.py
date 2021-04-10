@@ -16,7 +16,7 @@ def load_failed_sequences(proto_path):
   """Returns a set of indicies.
   These elements are not present in the input files: they have been skipped."""
   path = "%s.failures" % proto_path
-  if (os.path.exists(proto_path)):
+  if os.path.exists(proto_path):
     print("Reading %s..." % path)
     with open(path, "r") as failures:
       return {int(line) for line in failures.readlines()}
@@ -39,7 +39,8 @@ def main(argv):
   print("Done.")
 
 
-def validateResults(analysis_result):
+def validate_results(analysis_result):
+  "Ensures that the results are all the same size, and same sequence ids."
   assert len(analysis_result.results) > 0, "Empty results!"
   network_category_result = \
   analysis_result.results[0].results_by_network_category[0]
@@ -68,7 +69,7 @@ def read_input_files(proto_paths):
       proto.ParseFromString(contents)
     else:
       text_format.Parse(contents, proto)
-    validateResults(proto)
+    validate_results(proto)
     results_per_path[path] = proto
   return results_per_path
 
@@ -82,6 +83,7 @@ def read_failed_sequences(proto_paths):
 
 
 def remove_failures(analysis_result, existing_failures, new_failures):
+  "Removes the failures that happend in all the other files."
   for method_result in analysis_result.results:
     for network_category_result in method_result.results_by_network_category:
       network_category_result.cost_per_sequence[:] = remove_elements(
@@ -133,7 +135,7 @@ def merge(proto_paths):
   merged_results = result_pb2.AnalysisResultProto()
   for path in proto_paths:
     merged_results.results.extend(results_per_path[path].results)
-  validateResults(merged_results)
+  validate_results(merged_results)
 
   return merged_results
 
