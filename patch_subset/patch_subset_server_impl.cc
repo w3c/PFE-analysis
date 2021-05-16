@@ -175,19 +175,41 @@ void PatchSubsetServerImpl::AddPredictedCodepoints(RequestState* state) const {
 
 StatusCode PatchSubsetServerImpl::ComputeSubsets(const std::string& font_id,
                                                  RequestState* state) const {
-  StatusCode result = subsetter_->Subset(
-      state->font_data, *state->codepoints_have, &state->client_subset);
+  StatusCode result = ComputeSubset(font_id,
+                                    state->font_data,
+                                    *state->codepoints_have,
+                                    &state->client_subset);
   if (result != StatusCode::kOk) {
-    LOG(WARNING) << "Subsetting for client_subset "
+    return result;
+  }
+
+  result = ComputeSubset(font_id,
+                         state->font_data,
+                         *state->codepoints_needed,
+                         &state->client_target_subset);
+  if (result != StatusCode::kOk) {
+    return result;
+  }
+
+  return result;
+}
+
+StatusCode PatchSubsetServerImpl::ComputeSubset(const std::string& font_id,
+                                                const FontData& base_font,
+                                                const hb_set_t& codepoints,
+                                                FontData* output) const {
+  StatusCode result = subsetter_->Subset(
+      base_font, codepoints, output);
+  if (result != StatusCode::kOk) {
+    LOG(WARNING) << "Subsetting for "
                  << "(font_id = " << font_id << ")"
                  << "failed.";
     return result;
   }
 
-  result = subsetter_->Subset(state->font_data, *state->codepoints_needed,
-                              &state->client_target_subset);
+  result = glyf_transformer_->Encode(output);
   if (result != StatusCode::kOk) {
-    LOG(WARNING) << "Subsetting for client_target_subset "
+    LOG(WARNING) << "Glyf transformation for "
                  << "(font_id = " << font_id << ")"
                  << "failed.";
     return result;

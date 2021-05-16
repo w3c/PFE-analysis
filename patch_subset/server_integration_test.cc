@@ -9,6 +9,7 @@
 #include "patch_subset/harfbuzz_subsetter.h"
 #include "patch_subset/hb_set_unique_ptr.h"
 #include "patch_subset/noop_codepoint_predictor.h"
+#include "patch_subset/noop_glyf_transformer.h"
 #include "patch_subset/patch_subset_server_impl.h"
 
 using ::absl::string_view;
@@ -27,7 +28,8 @@ class PatchSubsetServerIntegrationTest : public ::testing::Test {
             std::unique_ptr<Hasher>(new FarmHasher()),
             std::unique_ptr<CodepointMapper>(nullptr),
             std::unique_ptr<CodepointMappingChecksum>(nullptr),
-            std::unique_ptr<CodepointPredictor>(new NoopCodepointPredictor())) {
+            std::unique_ptr<CodepointPredictor>(new NoopCodepointPredictor()),
+            std::unique_ptr<GlyfTransformer>(new NoopGlyfTransformer())) {
     font_provider_->GetFont("Roboto-Regular.abcd.ttf", &roboto_abcd_);
     font_provider_->GetFont("Roboto-Regular.ab.ttf", &roboto_ab_);
 

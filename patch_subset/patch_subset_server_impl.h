@@ -19,10 +19,12 @@
 #include "patch_subset/harfbuzz_subsetter.h"
 #include "patch_subset/hasher.h"
 #include "patch_subset/noop_codepoint_predictor.h"
+#include "patch_subset/noop_glyf_transformer.h"
 #include "patch_subset/patch_subset.pb.h"
 #include "patch_subset/patch_subset_server.h"
 #include "patch_subset/simple_codepoint_mapper.h"
 #include "patch_subset/subsetter.h"
+#include "patch_subset/woff2_glyf_transformer.h"
 
 namespace patch_subset {
 
@@ -46,6 +48,16 @@ class ServerConfig {
 
   // remap codepoints
   bool remap_codepoints = false;
+
+  // Apply woff2 glyf transform
+  bool woff2_glyf_transform = false;
+
+  GlyfTransformer* CreateGlyfTransformer() const {
+    if (woff2_glyf_transform) {
+      return new Woff2GlyfTransformer();
+    }
+    return new NoopGlyfTransformer();
+  }
 
   CodepointMapper* CreateCodepointMapper() const {
     if (remap_codepoints) {
@@ -103,7 +115,9 @@ class PatchSubsetServerImpl : public PatchSubsetServer {
         std::unique_ptr<CodepointMappingChecksum>(
             config.CreateMappingChecksum(hasher)),
         std::unique_ptr<CodepointPredictor>(
-            config.CreateCodepointPredictor())));
+            config.CreateCodepointPredictor()),
+        std::unique_ptr<GlyfTransformer>(
+            config.CreateGlyfTransformer())));
   }
 
   // Takes ownership of font_provider, subsetter, and binary_diff.
@@ -113,7 +127,8 @@ class PatchSubsetServerImpl : public PatchSubsetServer {
       std::unique_ptr<BinaryDiff> binary_diff, std::unique_ptr<Hasher> hasher,
       std::unique_ptr<CodepointMapper> codepoint_mapper,
       std::unique_ptr<CodepointMappingChecksum> codepoint_mapping_checksum,
-      std::unique_ptr<CodepointPredictor> codepoint_predictor)
+      std::unique_ptr<CodepointPredictor> codepoint_predictor,
+      std::unique_ptr<GlyfTransformer> glyf_transformer)
       : max_predicted_codepoints_(max_predicted_codepoints),
         font_provider_(std::move(font_provider)),
         subsetter_(std::move(subsetter)),
@@ -121,7 +136,9 @@ class PatchSubsetServerImpl : public PatchSubsetServer {
         hasher_(std::move(hasher)),
         codepoint_mapper_(std::move(codepoint_mapper)),
         codepoint_mapping_checksum_(std::move(codepoint_mapping_checksum)),
-        codepoint_predictor_(std::move(codepoint_predictor)) {}
+        codepoint_predictor_(std::move(codepoint_predictor)),
+        glyf_transformer_(std::move(glyf_transformer))
+  {}
 
   // Handle a patch request from a client. Writes the resulting response
   // into response.
@@ -145,6 +162,11 @@ class PatchSubsetServerImpl : public PatchSubsetServer {
 
   StatusCode ComputeSubsets(const std::string& font_id,
                             RequestState* state) const;
+
+  StatusCode ComputeSubset(const std::string& font_id,
+                           const FontData& base_font,
+                           const hb_set_t& codepoints,
+                           FontData* output) const;
 
   void ValidatePatchBase(uint64_t base_fingerprint, RequestState* state) const;
 
@@ -171,6 +193,7 @@ class PatchSubsetServerImpl : public PatchSubsetServer {
   std::unique_ptr<CodepointMapper> codepoint_mapper_;
   std::unique_ptr<CodepointMappingChecksum> codepoint_mapping_checksum_;
   std::unique_ptr<CodepointPredictor> codepoint_predictor_;
+  std::unique_ptr<GlyfTransformer> glyf_transformer_;
 };
 
 }  // namespace patch_subset
