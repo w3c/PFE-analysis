@@ -55,17 +55,22 @@ class CombinedPatchSubsetMethodTest(unittest.TestCase):
         no_prediction_session.get_request_graphs()[0].total_response_bytes())
 
   def test_differs_by_script(self):
-    latin_session = self.latin_method.start_session(
-        network_models.MOBILE_2G_SLOWEST, self.font_loader)
-    cjk_session = self.cjk_method.start_session(
-        network_models.MOBILE_2G_SLOWEST, self.font_loader)
-    arabic_indic_session = self.arabic_indic_method.start_session(
-        network_models.MOBILE_2G_SLOWEST, self.font_loader)
+    with flagsaver.flagsaver(auto_settings=True):
+        latin_session = self.latin_method.start_session(
+            network_models.MOBILE_2G_SLOWEST, self.font_loader)
+        cjk_session = self.cjk_method.start_session(
+            network_models.MOBILE_2G_SLOWEST, self.font_loader)
+        arabic_indic_session = self.arabic_indic_method.start_session(
+            network_models.MOBILE_2G_SLOWEST, self.font_loader)
 
     usage = {"NotoSansJP-Regular.otf": u([0x61])}
     latin_session.page_view(usage)
     cjk_session.page_view(usage)
     arabic_indic_session.page_view(usage)
+
+    self.assertNotEqual(
+        latin_session.get_request_graphs()[0].total_response_bytes(),
+        arabic_indic_session.get_request_graphs()[0].total_response_bytes())
 
 
   def test_differs_by_network(self):
