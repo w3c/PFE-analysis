@@ -67,15 +67,6 @@ class CombinedPatchSubsetMethodTest(unittest.TestCase):
     cjk_session.page_view(usage)
     arabic_indic_session.page_view(usage)
 
-    # self.assertNotEqual(
-    #     latin_session.get_request_graphs()[0].total_response_bytes(),
-    #     cjk_session.get_request_graphs()[0].total_response_bytes())
-    # self.assertNotEqual(
-    #     latin_session.get_request_graphs()[0].total_response_bytes(),
-    #     arabic_indic_session.get_request_graphs()[0].total_response_bytes())
-    # self.assertNotEqual(
-    #     cjk_session.get_request_graphs()[0].total_response_bytes(),
-    #     arabic_indic_session.get_request_graphs()[0].total_response_bytes())
 
   def test_differs_by_network(self):
     desktop_session = self.latin_method.start_session(
@@ -87,9 +78,6 @@ class CombinedPatchSubsetMethodTest(unittest.TestCase):
     desktop_session.page_view(usage)
     twog_session.page_view(usage)
 
-    # self.assertNotEqual(
-    #     desktop_session.get_request_graphs()[0].total_response_bytes(),
-    #     twog_session.get_request_graphs()[0].total_response_bytes())
 
   def test_differs_by_auto_settings_flag(self):
     # Normal (non auto settings)
