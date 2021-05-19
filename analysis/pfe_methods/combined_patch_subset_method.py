@@ -65,34 +65,6 @@ def pick_method(network_model, script_category):  # pylint: disable=too-many-ret
       # Should not happen. Fall through to non-auto behavior.
       sys.stderr.write("MISSING KEY FOR " + network_model.name + " " +
                        script_category)
-  return pick_method_semiopt(network_model, script_category)
-
-
-def pick_method_semiopt(network_model, script_category):  # pylint: disable=too-many-return-statements
-  """Select best method based on the clients rtt and the script.
-
-  Picks the best set of codepoint prediction parameters for patch subset
-  based on the script being simulated and the clients round trip time.
-  """
-  rtt = network_model.rtt
-  if script_category == "latin":
-    if 350 <= rtt <= 650:
-      return patch_subset_method.create_with_codepoint_remapping()
-    if rtt >= 2750:
-      return patch_subset_method.create_with_codepoint_prediction(87, 0.005)
-    return patch_subset_method.create_with_codepoint_prediction(37, 0.005)
-
-  if script_category == "arabic_indic":
-    if rtt >= 1500:
-      return patch_subset_method.create_with_codepoint_prediction(55, 0.00615)
-    return patch_subset_method.create_with_codepoint_remapping()
-
-  if script_category == "cjk":
-    if rtt >= 1500:
-      return patch_subset_method.create_with_codepoint_prediction(1500, 0.005)
-    return patch_subset_method.create_with_codepoint_remapping()
-
-  # Default to no prediction for unknown scripts
   return patch_subset_method.create_with_codepoint_remapping()
 
 
