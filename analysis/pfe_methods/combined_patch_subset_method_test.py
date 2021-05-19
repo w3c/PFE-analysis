@@ -70,6 +70,12 @@ class CombinedPatchSubsetMethodTest(unittest.TestCase):
 
     self.assertNotEqual(
         latin_session.get_request_graphs()[0].total_response_bytes(),
+        cjk_session.get_request_graphs()[0].total_response_bytes())
+    self.assertNotEqual(
+        latin_session.get_request_graphs()[0].total_response_bytes(),
+        arabic_indic_session.get_request_graphs()[0].total_response_bytes())
+    self.assertNotEqual(
+        cjk_session.get_request_graphs()[0].total_response_bytes(),
         arabic_indic_session.get_request_graphs()[0].total_response_bytes())
 
   def test_differs_by_network(self):
