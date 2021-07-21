@@ -58,23 +58,23 @@ class InvalidResultsProto(Exception):
 
 MODE_FUNCTIONS = {
     "summary_report":
-    lambda argv, result_proto: print_summary_report(result_proto),
+        lambda argv, result_proto: print_summary_report(result_proto),
     "comparison_report":
-    lambda argv, result_proto: print_comparison_report(argv, result_proto),  # pylint: disable=unnecessary-lambda
+        lambda argv, result_proto: print_comparison_report(argv, result_proto),  # pylint: disable=unnecessary-lambda
     "cost_summary":
-    lambda argv, result_proto: print_cost_summary(result_proto),
+        lambda argv, result_proto: print_cost_summary(result_proto),
     "wait_per_page_view":
-    (lambda argv, result_proto: print_network_distribution(
-        argv, result_proto, "wait_per_page_view_ms")),
+        (lambda argv, result_proto: print_network_distribution(
+            argv, result_proto, "wait_per_page_view_ms")),
     "cost_per_page_view":
-    (lambda argv, result_proto: print_network_distribution(
-        argv, result_proto, "cost_per_page_view")),
+        (lambda argv, result_proto: print_network_distribution(
+            argv, result_proto, "cost_per_page_view")),
     "request_bytes_per_page_view":
-    (lambda argv, result_proto: print_network_distribution(
-        argv, result_proto, "request_bytes_per_page_view")),
+        (lambda argv, result_proto: print_network_distribution(
+            argv, result_proto, "request_bytes_per_page_view")),
     "response_bytes_per_page_view":
-    (lambda argv, result_proto: print_network_distribution(
-        argv, result_proto, "response_bytes_per_page_view")),
+        (lambda argv, result_proto: print_network_distribution(
+            argv, result_proto, "response_bytes_per_page_view")),
 }
 
 

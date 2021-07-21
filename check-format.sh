@@ -38,10 +38,10 @@ for f in $(find ./ -name "*.py"); do
     continue
   fi
   
-  yapf --style="{based_on_style: google, indent_width: 2}" -d $f \    
+  python3 -m yapf --style="{based_on_style: google, indent_width: 2}" -d $f \    
   if [ $? -ne 0 ]; then
     if [ $FIX -eq 1 ]; then
-      yapf --style="{based_on_style: google, indent_width: 2}" -i $f
+      python3 -m yapf --style="{based_on_style: google, indent_width: 2}" -i $f
     else
       echo $f $FORMAT_MESSAGE
       FAILED=1

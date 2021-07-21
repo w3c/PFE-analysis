@@ -53,8 +53,9 @@ SCRIPT_CATEGORIES = {
         "ka",
         "et",
     },
-    "arabic_indic":
-    {"ar", "hi", "fa", "ml", "bn", "ta", "km", "te", "mr", "my", "ur"},
+    "arabic_indic": {
+        "ar", "hi", "fa", "ml", "bn", "ta", "km", "te", "mr", "my", "ur"
+    },
     "cjk": {"ja", "zh", "ko", "zh-Hant"},
 }
 
