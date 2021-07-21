@@ -29,7 +29,9 @@ class OptimalPfeMethodTest(unittest.TestCase):
 
   def setUp(self):
     self.session = optimal_pfe_method.start_session(
-        None, font_loader.FontLoader("./patch_subset/testdata/"),
+        None,
+        font_loader.FontLoader(
+            "./external/patch_subset/patch_subset/testdata/"),
         MockSubsetSizer())
 
   def test_font_not_found(self):
@@ -77,7 +79,9 @@ class OptimalPfeMethodTest(unittest.TestCase):
 
   def test_subsequent_subset_smaller(self):
     session = optimal_pfe_method.start_session(
-        None, font_loader.FontLoader("./patch_subset/testdata/"),
+        None,
+        font_loader.FontLoader(
+            "./external/patch_subset/patch_subset/testdata/"),
         InverseMockSubsetSizer())
     session.page_view({"Roboto-Regular.ttf": u([1, 2, 3])})
     session.page_view({"Roboto-Regular.ttf": u([4, 5])})

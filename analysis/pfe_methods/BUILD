@@ -28,7 +28,7 @@ py_test(
         "combined_patch_subset_method_test.py",
     ],
     data = [
-        "//patch_subset:testdata",
+        "@patch_subset//patch_subset:testdata",
     ],
     deps = [
         ":pfe_methods",
@@ -43,7 +43,7 @@ py_test(
         "whole_font_pfe_method_test.py",
     ],
     data = [
-        "//patch_subset:testdata",
+        "@patch_subset//patch_subset:testdata",
     ],
     deps = [
         ":pfe_methods",
@@ -56,7 +56,7 @@ py_test(
         "unicode_range_pfe_method_test.py",
     ],
     data = [
-        "//patch_subset:testdata",
+        "@patch_subset//patch_subset:testdata",
     ],
     deps = [
         ":pfe_methods",
@@ -69,7 +69,7 @@ py_test(
         "range_request_pfe_method_test.py",
     ],
     data = [
-        "//patch_subset:testdata",
+        "@patch_subset//patch_subset:testdata",
     ],
     deps = [
         ":pfe_methods",
@@ -82,7 +82,7 @@ py_test(
         "optimal_pfe_method_test.py",
     ],
     data = [
-        "//patch_subset:testdata",
+        "@patch_subset//patch_subset:testdata",
     ],
     deps = [
         ":pfe_methods",
@@ -95,7 +95,7 @@ py_test(
         "optimal_one_font_method_test.py",
     ],
     data = [
-        "//patch_subset:testdata",
+        "@patch_subset//patch_subset:testdata",
     ],
     deps = [
         ":pfe_methods",
@@ -118,7 +118,7 @@ py_test(
         "subset_sizer_test.py",
     ],
     data = [
-        "//patch_subset:testdata",
+        "@patch_subset//patch_subset:testdata",
     ],
     deps = [
         ":pfe_methods",

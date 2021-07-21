@@ -39,23 +39,27 @@ class SlicingStrategyLoaderTest(unittest.TestCase):
       self.assertTrue(slicing_strategy_loader.load_slicing_strategy(strategy))
 
   def test_codepoints_in_font(self):
-    with open("patch_subset/testdata/Roboto-Regular.abcd.ttf",
-              "rb") as font_file:
+    with open(
+        "./external/patch_subset/patch_subset/testdata/Roboto-Regular.abcd.ttf",
+        "rb") as font_file:
       font_bytes = font_file.read()
 
     codepoints = slicing_strategy_loader.codepoints_in_font(font_bytes)
     self.assertEqual(codepoints, {0x61, 0x62, 0x63, 0x64})
 
   def test_slicing_strategy_for_font_non_cjk(self):
-    with open("patch_subset/testdata/Roboto-Regular.ttf", "rb") as font_file:
+    with open(
+        "./external/patch_subset/patch_subset/testdata/Roboto-Regular.ttf",
+        "rb") as font_file:
       font_bytes = font_file.read()
     self.assertEqual(
         "non_cjk_slices",
         slicing_strategy_loader.slicing_strategy_for_font(font_bytes))
 
   def test_slicing_strategy_for_font_cjk(self):
-    with open("patch_subset/testdata/NotoSansJP-Regular.otf",
-              "rb") as font_file:
+    with open(
+        "./external/patch_subset/patch_subset/testdata/NotoSansJP-Regular.otf",
+        "rb") as font_file:
       font_bytes = font_file.read()
     self.assertEqual(
         "japanese_slices",

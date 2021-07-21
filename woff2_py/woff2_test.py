@@ -7,7 +7,9 @@ from woff2_py import woff2
 class Woff2Test(unittest.TestCase):
 
   def test_encode(self):
-    with open("./patch_subset/testdata/Roboto-Regular.ttf", "rb") as roboto:
+    with open(
+        "./external/patch_subset/patch_subset/testdata/Roboto-Regular.ttf",
+        "rb") as roboto:
       roboto_bytes = roboto.read()
 
     roboto_woff2_bytes = woff2.ttf_to_woff2(roboto_bytes)

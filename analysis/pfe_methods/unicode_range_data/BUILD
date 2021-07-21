@@ -4,7 +4,7 @@ filegroup(
     name = "slicing_strategies",
     srcs = glob(["*.textproto"]),
     visibility = [
-        "//patch_subset:__pkg__",
+        "//patch_subset/py:__pkg__",
     ],
 )
 
@@ -24,7 +24,6 @@ py_proto_library(
 cc_proto_library(
     name = "slicing_strategy_cc_proto",
     visibility = [
-        "//patch_subset:__pkg__",
     ],
     deps = [":slicing_strategy_proto"],
 )
@@ -52,7 +51,7 @@ py_test(
         "slicing_strategy_loader_test.py",
     ],
     data = [
-        "//patch_subset:testdata",
+        "@patch_subset//patch_subset:testdata",
     ],
     deps = [
         ":slicing_strategy_loader",

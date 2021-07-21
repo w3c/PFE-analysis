@@ -23,7 +23,9 @@ class UnicodeRangePfeMethodTest(unittest.TestCase):
 
   def setUp(self):
     self.session = unicode_range_pfe_method.start_session(
-        None, font_loader.FontLoader("./patch_subset/testdata/"),
+        None,
+        font_loader.FontLoader(
+            "./external/patch_subset/patch_subset/testdata/"),
         MockSubsetSizer())
 
   def test_font_not_found(self):

@@ -18,13 +18,20 @@ class PatchSubsetMethodTest(unittest.TestCase):
 
   def setUp(self):
     self.session = patch_subset_method.create_without_codepoint_remapping(
-    ).start_session(None, font_loader.FontLoader("./patch_subset/testdata/"))
+    ).start_session(
+        None,
+        font_loader.FontLoader(
+            "./external/patch_subset/patch_subset/testdata/"))
     self.session_with_remapping = patch_subset_method.create_with_codepoint_remapping(
-    ).start_session(None, font_loader.FontLoader("./patch_subset/testdata/"))
+    ).start_session(
+        None,
+        font_loader.FontLoader(
+            "./external/patch_subset/patch_subset/testdata/"))
     self.session_with_prediction = patch_subset_method.create_with_codepoint_prediction(
-        50,
-        0.0).start_session(None,
-                           font_loader.FontLoader("./patch_subset/testdata/"))
+        50, 0.0).start_session(
+            None,
+            font_loader.FontLoader(
+                "./external/patch_subset/patch_subset/testdata/"))
 
   def test_font_not_found(self):
     with self.assertRaises(patch_subset_method.PatchSubsetError):
@@ -40,8 +47,9 @@ class PatchSubsetMethodTest(unittest.TestCase):
     self.assertEqual(self.session.get_request_graphs()[1].length(), 1)
     self.assertEqual(self.session.get_request_graphs()[2].length(), 1)
 
-    with open("./patch_subset/testdata/Roboto-Regular.abcd.ttf",
-              "rb") as roboto_subset:
+    with open(
+        "./external/patch_subset/patch_subset/testdata/Roboto-Regular.abcd.ttf",
+        "rb") as roboto_subset:
       roboto_subset_bytes = roboto_subset.read()
       self.assertEqual(self.session.get_font_bytes("Roboto-Regular.ttf"),
                        roboto_subset_bytes)
@@ -58,8 +66,9 @@ class PatchSubsetMethodTest(unittest.TestCase):
     self.assertEqual(session.get_request_graphs()[1].length(), 1)
     self.assertEqual(session.get_request_graphs()[2].length(), 0)
 
-    with open("./patch_subset/testdata/Roboto-Regular.abcd.ttf",
-              "rb") as roboto_subset:
+    with open(
+        "./external/patch_subset/patch_subset/testdata/Roboto-Regular.abcd.ttf",
+        "rb") as roboto_subset:
       roboto_subset_bytes = roboto_subset.read()
       self.assertEqual(session.get_font_bytes("Roboto-Regular.ttf"),
                        roboto_subset_bytes)
@@ -111,8 +120,9 @@ class PatchSubsetMethodTest(unittest.TestCase):
         len(self.session.get_request_graphs()[1].requests_that_can_run(set())),
         2)
 
-    with open("./patch_subset/testdata/Roboto-Regular.abcd.ttf",
-              "rb") as roboto_subset:
+    with open(
+        "./external/patch_subset/patch_subset/testdata/Roboto-Regular.abcd.ttf",
+        "rb") as roboto_subset:
       roboto_subset_bytes = roboto_subset.read()
       self.assertEqual(self.session.get_font_bytes("Roboto-Regular.ttf"),
                        roboto_subset_bytes)

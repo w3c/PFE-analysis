@@ -17,7 +17,7 @@ class RangeRequestPfeMethodTest(unittest.TestCase):
 
   def setUp(self):
     self.session = range_request_pfe_method.start_session(None,
-        font_loader.FontLoader("./patch_subset/testdata/"), 10)
+        font_loader.FontLoader("./external/patch_subset/patch_subset/testdata/"), 10)
 
   def test_font_not_found(self):
     with self.assertRaises(IOError):

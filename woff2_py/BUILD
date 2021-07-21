@@ -29,7 +29,7 @@ py_test(
         "woff2_test.py",
     ],
     data = [
-        "//patch_subset:testdata",
+        "@patch_subset//patch_subset:testdata",
     ],
     main = "woff2_test.py",
     deps = [

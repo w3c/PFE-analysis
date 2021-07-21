@@ -2,6 +2,14 @@ workspace(name = "PFE_analysis")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
+# patch subset incxfer
+http_archive(
+    name = "patch_subset",
+    strip_prefix = "patch-subset-incxfer-8b650efcd3422c24d43ec6e3bd0d108c8961de0a",
+    sha256 = "88d0ac667ba4520266c6a5280b8367e9effa9e56f380e2c9e6d7e4dc005fb0e4",
+    urls = ["https://github.com/garretrieger/patch-subset-incxfer/archive/8b650efcd3422c24d43ec6e3bd0d108c8961de0a.zip"],
+)
+
 # Google Test
 http_archive(
     name = "gtest",

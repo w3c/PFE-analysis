@@ -7,7 +7,9 @@ from analysis.pfe_methods import subset_sizer
 class SubsetSizerTest(unittest.TestCase):
 
   def test_subset_size(self):
-    with open("./patch_subset/testdata/Roboto-Regular.ttf", "rb") as font_file:
+    with open(
+        "./external/patch_subset/patch_subset/testdata/Roboto-Regular.ttf",
+        "rb") as font_file:
       font_bytes = font_file.read()
 
     sizer = subset_sizer.SubsetSizer(cache=dict())
@@ -16,7 +18,9 @@ class SubsetSizerTest(unittest.TestCase):
         1640)
 
   def test_subset_size_caches_locally(self):
-    with open("./patch_subset/testdata/Roboto-Regular.ttf", "rb") as font_file:
+    with open(
+        "./external/patch_subset/patch_subset/testdata/Roboto-Regular.ttf",
+        "rb") as font_file:
       font_bytes = font_file.read()
 
     sizer1 = subset_sizer.SubsetSizer(cache=dict())
@@ -32,7 +36,9 @@ class SubsetSizerTest(unittest.TestCase):
                            font_bytes), 1768)
 
   def test_subset_size_caches_globally(self):
-    with open("./patch_subset/testdata/Roboto-Regular.ttf", "rb") as font_file:
+    with open(
+        "./external/patch_subset/patch_subset/testdata/Roboto-Regular.ttf",
+        "rb") as font_file:
       font_bytes = font_file.read()
 
     sizer1 = subset_sizer.SubsetSizer()

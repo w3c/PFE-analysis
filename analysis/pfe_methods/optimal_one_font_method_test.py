@@ -23,7 +23,9 @@ class OptimalOneFontMethodTest(unittest.TestCase):
 
   def setUp(self):
     self.session = optimal_one_font_method.start_session(
-        None, font_loader.FontLoader("./patch_subset/testdata/"),
+        None,
+        font_loader.FontLoader(
+            "./external/patch_subset/patch_subset/testdata/"),
         MockSubsetSizer())
 
   def test_font_not_found(self):

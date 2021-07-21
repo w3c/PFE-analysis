@@ -51,14 +51,14 @@ def simulate_all(sequences,
 
   a_font_loader = font_loader.FontLoader(font_directory, default_font_id)
   failed_indices = []
-  results_by_method = collections.defaultdict(
-      lambda: collections.defaultdict(list))
+  results_by_method = collections.defaultdict(lambda: collections.defaultdict(
+      list))
 
   idx = 0
   for sequence in sequences:
 
-    sequence_results = collections.defaultdict(
-        lambda: collections.defaultdict(list))
+    sequence_results = collections.defaultdict(lambda: collections.defaultdict(
+        list))
 
     try:
       for method in pfe_methods:
