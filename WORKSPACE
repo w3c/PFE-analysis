@@ -5,9 +5,9 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 # patch subset incxfer
 http_archive(
     name = "patch_subset",
-    strip_prefix = "patch-subset-incxfer-8b650efcd3422c24d43ec6e3bd0d108c8961de0a",
-    sha256 = "88d0ac667ba4520266c6a5280b8367e9effa9e56f380e2c9e6d7e4dc005fb0e4",
-    urls = ["https://github.com/garretrieger/patch-subset-incxfer/archive/8b650efcd3422c24d43ec6e3bd0d108c8961de0a.zip"],
+    strip_prefix = "patch-subset-incxfer-eb827fd6947bff47717a695f1659f7b4163258bb",
+    sha256 = "2da43ec117f7e34cb32d4b3ac84bc46bebf99f2f1405ca0e3ed6fc0c258d09e9",
+    urls = ["https://github.com/garretrieger/patch-subset-incxfer/archive/eb827fd6947bff47717a695f1659f7b4163258bb.zip"],
 )
 
 # Google Test
@@ -48,9 +48,9 @@ http_archive(
 http_archive(
     name = "harfbuzz",
     build_file = "//third_party:harfbuzz.BUILD",
-    sha256 = "c7d1d52d530b967a0cef8b7bb157474821c2e1ab609672fa255cced12e90c869",
-    strip_prefix = "harfbuzz-2.6.7",
-    urls = ["https://github.com/harfbuzz/harfbuzz/archive/2.6.7.zip"],
+    sha256 = "50e0f2b193ee25e595f146a0bb71a61e9928635cc03c428b56e43bb9e62ac33d",
+    strip_prefix = "harfbuzz-2.8.2",
+    urls = ["https://github.com/harfbuzz/harfbuzz/archive/2.8.2.zip"],
 )
 
 # farmhash
