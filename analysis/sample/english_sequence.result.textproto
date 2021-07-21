@@ -2,7 +2,7 @@ results {
   method_name: "CombinedPatchSubset"
   results_by_network {
     network_model_name: "desktop_fast"
-    total_cost: 5.212761325690767
+    total_cost: 5.212686211517512
     wait_per_page_view_ms {
       buckets {
         end: 50
@@ -18,7 +18,7 @@ results {
         count: 6
       }
     }
-    total_wait_time_ms: 301.3765996343693
+    total_wait_time_ms: 301.3532906764168
     request_bytes_per_page_view {
       buckets {
         end: 65
@@ -28,11 +28,15 @@ results {
         count: 1
       }
       buckets {
+        end: 95
+      }
+      buckets {
         end: 100
+        count: 1
       }
       buckets {
         end: 105
-        count: 3
+        count: 2
       }
       buckets {
         end: 110
@@ -55,11 +59,14 @@ results {
         count: 1
       }
       buckets {
+        end: 280
+      }
+      buckets {
         end: 285
+        count: 1
       }
       buckets {
         end: 290
-        count: 1
       }
       buckets {
         end: 295
@@ -67,26 +74,23 @@ results {
       }
       buckets {
         end: 300
-      }
-      buckets {
-        end: 305
         count: 1
       }
       buckets {
-        end: 1070
+        end: 1030
       }
       buckets {
-        end: 1075
+        end: 1035
         count: 1
       }
     }
     total_request_count: 6
-    total_request_bytes: 584
-    total_response_bytes: 2428
+    total_request_bytes: 580
+    total_response_bytes: 2381
   }
   results_by_network {
     network_model_name: "desktop_fastest"
-    total_cost: 4.661365559155845
+    total_cost: 4.6613459723368385
     wait_per_page_view_ms {
       buckets {
         end: 20
@@ -102,7 +106,7 @@ results {
         count: 6
       }
     }
-    total_wait_time_ms: 120.4016
+    total_wait_time_ms: 120.3948
     request_bytes_per_page_view {
       buckets {
         end: 65
@@ -112,11 +116,15 @@ results {
         count: 1
       }
       buckets {
+        end: 95
+      }
+      buckets {
         end: 100
+        count: 1
       }
       buckets {
         end: 105
-        count: 3
+        count: 2
       }
       buckets {
         end: 110
@@ -139,11 +147,14 @@ results {
         count: 1
       }
       buckets {
+        end: 280
+      }
+      buckets {
         end: 285
+        count: 1
       }
       buckets {
         end: 290
-        count: 1
       }
       buckets {
         end: 295
@@ -151,26 +162,23 @@ results {
       }
       buckets {
         end: 300
-      }
-      buckets {
-        end: 305
         count: 1
       }
       buckets {
-        end: 1070
+        end: 1030
       }
       buckets {
-        end: 1075
+        end: 1035
         count: 1
       }
     }
     total_request_count: 6
-    total_request_bytes: 584
-    total_response_bytes: 2428
+    total_request_bytes: 580
+    total_response_bytes: 2381
   }
   results_by_network {
     network_model_name: "desktop_median"
-    total_cost: 5.832416544600701
+    total_cost: 5.832220329008662
     wait_per_page_view_ms {
       buckets {
         end: 80
@@ -186,7 +194,7 @@ results {
         count: 6
       }
     }
-    total_wait_time_ms: 483.21108742004265
+    total_wait_time_ms: 483.1567164179105
     request_bytes_per_page_view {
       buckets {
         end: 65
@@ -196,11 +204,15 @@ results {
         count: 1
       }
       buckets {
+        end: 95
+      }
+      buckets {
         end: 100
+        count: 1
       }
       buckets {
         end: 105
-        count: 3
+        count: 2
       }
       buckets {
         end: 110
@@ -223,11 +235,14 @@ results {
         count: 1
       }
       buckets {
+        end: 280
+      }
+      buckets {
         end: 285
+        count: 1
       }
       buckets {
         end: 290
-        count: 1
       }
       buckets {
         end: 295
@@ -235,26 +250,23 @@ results {
       }
       buckets {
         end: 300
-      }
-      buckets {
-        end: 305
         count: 1
       }
       buckets {
-        end: 1070
+        end: 1030
       }
       buckets {
-        end: 1075
+        end: 1035
         count: 1
       }
     }
     total_request_count: 6
-    total_request_bytes: 584
-    total_response_bytes: 2428
+    total_request_bytes: 580
+    total_response_bytes: 2381
   }
   results_by_network {
     network_model_name: "desktop_slow"
-    total_cost: 7.589646840377233
+    total_cost: 7.5888792234169085
     wait_per_page_view_ms {
       buckets {
         end: 150
@@ -270,7 +282,7 @@ results {
         count: 6
       }
     }
-    total_wait_time_ms: 909.6230031948883
+    total_wait_time_ms: 909.4600638977636
     request_bytes_per_page_view {
       buckets {
         end: 65
@@ -280,11 +292,15 @@ results {
         count: 1
       }
       buckets {
+        end: 95
+      }
+      buckets {
         end: 100
+        count: 1
       }
       buckets {
         end: 105
-        count: 3
+        count: 2
       }
       buckets {
         end: 110
@@ -307,11 +323,14 @@ results {
         count: 1
       }
       buckets {
+        end: 280
+      }
+      buckets {
         end: 285
+        count: 1
       }
       buckets {
         end: 290
-        count: 1
       }
       buckets {
         end: 295
@@ -319,26 +338,23 @@ results {
       }
       buckets {
         end: 300
-      }
-      buckets {
-        end: 305
         count: 1
       }
       buckets {
-        end: 1070
+        end: 1030
       }
       buckets {
-        end: 1075
+        end: 1035
         count: 1
       }
     }
     total_request_count: 6
-    total_request_bytes: 584
-    total_response_bytes: 2428
+    total_request_bytes: 580
+    total_response_bytes: 2381
   }
   results_by_network {
     network_model_name: "desktop_slowest"
-    total_cost: 16.059243035377623
+    total_cost: 16.055149902582244
     wait_per_page_view_ms {
       buckets {
         end: 350
@@ -358,7 +374,7 @@ results {
         count: 6
       }
     }
-    total_wait_time_ms: 2124.096
+    total_wait_time_ms: 2123.688
     request_bytes_per_page_view {
       buckets {
         end: 65
@@ -368,11 +384,15 @@ results {
         count: 1
       }
       buckets {
+        end: 95
+      }
+      buckets {
         end: 100
+        count: 1
       }
       buckets {
         end: 105
-        count: 3
+        count: 2
       }
       buckets {
         end: 110
@@ -395,11 +415,14 @@ results {
         count: 1
       }
       buckets {
+        end: 280
+      }
+      buckets {
         end: 285
+        count: 1
       }
       buckets {
         end: 290
-        count: 1
       }
       buckets {
         end: 295
@@ -407,26 +430,23 @@ results {
       }
       buckets {
         end: 300
-      }
-      buckets {
-        end: 305
         count: 1
       }
       buckets {
-        end: 1070
+        end: 1030
       }
       buckets {
-        end: 1075
+        end: 1035
         count: 1
       }
     }
     total_request_count: 6
-    total_request_bytes: 584
-    total_response_bytes: 2428
+    total_request_bytes: 580
+    total_response_bytes: 2381
   }
   results_by_network {
     network_model_name: "mobile_2g_fast"
-    total_cost: 1033.0252766857911
+    total_cost: 1031.525988870823
     wait_per_page_view_ms {
       buckets {
         end: 1515
@@ -456,14 +476,14 @@ results {
         count: 5
       }
       buckets {
-        end: 190
+        end: 185
       }
       buckets {
-        end: 195
+        end: 190
         count: 1
       }
     }
-    total_wait_time_ms: 9158.526315789473
+    total_wait_time_ms: 9155.842105263158
     request_bytes_per_page_view {
       buckets {
         end: 65
@@ -473,11 +493,15 @@ results {
         count: 1
       }
       buckets {
+        end: 95
+      }
+      buckets {
         end: 100
+        count: 1
       }
       buckets {
         end: 105
-        count: 3
+        count: 2
       }
       buckets {
         end: 110
@@ -500,11 +524,14 @@ results {
         count: 1
       }
       buckets {
+        end: 280
+      }
+      buckets {
         end: 285
+        count: 1
       }
       buckets {
         end: 290
-        count: 1
       }
       buckets {
         end: 295
@@ -512,26 +539,23 @@ results {
       }
       buckets {
         end: 300
-      }
-      buckets {
-        end: 305
         count: 1
       }
       buckets {
-        end: 1070
+        end: 1030
       }
       buckets {
-        end: 1075
+        end: 1035
         count: 1
       }
     }
     total_request_count: 6
-    total_request_bytes: 584
-    total_response_bytes: 2428
+    total_request_bytes: 580
+    total_response_bytes: 2381
   }
   results_by_network {
     network_model_name: "mobile_2g_fastest"
-    total_cost: 6.9415225939217
+    total_cost: 6.9404205008129765
     wait_per_page_view_ms {
       buckets {
         end: 125
@@ -551,7 +575,7 @@ results {
         count: 6
       }
     }
-    total_wait_time_ms: 765.06
+    total_wait_time_ms: 764.8050000000001
     request_bytes_per_page_view {
       buckets {
         end: 65
@@ -561,11 +585,15 @@ results {
         count: 1
       }
       buckets {
+        end: 95
+      }
+      buckets {
         end: 100
+        count: 1
       }
       buckets {
         end: 105
-        count: 3
+        count: 2
       }
       buckets {
         end: 110
@@ -588,11 +616,14 @@ results {
         count: 1
       }
       buckets {
+        end: 280
+      }
+      buckets {
         end: 285
+        count: 1
       }
       buckets {
         end: 290
-        count: 1
       }
       buckets {
         end: 295
@@ -600,26 +631,23 @@ results {
       }
       buckets {
         end: 300
-      }
-      buckets {
-        end: 305
         count: 1
       }
       buckets {
-        end: 1070
+        end: 1030
       }
       buckets {
-        end: 1075
+        end: 1035
         count: 1
       }
     }
     total_request_count: 6
-    total_request_bytes: 584
-    total_response_bytes: 2428
+    total_request_bytes: 580
+    total_response_bytes: 2381
   }
   results_by_network {
     network_model_name: "mobile_2g_median"
-    total_cost: 5757.8303946600045
+    total_cost: 5757.14113906086
     wait_per_page_view_ms {
       buckets {
         end: 2785
@@ -633,10 +661,10 @@ results {
         count: 3
       }
       buckets {
-        end: 2875
+        end: 2870
       }
       buckets {
-        end: 2880
+        end: 2875
         count: 1
       }
     }
@@ -656,7 +684,7 @@ results {
         count: 1
       }
     }
-    total_wait_time_ms: 16834.666666666668
+    total_wait_time_ms: 16829.0
     request_bytes_per_page_view {
       buckets {
         end: 65
@@ -666,11 +694,15 @@ results {
         count: 1
       }
       buckets {
+        end: 95
+      }
+      buckets {
         end: 100
+        count: 1
       }
       buckets {
         end: 105
-        count: 3
+        count: 2
       }
       buckets {
         end: 110
@@ -693,11 +725,14 @@ results {
         count: 1
       }
       buckets {
+        end: 280
+      }
+      buckets {
         end: 285
+        count: 1
       }
       buckets {
         end: 290
-        count: 1
       }
       buckets {
         end: 295
@@ -705,26 +740,23 @@ results {
       }
       buckets {
         end: 300
-      }
-      buckets {
-        end: 305
         count: 1
       }
       buckets {
-        end: 1070
+        end: 1030
       }
       buckets {
-        end: 1075
+        end: 1035
         count: 1
       }
     }
     total_request_count: 6
-    total_request_bytes: 584
-    total_response_bytes: 2428
+    total_request_bytes: 580
+    total_response_bytes: 2381
   }
   results_by_network {
     network_model_name: "mobile_2g_slow"
-    total_cost: 5999.652370449563
+    total_cost: 5999.650969858257
     wait_per_page_view_ms {
       buckets {
         end: 4555
@@ -742,10 +774,10 @@ results {
         count: 2
       }
       buckets {
-        end: 4685
+        end: 4680
       }
       buckets {
-        end: 4690
+        end: 4685
         count: 1
       }
     }
@@ -758,7 +790,7 @@ results {
         count: 6
       }
     }
-    total_wait_time_ms: 27502.0
+    total_wait_time_ms: 27493.499999999996
     request_bytes_per_page_view {
       buckets {
         end: 65
@@ -768,11 +800,15 @@ results {
         count: 1
       }
       buckets {
+        end: 95
+      }
+      buckets {
         end: 100
+        count: 1
       }
       buckets {
         end: 105
-        count: 3
+        count: 2
       }
       buckets {
         end: 110
@@ -795,11 +831,14 @@ results {
         count: 1
       }
       buckets {
+        end: 280
+      }
+      buckets {
         end: 285
+        count: 1
       }
       buckets {
         end: 290
-        count: 1
       }
       buckets {
         end: 295
@@ -807,26 +846,23 @@ results {
       }
       buckets {
         end: 300
-      }
-      buckets {
-        end: 305
         count: 1
       }
       buckets {
-        end: 1070
+        end: 1030
       }
       buckets {
-        end: 1075
+        end: 1035
         count: 1
       }
     }
     total_request_count: 6
-    total_request_bytes: 584
-    total_response_bytes: 2428
+    total_request_bytes: 580
+    total_response_bytes: 2381
   }
   results_by_network {
     network_model_name: "mobile_2g_slowest"
-    total_cost: 5999.999999999584
+    total_cost: 5999.999999999581
     wait_per_page_view_ms {
       buckets {
         end: 10080
@@ -844,17 +880,13 @@ results {
       }
       buckets {
         end: 10100
-        count: 2
+        count: 3
       }
       buckets {
-        end: 10105
-        count: 1
+        end: 10270
       }
       buckets {
-        end: 10280
-      }
-      buckets {
-        end: 10285
+        end: 10275
         count: 1
       }
     }
@@ -867,7 +899,7 @@ results {
         count: 6
       }
     }
-    total_wait_time_ms: 60753.0
+    total_wait_time_ms: 60740.25
     request_bytes_per_page_view {
       buckets {
         end: 65
@@ -877,11 +909,15 @@ results {
         count: 1
       }
       buckets {
+        end: 95
+      }
+      buckets {
         end: 100
+        count: 1
       }
       buckets {
         end: 105
-        count: 3
+        count: 2
       }
       buckets {
         end: 110
@@ -904,11 +940,14 @@ results {
         count: 1
       }
       buckets {
+        end: 280
+      }
+      buckets {
         end: 285
+        count: 1
       }
       buckets {
         end: 290
-        count: 1
       }
       buckets {
         end: 295
@@ -916,26 +955,23 @@ results {
       }
       buckets {
         end: 300
-      }
-      buckets {
-        end: 305
         count: 1
       }
       buckets {
-        end: 1070
+        end: 1030
       }
       buckets {
-        end: 1075
+        end: 1035
         count: 1
       }
     }
     total_request_count: 6
-    total_request_bytes: 584
-    total_response_bytes: 2428
+    total_request_bytes: 580
+    total_response_bytes: 2381
   }
   results_by_network {
     network_model_name: "mobile_3g_fast"
-    total_cost: 8.347484453321817
+    total_cost: 8.346275264031325
     wait_per_page_view_ms {
       buckets {
         end: 175
@@ -955,7 +991,7 @@ results {
         count: 6
       }
     }
-    total_wait_time_ms: 1063.7534246575342
+    total_wait_time_ms: 1063.5205479452054
     request_bytes_per_page_view {
       buckets {
         end: 65
@@ -965,11 +1001,15 @@ results {
         count: 1
       }
       buckets {
+        end: 95
+      }
+      buckets {
         end: 100
+        count: 1
       }
       buckets {
         end: 105
-        count: 3
+        count: 2
       }
       buckets {
         end: 110
@@ -992,11 +1032,14 @@ results {
         count: 1
       }
       buckets {
+        end: 280
+      }
+      buckets {
         end: 285
+        count: 1
       }
       buckets {
         end: 290
-        count: 1
       }
       buckets {
         end: 295
@@ -1004,26 +1047,23 @@ results {
       }
       buckets {
         end: 300
-      }
-      buckets {
-        end: 305
         count: 1
       }
       buckets {
-        end: 1070
+        end: 1030
       }
       buckets {
-        end: 1075
+        end: 1035
         count: 1
       }
     }
     total_request_count: 6
-    total_request_bytes: 584
-    total_response_bytes: 2428
+    total_request_bytes: 580
+    total_response_bytes: 2381
   }
   results_by_network {
     network_model_name: "mobile_3g_fastest"
-    total_cost: 6.643459455821185
+    total_cost: 6.643179846834945
     wait_per_page_view_ms {
       buckets {
         end: 115
@@ -1039,7 +1079,7 @@ results {
         count: 6
       }
     }
-    total_wait_time_ms: 694.0160000000001
+    total_wait_time_ms: 693.9480000000001
     request_bytes_per_page_view {
       buckets {
         end: 65
@@ -1049,11 +1089,15 @@ results {
         count: 1
       }
       buckets {
+        end: 95
+      }
+      buckets {
         end: 100
+        count: 1
       }
       buckets {
         end: 105
-        count: 3
+        count: 2
       }
       buckets {
         end: 110
@@ -1076,11 +1120,14 @@ results {
         count: 1
       }
       buckets {
+        end: 280
+      }
+      buckets {
         end: 285
+        count: 1
       }
       buckets {
         end: 290
-        count: 1
       }
       buckets {
         end: 295
@@ -1088,26 +1135,23 @@ results {
       }
       buckets {
         end: 300
-      }
-      buckets {
-        end: 305
         count: 1
       }
       buckets {
-        end: 1070
+        end: 1030
       }
       buckets {
-        end: 1075
+        end: 1035
         count: 1
       }
     }
     total_request_count: 6
-    total_request_bytes: 584
-    total_response_bytes: 2428
+    total_request_bytes: 580
+    total_response_bytes: 2381
   }
   results_by_network {
     network_model_name: "mobile_3g_median"
-    total_cost: 13.30696027997379
+    total_cost: 13.304248366716548
     wait_per_page_view_ms {
       buckets {
         end: 300
@@ -1127,7 +1171,7 @@ results {
         count: 6
       }
     }
-    total_wait_time_ms: 1819.3076923076926
+    total_wait_time_ms: 1818.9807692307693
     request_bytes_per_page_view {
       buckets {
         end: 65
@@ -1137,11 +1181,15 @@ results {
         count: 1
       }
       buckets {
+        end: 95
+      }
+      buckets {
         end: 100
+        count: 1
       }
       buckets {
         end: 105
-        count: 3
+        count: 2
       }
       buckets {
         end: 110
@@ -1164,11 +1212,14 @@ results {
         count: 1
       }
       buckets {
+        end: 280
+      }
+      buckets {
         end: 285
+        count: 1
       }
       buckets {
         end: 290
-        count: 1
       }
       buckets {
         end: 295
@@ -1176,26 +1227,23 @@ results {
       }
       buckets {
         end: 300
-      }
-      buckets {
-        end: 305
         count: 1
       }
       buckets {
-        end: 1070
+        end: 1030
       }
       buckets {
-        end: 1075
+        end: 1035
         count: 1
       }
     }
     total_request_count: 6
-    total_request_bytes: 584
-    total_response_bytes: 2428
+    total_request_bytes: 580
+    total_response_bytes: 2381
   }
   results_by_network {
     network_model_name: "mobile_3g_slow"
-    total_cost: 34.387308275233835
+    total_cost: 34.36503765831371
     wait_per_page_view_ms {
       buckets {
         end: 555
@@ -1221,7 +1269,7 @@ results {
         count: 6
       }
     }
-    total_wait_time_ms: 3360.24
+    total_wait_time_ms: 3359.22
     request_bytes_per_page_view {
       buckets {
         end: 65
@@ -1231,11 +1279,15 @@ results {
         count: 1
       }
       buckets {
+        end: 95
+      }
+      buckets {
         end: 100
+        count: 1
       }
       buckets {
         end: 105
-        count: 3
+        count: 2
       }
       buckets {
         end: 110
@@ -1258,11 +1310,14 @@ results {
         count: 1
       }
       buckets {
+        end: 280
+      }
+      buckets {
         end: 285
+        count: 1
       }
       buckets {
         end: 290
-        count: 1
       }
       buckets {
         end: 295
@@ -1270,26 +1325,23 @@ results {
       }
       buckets {
         end: 300
-      }
-      buckets {
-        end: 305
         count: 1
       }
       buckets {
-        end: 1070
+        end: 1030
       }
       buckets {
-        end: 1075
+        end: 1035
         count: 1
       }
     }
     total_request_count: 6
-    total_request_bytes: 584
-    total_response_bytes: 2428
+    total_request_bytes: 580
+    total_response_bytes: 2381
   }
   results_by_network {
     network_model_name: "mobile_3g_slowest"
-    total_cost: 5743.350415193369
+    total_cost: 5742.819254504115
     wait_per_page_view_ms {
       buckets {
         end: 2775
@@ -1303,10 +1355,10 @@ results {
         count: 2
       }
       buckets {
-        end: 2835
+        end: 2830
       }
       buckets {
-        end: 2840
+        end: 2835
         count: 1
       }
     }
@@ -1323,7 +1375,7 @@ results {
         count: 1
       }
     }
-    total_wait_time_ms: 16731.69230769231
+    total_wait_time_ms: 16727.76923076923
     request_bytes_per_page_view {
       buckets {
         end: 65
@@ -1333,11 +1385,15 @@ results {
         count: 1
       }
       buckets {
+        end: 95
+      }
+      buckets {
         end: 100
+        count: 1
       }
       buckets {
         end: 105
-        count: 3
+        count: 2
       }
       buckets {
         end: 110
@@ -1360,11 +1416,14 @@ results {
         count: 1
       }
       buckets {
+        end: 280
+      }
+      buckets {
         end: 285
+        count: 1
       }
       buckets {
         end: 290
-        count: 1
       }
       buckets {
         end: 295
@@ -1372,26 +1431,23 @@ results {
       }
       buckets {
         end: 300
-      }
-      buckets {
-        end: 305
         count: 1
       }
       buckets {
-        end: 1070
+        end: 1030
       }
       buckets {
-        end: 1075
+        end: 1035
         count: 1
       }
     }
     total_request_count: 6
-    total_request_bytes: 584
-    total_response_bytes: 2428
+    total_request_bytes: 580
+    total_response_bytes: 2381
   }
   results_by_network {
     network_model_name: "mobile_4g_fast"
-    total_cost: 6.521502483374325
+    total_cost: 6.521228001686389
     wait_per_page_view_ms {
       buckets {
         end: 110
@@ -1407,7 +1463,7 @@ results {
         count: 6
       }
     }
-    total_wait_time_ms: 664.0160000000001
+    total_wait_time_ms: 663.9480000000001
     request_bytes_per_page_view {
       buckets {
         end: 65
@@ -1417,11 +1473,15 @@ results {
         count: 1
       }
       buckets {
+        end: 95
+      }
+      buckets {
         end: 100
+        count: 1
       }
       buckets {
         end: 105
-        count: 3
+        count: 2
       }
       buckets {
         end: 110
@@ -1444,11 +1504,14 @@ results {
         count: 1
       }
       buckets {
+        end: 280
+      }
+      buckets {
         end: 285
+        count: 1
       }
       buckets {
         end: 290
-        count: 1
       }
       buckets {
         end: 295
@@ -1456,26 +1519,23 @@ results {
       }
       buckets {
         end: 300
-      }
-      buckets {
-        end: 305
         count: 1
       }
       buckets {
-        end: 1070
+        end: 1030
       }
       buckets {
-        end: 1075
+        end: 1035
         count: 1
       }
     }
     total_request_count: 6
-    total_request_bytes: 584
-    total_response_bytes: 2428
+    total_request_bytes: 580
+    total_response_bytes: 2381
   }
   results_by_network {
     network_model_name: "mobile_4g_fastest"
-    total_cost: 5.613716191698669
+    total_cost: 5.613637535801223
     wait_per_page_view_ms {
       buckets {
         end: 70
@@ -1491,7 +1551,7 @@ results {
         count: 6
       }
     }
-    total_wait_time_ms: 421.3386666666667
+    total_wait_time_ms: 421.316
     request_bytes_per_page_view {
       buckets {
         end: 65
@@ -1501,11 +1561,15 @@ results {
         count: 1
       }
       buckets {
+        end: 95
+      }
+      buckets {
         end: 100
+        count: 1
       }
       buckets {
         end: 105
-        count: 3
+        count: 2
       }
       buckets {
         end: 110
@@ -1528,11 +1592,14 @@ results {
         count: 1
       }
       buckets {
+        end: 280
+      }
+      buckets {
         end: 285
+        count: 1
       }
       buckets {
         end: 290
-        count: 1
       }
       buckets {
         end: 295
@@ -1540,26 +1607,23 @@ results {
       }
       buckets {
         end: 300
-      }
-      buckets {
-        end: 305
         count: 1
       }
       buckets {
-        end: 1070
+        end: 1030
       }
       buckets {
-        end: 1075
+        end: 1035
         count: 1
       }
     }
     total_request_count: 6
-    total_request_bytes: 584
-    total_response_bytes: 2428
+    total_request_bytes: 580
+    total_response_bytes: 2381
   }
   results_by_network {
     network_model_name: "mobile_4g_median"
-    total_cost: 7.603903666158345
+    total_cost: 7.602890597329808
     wait_per_page_view_ms {
       buckets {
         end: 150
@@ -1575,7 +1639,7 @@ results {
         count: 6
       }
     }
-    total_wait_time_ms: 912.6554621848738
+    total_wait_time_ms: 912.4411764705883
     request_bytes_per_page_view {
       buckets {
         end: 65
@@ -1585,11 +1649,15 @@ results {
         count: 1
       }
       buckets {
+        end: 95
+      }
+      buckets {
         end: 100
+        count: 1
       }
       buckets {
         end: 105
-        count: 3
+        count: 2
       }
       buckets {
         end: 110
@@ -1612,11 +1680,14 @@ results {
         count: 1
       }
       buckets {
+        end: 280
+      }
+      buckets {
         end: 285
+        count: 1
       }
       buckets {
         end: 290
-        count: 1
       }
       buckets {
         end: 295
@@ -1624,26 +1695,23 @@ results {
       }
       buckets {
         end: 300
-      }
-      buckets {
-        end: 305
         count: 1
       }
       buckets {
-        end: 1070
+        end: 1030
       }
       buckets {
-        end: 1075
+        end: 1035
         count: 1
       }
     }
     total_request_count: 6
-    total_request_bytes: 584
-    total_response_bytes: 2428
+    total_request_bytes: 580
+    total_response_bytes: 2381
   }
   results_by_network {
     network_model_name: "mobile_4g_slow"
-    total_cost: 10.063834638316855
+    total_cost: 10.062068519573412
     wait_per_page_view_ms {
       buckets {
         end: 225
@@ -1663,7 +1731,7 @@ results {
         count: 6
       }
     }
-    total_wait_time_ms: 1366.6408839779006
+    total_wait_time_ms: 1366.3591160220994
     request_bytes_per_page_view {
       buckets {
         end: 65
@@ -1673,11 +1741,15 @@ results {
         count: 1
       }
       buckets {
+        end: 95
+      }
+      buckets {
         end: 100
+        count: 1
       }
       buckets {
         end: 105
-        count: 3
+        count: 2
       }
       buckets {
         end: 110
@@ -1700,11 +1772,14 @@ results {
         count: 1
       }
       buckets {
+        end: 280
+      }
+      buckets {
         end: 285
+        count: 1
       }
       buckets {
         end: 290
-        count: 1
       }
       buckets {
         end: 295
@@ -1712,26 +1787,23 @@ results {
       }
       buckets {
         end: 300
-      }
-      buckets {
-        end: 305
         count: 1
       }
       buckets {
-        end: 1070
+        end: 1030
       }
       buckets {
-        end: 1075
+        end: 1035
         count: 1
       }
     }
     total_request_count: 6
-    total_request_bytes: 584
-    total_response_bytes: 2428
+    total_request_bytes: 580
+    total_response_bytes: 2381
   }
   results_by_network {
     network_model_name: "mobile_4g_slowest"
-    total_cost: 49.82267563619787
+    total_cost: 49.788373153901276
     wait_per_page_view_ms {
       buckets {
         end: 655
@@ -1757,7 +1829,7 @@ results {
         count: 6
       }
     }
-    total_wait_time_ms: 3964.085106382979
+    total_wait_time_ms: 3963.0
     request_bytes_per_page_view {
       buckets {
         end: 65
@@ -1767,11 +1839,15 @@ results {
         count: 1
       }
       buckets {
+        end: 95
+      }
+      buckets {
         end: 100
+        count: 1
       }
       buckets {
         end: 105
-        count: 3
+        count: 2
       }
       buckets {
         end: 110
@@ -1794,11 +1870,14 @@ results {
         count: 1
       }
       buckets {
+        end: 280
+      }
+      buckets {
         end: 285
+        count: 1
       }
       buckets {
         end: 290
-        count: 1
       }
       buckets {
         end: 295
@@ -1806,26 +1885,23 @@ results {
       }
       buckets {
         end: 300
-      }
-      buckets {
-        end: 305
         count: 1
       }
       buckets {
-        end: 1070
+        end: 1030
       }
       buckets {
-        end: 1075
+        end: 1035
         count: 1
       }
     }
     total_request_count: 6
-    total_request_bytes: 584
-    total_response_bytes: 2428
+    total_request_bytes: 580
+    total_response_bytes: 2381
   }
   results_by_network {
     network_model_name: "mobile_wifi_fast"
-    total_cost: 5.5142933107065595
+    total_cost: 5.514154154593301
     wait_per_page_view_ms {
       buckets {
         end: 65
@@ -1841,7 +1917,7 @@ results {
         count: 6
       }
     }
-    total_wait_time_ms: 392.4096
+    total_wait_time_ms: 392.3688
     request_bytes_per_page_view {
       buckets {
         end: 65
@@ -1851,11 +1927,15 @@ results {
         count: 1
       }
       buckets {
+        end: 95
+      }
+      buckets {
         end: 100
+        count: 1
       }
       buckets {
         end: 105
-        count: 3
+        count: 2
       }
       buckets {
         end: 110
@@ -1878,11 +1958,14 @@ results {
         count: 1
       }
       buckets {
+        end: 280
+      }
+      buckets {
         end: 285
+        count: 1
       }
       buckets {
         end: 290
-        count: 1
       }
       buckets {
         end: 295
@@ -1890,26 +1973,23 @@ results {
       }
       buckets {
         end: 300
-      }
-      buckets {
-        end: 305
         count: 1
       }
       buckets {
-        end: 1070
+        end: 1030
       }
       buckets {
-        end: 1075
+        end: 1035
         count: 1
       }
     }
     total_request_count: 6
-    total_request_bytes: 584
-    total_response_bytes: 2428
+    total_request_bytes: 580
+    total_response_bytes: 2381
   }
   results_by_network {
     network_model_name: "mobile_wifi_fastest"
-    total_cost: 4.929326244677165
+    total_cost: 4.929281050145477
     wait_per_page_view_ms {
       buckets {
         end: 35
@@ -1925,7 +2005,7 @@ results {
         count: 6
       }
     }
-    total_wait_time_ms: 210.87609075043628
+    total_wait_time_ms: 210.86125654450262
     request_bytes_per_page_view {
       buckets {
         end: 65
@@ -1935,11 +2015,15 @@ results {
         count: 1
       }
       buckets {
+        end: 95
+      }
+      buckets {
         end: 100
+        count: 1
       }
       buckets {
         end: 105
-        count: 3
+        count: 2
       }
       buckets {
         end: 110
@@ -1962,11 +2046,14 @@ results {
         count: 1
       }
       buckets {
+        end: 280
+      }
+      buckets {
         end: 285
+        count: 1
       }
       buckets {
         end: 290
-        count: 1
       }
       buckets {
         end: 295
@@ -1974,26 +2061,23 @@ results {
       }
       buckets {
         end: 300
-      }
-      buckets {
-        end: 305
         count: 1
       }
       buckets {
-        end: 1070
+        end: 1030
       }
       buckets {
-        end: 1075
+        end: 1035
         count: 1
       }
     }
     total_request_count: 6
-    total_request_bytes: 584
-    total_response_bytes: 2428
+    total_request_bytes: 580
+    total_response_bytes: 2381
   }
   results_by_network {
     network_model_name: "mobile_wifi_median"
-    total_cost: 6.64893981119809
+    total_cost: 6.648566754062669
     wait_per_page_view_ms {
       buckets {
         end: 115
@@ -2009,7 +2093,7 @@ results {
         count: 6
       }
     }
-    total_wait_time_ms: 695.3499111900531
+    total_wait_time_ms: 695.2593250444049
     request_bytes_per_page_view {
       buckets {
         end: 65
@@ -2019,11 +2103,15 @@ results {
         count: 1
       }
       buckets {
+        end: 95
+      }
+      buckets {
         end: 100
+        count: 1
       }
       buckets {
         end: 105
-        count: 3
+        count: 2
       }
       buckets {
         end: 110
@@ -2046,11 +2134,14 @@ results {
         count: 1
       }
       buckets {
+        end: 280
+      }
+      buckets {
         end: 285
+        count: 1
       }
       buckets {
         end: 290
-        count: 1
       }
       buckets {
         end: 295
@@ -2058,26 +2149,23 @@ results {
       }
       buckets {
         end: 300
-      }
-      buckets {
-        end: 305
         count: 1
       }
       buckets {
-        end: 1070
+        end: 1030
       }
       buckets {
-        end: 1075
+        end: 1035
         count: 1
       }
     }
     total_request_count: 6
-    total_request_bytes: 584
-    total_response_bytes: 2428
+    total_request_bytes: 580
+    total_response_bytes: 2381
   }
   results_by_network {
     network_model_name: "mobile_wifi_slow"
-    total_cost: 8.200920937506913
+    total_cost: 8.199619170090225
     wait_per_page_view_ms {
       buckets {
         end: 170
@@ -2097,7 +2185,7 @@ results {
         count: 6
       }
     }
-    total_wait_time_ms: 1035.06
+    total_wait_time_ms: 1034.8049999999998
     request_bytes_per_page_view {
       buckets {
         end: 65
@@ -2107,11 +2195,15 @@ results {
         count: 1
       }
       buckets {
+        end: 95
+      }
+      buckets {
         end: 100
+        count: 1
       }
       buckets {
         end: 105
-        count: 3
+        count: 2
       }
       buckets {
         end: 110
@@ -2134,11 +2226,14 @@ results {
         count: 1
       }
       buckets {
+        end: 280
+      }
+      buckets {
         end: 285
+        count: 1
       }
       buckets {
         end: 290
-        count: 1
       }
       buckets {
         end: 295
@@ -2146,26 +2241,23 @@ results {
       }
       buckets {
         end: 300
-      }
-      buckets {
-        end: 305
         count: 1
       }
       buckets {
-        end: 1070
+        end: 1030
       }
       buckets {
-        end: 1075
+        end: 1035
         count: 1
       }
     }
     total_request_count: 6
-    total_request_bytes: 584
-    total_response_bytes: 2428
+    total_request_bytes: 580
+    total_response_bytes: 2381
   }
   results_by_network {
     network_model_name: "mobile_wifi_slowest"
-    total_cost: 28.06357725126574
+    total_cost: 28.05462574274648
     wait_per_page_view_ms {
       buckets {
         end: 500
@@ -2188,7 +2280,7 @@ results {
         count: 6
       }
     }
-    total_wait_time_ms: 3030.12
+    total_wait_time_ms: 3029.6099999999997
     request_bytes_per_page_view {
       buckets {
         end: 65
@@ -2198,11 +2290,15 @@ results {
         count: 1
       }
       buckets {
+        end: 95
+      }
+      buckets {
         end: 100
+        count: 1
       }
       buckets {
         end: 105
-        count: 3
+        count: 2
       }
       buckets {
         end: 110
@@ -2225,11 +2321,14 @@ results {
         count: 1
       }
       buckets {
+        end: 280
+      }
+      buckets {
         end: 285
+        count: 1
       }
       buckets {
         end: 290
-        count: 1
       }
       buckets {
         end: 295
@@ -2237,51 +2336,48 @@ results {
       }
       buckets {
         end: 300
-      }
-      buckets {
-        end: 305
         count: 1
       }
       buckets {
-        end: 1070
+        end: 1030
       }
       buckets {
-        end: 1075
+        end: 1035
         count: 1
       }
     }
     total_request_count: 6
-    total_request_bytes: 584
-    total_response_bytes: 2428
+    total_request_bytes: 580
+    total_response_bytes: 2381
   }
   results_by_network_category {
     network_category: "2G"
-    cost_per_sequence: 4585.797802886747
-    bytes_per_sequence: 3012.0
+    cost_per_sequence: 4585.152982301265
+    bytes_per_sequence: 2961.0
     sequence_ids: 42
   }
   results_by_network_category {
     network_category: "3G"
-    cost_per_sequence: 302.70013241815747
-    bytes_per_sequence: 3012.0
+    cost_per_sequence: 302.6675084853748
+    bytes_per_sequence: 2961.0
     sequence_ids: 42
   }
   results_by_network_category {
     network_category: "4G"
-    cost_per_sequence: 9.890838848812235
-    bytes_per_sequence: 3012.0
+    cost_per_sequence: 9.88820513740199
+    bytes_per_sequence: 2961.0
     sequence_ids: 42
   }
   results_by_network_category {
     network_category: "desktop"
-    cost_per_sequence: 6.512720335240624
-    bytes_per_sequence: 3012.0
+    cost_per_sequence: 6.51224804523717
+    bytes_per_sequence: 2961.0
     sequence_ids: 42
   }
   results_by_network_category {
     network_category: "wifi"
-    cost_per_sequence: 7.717157930038885
-    bytes_per_sequence: 3012.0
+    cost_per_sequence: 7.716233381612637
+    bytes_per_sequence: 2961.0
     sequence_ids: 42
   }
 }
