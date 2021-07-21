@@ -189,7 +189,7 @@ py_test(
         "sample/english_sequence.textproto",
         "sample/range_request.english_sequence.result.textproto",
         ":analyzer",
-        "//patch_subset:testdata",
+        "@patch_subset//patch_subset:testdata",
     ],
     deps = [
     ],

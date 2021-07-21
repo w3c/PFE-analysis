@@ -27,7 +27,8 @@ class CombinedPatchSubsetMethodTest(unittest.TestCase):
         "cjk")
     self.unknown_method = combined_patch_subset_method.CombinedPatchSubsetMethod(
         "invalid")
-    self.font_loader = font_loader.FontLoader("./patch_subset/testdata/")
+    self.font_loader = font_loader.FontLoader(
+        "./external/patch_subset/patch_subset/testdata/")
 
   def test_invalid_script(self):
     session = combined_patch_subset_method.CombinedPatchSubsetMethod(

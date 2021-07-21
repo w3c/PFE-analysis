@@ -6,10 +6,10 @@ cc_binary(
     linkshared = 1,
     linkstatic = 1,
     deps = [
-        "//common",
-        "//patch_subset:client",
-        "//patch_subset:common",
-        "//patch_subset:server",
+        "@patch_subset//common",
+        "@patch_subset//patch_subset:client",
+        "@patch_subset//patch_subset:common",
+        "@patch_subset//patch_subset:server",
     ],
 )
 
@@ -21,14 +21,14 @@ cc_test(
         "patch_subset_session_test.cc",
     ],
     data = [
-        "//patch_subset:testdata",
+        "@patch_subset//patch_subset:testdata",
     ],
     deps = [
-        "//common",
-        "//patch_subset:client",
-        "//patch_subset:common",
-        "//patch_subset:server",
         "@gtest//:gtest_main",
+        "@patch_subset//common",
+        "@patch_subset//patch_subset:client",
+        "@patch_subset//patch_subset:common",
+        "@patch_subset//patch_subset:server",
     ],
 )
 
@@ -55,7 +55,8 @@ py_test(
         "patch_subset_method_test.py",
     ],
     data = [
-        "//patch_subset:testdata",
+        "//analysis/pfe_methods/unicode_range_data:slicing_strategies",
+        "@patch_subset//patch_subset:testdata",
     ],
     deps = [
         ":py",

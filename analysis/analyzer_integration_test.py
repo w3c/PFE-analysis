@@ -64,7 +64,7 @@ def run_analyzer(simulate_range_request):
       "analysis/analyzer",
       "--input_data=analysis/sample/english_sequence.textproto",
       "--input_form=text", "--parallelism=1",
-      "--font_directory=patch_subset/testdata/",
+      "--font_directory=external/patch_subset/patch_subset/testdata/",
       "--default_font_id=Roboto-Regular.ttf"
   ]
   if simulate_range_request:
