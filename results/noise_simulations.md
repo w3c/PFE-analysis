@@ -50,9 +50,10 @@ previously visited pages and thus will match the same or more pages then prior l
 
 The data set used to drive the [IFT performance analysis](07-08-2020/simulation_results_aug_2020.md) was used as an input.
 The unique set of codepoints from each 'page view' was extracted and used to form the set, S. Then pages were randomly
-selected from S and various forms of noise were applied. Lastly, the number of matching subsets in S was recorded.
+selected from S and various forms of noise were applied. For each type of noise the number of matching subsets in S was
+recorded.
 
-The resulting data was then bucketed into the following buckets to produce a histogram:
+The resulting data was then bucketed to produce a histogram with the buckets:
 - (0, 1]: Exactly 1 matching subset in S.
 - (1, 10]: 2 to 10 matching subsets in S.
 - (10, 100]: 11 to 100 matching subsets in S.
@@ -64,9 +65,10 @@ The following types of noise were simulated:
   models what the Google Fonts API currently does. ([range definitions](https://github.com/w3c/PFE-analysis/tree/main/analysis/pfe_methods/unicode_range_data)). Labeled as unicode_range() in the results.
 - No noise: no additional codepoints are added, labeled as uniform(0,0) in the results.
 - Uniform Random: add a random number of codepoints from the script. Each codepoint has an equal chance of being added.
-  Labeled as uniform(x, y) in the results. Where the number of codepoints added is in [x, y].
+  Labeled as uniform(x, y) in the results. Where the number of codepoints to be added is a random number in [x, y].
 - Weighted Random: add a random number of codepoints from the script. Each codepoints probability is weighted on
-  frequency of occurrence. Labeled as weighted(x, y) in the results. Where the number of codepoints added is in [x, y].
+  frequency of occurrence. Labeled as weighted(x, y) in the results. Where the number of codepoints to be added is a
+  random number in [x, y].
 - Variable Random: add a number of codepoints that is a function of the number of codepoints in the request (smaller
   requests get more codepoints than larger requests). Each codepoints probability is weighted on frequency of occurrence.
   Labeled as variable(x, y) in the results. Where the number of codepoints added is in [x, y].
