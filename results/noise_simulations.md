@@ -62,11 +62,35 @@ The following types of noise were simulated:
 ![Latin: Total Number of Codepoints Loaded.svg](noise/Latin_%20Total%20Number%20of%20Codepoints%20Loaded.svg)
 
 ### Arabic
+
+![Arabic IFT Privacy Simulation](noise/Arabic%20IFT%20Privacy%20Simulation.svg)
+![Arabic: Total Number of Codepoints Loaded.svg](noise/Arabic_%20Total%20Number%20of%20Codepoints%20Loaded.svg)
+
 ### Devanagari
+
+![Devanagari IFT Privacy Simulation](noise/Devanagari%20IFT%20Privacy%20Simulation.svg)
+![Devanagari: Total Number of Codepoints Loaded.svg](noise/Devanagari_%20Total%20Number%20of%20Codepoints%20Loaded.svg)
+
 ### Japanese
+
+![Japanese IFT Privacy Simulation](noise/Japanese%20IFT%20Privacy%20Simulation.svg)
+![Japanese: Total Number of Codepoints Loaded.svg](noise/Japanese_%20Total%20Number%20of%20Codepoints%20Loaded.svg)
+
 ### Simplified Chinese
+
+![Simplified Chinese IFT Privacy Simulation](noise/Simplified%20Chinese%20IFT%20Privacy%20Simulation.svg)
+![Simplified Chinese: Total Number of Codepoints Loaded.svg](noise/Simplified%20Chinese_%20Total%20Number%20of%20Codepoints%20Loaded.svg)
+
 ### Traditional Chinese
+
+![Traditional Chinese IFT Privacy Simulation](noise/Traditional%20Chinese%20IFT%20Privacy%20Simulation.svg)
+![Traditional Chinese: Total Number of Codepoints Loaded.svg](noise/Traditional%20Chinese_%20Total%20Number%20of%20Codepoints%20Loaded.svg)
+
 ### Korean
+
+![Korean IFT Privacy Simulation](noise/Korean%20IFT%20Privacy%20Simulation.svg)
+![Korean: Total Number of Codepoints Loaded.svg](noise/Korean_%20Total%20Number%20of%20Codepoints%20Loaded.svg)
+
 
 
 
