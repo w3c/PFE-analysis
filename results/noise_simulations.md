@@ -63,10 +63,14 @@ The following types of noise were simulated:
 
 ### Arabic
 
+Note: the number of input pages is significantly less than with the other simulations.
+
 ![Arabic IFT Privacy Simulation](noise/Arabic%20IFT%20Privacy%20Simulation.svg)
 ![Arabic: Total Number of Codepoints Loaded.svg](noise/Arabic_%20Total%20Number%20of%20Codepoints%20Loaded.svg)
 
 ### Devanagari
+
+Note: the number of input pages is significantly less than with the other simulations.
 
 ![Devanagari IFT Privacy Simulation](noise/Devanagari%20IFT%20Privacy%20Simulation.svg)
 ![Devanagari: Total Number of Codepoints Loaded.svg](noise/Devanagari_%20Total%20Number%20of%20Codepoints%20Loaded.svg)
@@ -90,6 +94,41 @@ The following types of noise were simulated:
 
 ![Korean IFT Privacy Simulation](noise/Korean%20IFT%20Privacy%20Simulation.svg)
 ![Korean: Total Number of Codepoints Loaded.svg](noise/Korean_%20Total%20Number%20of%20Codepoints%20Loaded.svg)
+
+## Conclusions
+
+- Adding noise codepoints makes significant improvements in privacy.
+
+- Weighting the codepoints by frequency works much better than a uniform distribution. This is good news! It biases
+  towards codepoints that are likely to be used in the future reducing inefficiency.
+  
+- Furthermore, varying the number of codepoints to be added by the size of the input request further increases the
+  number of possible matches with only a minimal increase in request set sizes.
+  
+- Reasonable levels of ambiguity can be added without significantly increasing the total number of codepoints transferred.
+  At the highest levels of noise tested there was roughly a 2-3x increase in number of codepoints. Which is signficantly
+  less total codepoints then is transferred by our current approach using unicode range.
+
+- Different scripts have different requirements for number of noise codepoints needed.
+
+- The number of noise codepoints needs to be randomized. If the same number is always added then the adversary knows how
+  many codepoints are in the original page.
+
+
+## Recomendations for Specification Changes
+
+1. Add text that prevents codepoints from being re-requested. A malicious font server could pretend the font supports
+   codepoints it does not and then the client would keep re-requesting them giving a stronger signal as to what is
+   present.
+   
+2. We should recommend (but not require) including “unicode-range:” in IFT @font-faces to allow the client to scope the
+   initial request to only what’s in the font.
+   
+3. The spec should have a requirement on the minimum number of codepoints to be added. The recommendation likely needs
+   to be script specific. This could likely be simplified to a recommendation for CJK (and any other scripts with a large
+   number of codepoints) and different recommendation for everything else.
+
+
 
 
 
