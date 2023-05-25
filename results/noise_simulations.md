@@ -14,7 +14,7 @@ To quantify the impact of adding noise on the ability to match a request to the 
 several different methods of adding noise to a request. The result of the simulations found:
 - Without noise a portion of requests can be matched to a small number of pages in some scripts.
 - Adding noise was effective in reducing the proportion of requests that can be matched to a small number of pages.
-- Weighting the randomly chosen codepoints by frequency of occurence improved effectiveness signifcantly.
+- Weighting the randomly chosen codepoints by frequency of occurrence improved effectiveness significantly.
 - Varying the amount of noise inverse to the size of the original request improved effectiveness.
 - The amount of noise that needs to be added varies by script.
 
@@ -32,7 +32,7 @@ The simulation has the following goals:
   in [#42](https://github.com/w3c/IFT/issues/42) and [#50](https://github.com/w3c/IFT/issues/50).
 - Determine how much noise we need to add to achieve a reasonable level of privacy.
 - Determine the impact of adding noise on the amount of data loaded.
-- Compare IFT plus noise to the behaviour of existing font loading methods (eg. unicode range).
+- Compare IFT plus noise to the behavior of existing font loading methods (eg. unicode range).
 
 ## Simulation Model
 
@@ -43,13 +43,13 @@ set of codepoints: How many pages in S are subsets of r?
 Any pages that are subsets of r may have triggered the load of r. This count quantifies how much someone could narrow
 down the specific page that was being viewed. The higher it is, the more ambiguity there is.
 
-Only initial loads are modelled as they are the most revealing. Subsequent loads include the union of codepoints of all
+Only initial loads are modeled as they are the most revealing. Subsequent loads include the union of codepoints of all
 previously visited pages and thus will match the same or more pages then prior loads.
 
 ## The Simulation
 
 The data set used to drive the [IFT performance analysis](07-08-2020/simulation_results_aug_2020.md) was used as an input.
-The unique set of codepoints from each 'page view' was extraced and used to form the set, S. Then pages were randomly
+The unique set of codepoints from each 'page view' was extracted and used to form the set, S. Then pages were randomly
 selected from S and various forms of noise were applied. Lastly, the number of matching subsets in S was recorded.
 
 The resulting data was then bucketed into the following buckets to produce a histogram:
@@ -61,15 +61,15 @@ The resulting data was then bucketed into the following buckets to produce a his
 
 The following types of noise were simulated:
 - Unicode Range: add all of the script unicode ranges to the request that intersect the codepoints on the page. This
-  models what the Google Fonts API currently does. ([range definitions](https://github.com/w3c/PFE-analysis/tree/main/analysis/pfe_methods/unicode_range_data)). Labelled as unicode_range() in the results.
-- No noise: no additional codepoints are added, labelled as uniform(0,0) in the results.
+  models what the Google Fonts API currently does. ([range definitions](https://github.com/w3c/PFE-analysis/tree/main/analysis/pfe_methods/unicode_range_data)). Labeled as unicode_range() in the results.
+- No noise: no additional codepoints are added, labeled as uniform(0,0) in the results.
 - Uniform Random: add a random number of codepoints from the script. Each codepoint has an equal chance of being added.
-  Labelled as uniform(x, y) in the results. Where the number of codepoints added is in [x, y].
+  Labeled as uniform(x, y) in the results. Where the number of codepoints added is in [x, y].
 - Weighted Random: add a random number of codepoints from the script. Each codepoints probability is weighted on
-  frequency of occurrence. Labelled as weighted(x, y) in the results. Where the number of codepoints added is in [x, y].
+  frequency of occurrence. Labeled as weighted(x, y) in the results. Where the number of codepoints added is in [x, y].
 - Variable Random: add a number of codepoints that is a function of the number of codepoints in the request (smaller
   requests get more codepoints than larger requests). Each codepoints probability is weighted on frequency of occurrence.
-  Labelled as variable(x, y) in the results. Where the number of codepoints added is in [x, y].
+  Labeled as variable(x, y) in the results. Where the number of codepoints added is in [x, y].
   
 ## Results
 
@@ -123,7 +123,7 @@ Note: the number of input pages is significantly less than with the other simula
   number of possible matches with only a minimal increase in request set sizes.
   
 - Reasonable levels of ambiguity can be added without significantly increasing the total number of codepoints transferred.
-  At the highest levels of noise tested there was roughly a 2-3x increase in number of codepoints. Which is signficantly
+  At the highest levels of noise tested there was roughly a 2-3x increase in number of codepoints. Which is significantly
   less total codepoints then is transferred by our current approach using unicode range.
 
 - Different scripts have different requirements for number of noise codepoints needed.
@@ -132,7 +132,7 @@ Note: the number of input pages is significantly less than with the other simula
   many codepoints are in the original page.
 
 
-## Recomendations for Specification Changes
+## Recommendations for Specification Changes
 
 1. Add text that prevents codepoints from being re-requested. A malicious font server could pretend the font supports
    codepoints it does not and then the client would keep re-requesting them giving a stronger signal as to what is
