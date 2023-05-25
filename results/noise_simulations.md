@@ -5,7 +5,24 @@ Date: May 24th, 2023
 
 ## Executive Summary
 
-TODO
+Incremental font transfer works by loading the font data for specific characters that are present in content on demand.
+In languages like Chinese, Japanese, and Korean which have large character counts this can reveal information about the
+contents of the page to the font server. To improve privacy it has been proposed that clients should randomly insert
+additional non-present codepoints into the request to add obscure the content.
+
+To quantify the impact of adding noise on the ability to match a request to the source page a simulation was run testing
+several different methods of adding noise to a request. The result of the simulations found:
+- Without noise a portion of requests can be matched to a small number of pages in some scripts.
+- Adding noise was effective in reducing the proportion of requests that can be matched to a small number of pages.
+- Weighting the randomly chosen codepoints by frequency of occurence improved effectiveness signifcantly.
+- Varying the amount of noise inverse to the size of the original request improved effectiveness.
+- The amount of noise that needs to be added varies by script.
+
+As a result of the findings it is recommended that:
+1. Update the specification to prevents codepoints from being re-requested.
+2. Recommend (but not require) including “unicode-range:” in IFT @font-faces.
+3. The specification should have a script specific requirement on the minimum number of noise codepoints to be added
+   by the client.
 
 ## Simulation Goals
 
