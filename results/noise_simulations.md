@@ -16,13 +16,16 @@ several different methods of adding noise to a request. The result of the simula
 - Adding noise was effective in reducing the proportion of requests that can be matched to a small number of pages.
 - Weighting the randomly chosen codepoints by frequency of occurrence improved effectiveness significantly.
 - Varying the amount of noise inverse to the size of the original request improved effectiveness.
-- The amount of noise that needs to be added varies by script.
+- While effective these methods are non-deterministic which significantly limits the ability to cache requests.
+- A deterministic method for adding noise is to add codepoints in groups. This gave comparable performance to the best
+  of the non-deterministic methods.
+- A group size of 4 to 7 codepoints provided a good amount of ambiguity across all of the scripts tested.
 
 As a result of the findings it is recommended that:
 1. Update the specification to prevents codepoints from being re-requested.
 2. Recommend (but not require) including “unicode-range:” in IFT @font-faces.
-3. The specification should have a script specific requirement on the minimum number of noise codepoints to be added
-   by the client.
+3. The spec should recommend the use of codepoint grouping by the client and provide a recommendation on the minimum
+   group size based on the findings here. For CJK specifically, we likely want to make grouping a requirement.
 
 ## Simulation Goals
 
@@ -72,6 +75,21 @@ The following types of noise were simulated:
 - Variable Random: add a number of codepoints that is a function of the number of codepoints in the request (smaller
   requests get more codepoints than larger requests). Each codepoints probability is weighted on frequency of occurrence.
   Labeled as variable(x, y) in the results. Where the number of codepoints added is in [x, y].
+- Codepoint Groups: segment the codepoints in a font into groups of a fixed size. Every group that is intersected
+  by a codepoint in the request is added to the request. Labeled as grouped(x) where x is the size of the groups.
+  
+## Caching Requests
+
+Adding random noise will make it difficult for requests to be cached. Consider the case of a popular article on
+the web, it will have a fixed set of codepoints for each user that encounters the article. However, if we randomly
+add noise then every request sent by different users will be slightly different making it extremely difficult to
+cache the response.
+
+The codepoint groups method is designed to remedy this situation. This makes the noise deterministic
+while still obscuring the specific codepoints on the original page. For that reason in the results
+the non-deterministic noise methods are used as a benchmark to compare the performance of various
+group sizes.
+
   
 ## Results
 
@@ -124,36 +142,25 @@ Note: the number of input pages is significantly less than with the other simula
 - Furthermore, varying the number of codepoints to be added by the size of the input request further increases the
   number of possible matches with only a minimal increase in request set sizes.
   
+- Adding codepoints in groups with an appropriate group size can give comparable performance to the best of the
+  non-deterministic methods.
+  
 - Reasonable levels of ambiguity can be added without significantly increasing the total number of codepoints transferred.
   At the highest levels of noise tested there was roughly a 2-3x increase in number of codepoints. Which is significantly
   less total codepoints then is transferred by our current approach using unicode range.
 
-- Different scripts have different requirements for number of noise codepoints needed.
-
-- The number of noise codepoints needs to be randomized. If the same number is always added then the adversary knows how
-  many codepoints are in the original page.
-
+- Group sizes from 4 to 7 codepoints per group provides a good amount of ambiguity across all scripts tested. This could
+  allow for a single minimum group size to be supplied in the spec which will give good performance regardless of the
+  script.
 
 ## Recommendations for Specification Changes
 
 1. Add text that prevents codepoints from being re-requested. A malicious font server could pretend the font supports
    codepoints it does not and then the client would keep re-requesting them giving a stronger signal as to what is
    present.
-   
+
 2. We should recommend (but not require) including “unicode-range:” in IFT @font-faces to allow the client to scope the
    initial request to only what’s in the font.
    
-3. The spec should have a requirement on the minimum number of codepoints to be added. The recommendation likely needs
-   to be script specific. This could likely be simplified to a recommendation for CJK (and any other scripts with a large
-   number of codepoints) and different recommendation for everything else.
-
-
-
-
-
-
-
-
-
-
-
+3. The spec should recommend the use of codepoint grouping by the client and provide a recommendation on the minimum
+   group size based on the findings here. For CJK specifically, we likely want to make grouping a requirement.
